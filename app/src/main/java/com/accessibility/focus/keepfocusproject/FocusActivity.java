@@ -10,5 +10,6 @@ public class FocusActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_focus);
         //This comment create by thong.nv, try make zero to hero =))
+        //2
     }
 }
