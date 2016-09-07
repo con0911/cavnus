@@ -14,6 +14,7 @@ public class SetupWizardActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if (agreeTerm.getBoolean("terms_and_conditions", false)) {
             setContentView(R.layout.terms_and_conditions);
