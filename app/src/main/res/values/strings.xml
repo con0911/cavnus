@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Cavnus</string>
+    <!--Terms and Conditions-->
+    <string name="terms_and_conditions_title">TERMS AND CONDITIONS</string>
+    <string name="term1_content">PLEASE READ THESE TERMS OF USER CAREFULLY BEFORE USING THE KEEPFOCUS APPLYCATION</string>
+    <string name="term2_title">2.The application will help you : </string>
+    <string name="term2a_content">a.With the parent mode : it will help you manager and control the launcher of any active
+        application which was installed on your children device. You can control the time, the active application or block
+        on your children device via KeepFocus in parent mode.</string>
+    <string name="term2b_content">b.With the children mode : you can only visible the application which are blocking and the time
+        these be blocked. And without the block time, you can see and check the notifications are missed on this block time.</string>
+    <string name="term3_content">3.The application will need use (this content will show for user permissions require which
+        are need for using application)</string>
+    <string name="checkbox_agree">I have read and agree to all terms and conditions above</string>
+
+    <string name="setup_mode_guide">Click on button " JOIN TO GROUP " if you want to join this device to already exist group</string>
 </resources>
