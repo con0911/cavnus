@@ -44,7 +44,7 @@
 
 </RelativeLayout>
     <Button
-        android:id="@+id/btn_next"
+        android:id="@+id/btn_skip"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:paddingLeft="@dimen/activity_horizontal_margin"
