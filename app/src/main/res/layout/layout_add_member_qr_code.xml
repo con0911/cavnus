@@ -25,18 +25,18 @@
             android:layout_height="wrap_content"
             android:hint="@string/enter_group_id"/>
     </LinearLayout>
-    <CheckBox
+    <!--<CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
-        android:text="@string/scan_qr_checkbox"/>
+        android:text="@string/scan_qr_checkbox"/>-->
 
-    <ImageView
-        android:id="@+id/imageCaptureQR"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="20dp"
+    <ImageButton
+        android:id="@+id/doneImageBtn"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/layout_border"
         android:layout_gravity="center"/>
 

@@ -37,8 +37,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
 
             case R.id.activity2:
-                //Intent intent2 = new Intent(getApplicationContext(), JoinGroupActivity.class);
-                //startActivity(intent2);
+                Intent intent2 = new Intent(getApplicationContext(), JoinGroupActivity.class);
+                startActivity(intent2);
                 break;
 
             default: break;

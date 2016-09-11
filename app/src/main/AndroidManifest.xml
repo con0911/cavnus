@@ -28,6 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.ShowQRCodeScreen" />
+        <activity android:name=".activity.JoinGroupActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.LoginActivity"
