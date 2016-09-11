@@ -28,11 +28,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.android.keepfocus.R;
+import com.android.keepfocus.service.ServiceConnector;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -59,10 +61,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
+    public AutoCompleteTextView mEmailView;
+    public EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    //test
+    ServiceConnector serviceConnector = new ServiceConnector();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +94,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+                //test
+                if (serviceConnector.checkLogin(mEmailView.getText().toString(),
+                        mPasswordView.getText().toString(), "abc123")){
+                    Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(LoginActivity.this, "email or password is wrong", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

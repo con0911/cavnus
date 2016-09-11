@@ -14,6 +14,11 @@
     
     <style name="title_text_style">
         <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+    </style>
+
+    <style name="button_text_style">
+        <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">@dimen/title_text_size</item>
     </style>
 
@@ -39,14 +44,17 @@
         <item name="android:layout_marginRight">20dp</item>
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:typeface">monospace</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">16dp</item>
     </style>
 
     <style name="imageView">
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:paddingBottom">3dp</item>
+
     </style>
 
 </resources>

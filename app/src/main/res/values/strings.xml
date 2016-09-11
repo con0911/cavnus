@@ -22,7 +22,7 @@
         are need for using application)</string>
     <string name="checkbox_agree">I have read and agree to all terms and conditions above</string>
 
-    <string name="setup_mode_guide">Click on button " JOIN TO GROUP " if you want to join this device to already exist group</string>
+    <string name="setup_mode_guide">Click on button "JOIN TO GROUP" if you want to join this device to already exist group</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -37,4 +37,16 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_create_group">CreateGroupActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
