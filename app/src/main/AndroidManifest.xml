@@ -20,7 +20,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.SetupWizardActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +29,9 @@
         </activity>
         <activity android:name=".activity.ShowQRCodeScreen" />
         <activity android:name=".activity.JoinGroupActivity" />
-        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.SetupWizardActivity" />
+        <activity android:name=".activity.GroupManagermentActivity" />
+        <activity android:name=".activity.GroupDetail" />
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login" />

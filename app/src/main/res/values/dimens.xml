@@ -19,4 +19,11 @@
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
+
+    <dimen name="alert_dialog_padding_left_right">24dip</dimen>
+    <dimen name="alert_dialog_padding_top">9dp</dimen>
+    <dimen name="alert_dialog_padding_bottom">24dp</dimen>
+    <dimen name="alert_dialog_text_size">19sp</dimen>
+    <dimen name="alert_dialog_text_line_spacing_extra">4sp</dimen>
+    <dimen name="alert_dialog_top_edittext_margin_top">24dp</dimen>
 </resources>

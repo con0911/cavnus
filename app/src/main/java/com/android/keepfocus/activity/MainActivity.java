@@ -15,6 +15,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private Button activity1;
     private Button activity2;
+    private Button activity3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +25,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
         //show class
         activity1 = (Button) findViewById(R.id.activity1);
         activity2 = (Button) findViewById(R.id.activity2);
+        activity3 = (Button) findViewById(R.id.activity3);
         activity1.setOnClickListener(this);
         activity2.setOnClickListener(this);
+        activity3.setOnClickListener(this);
     }
 
     @Override
@@ -39,6 +42,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.activity2:
                 Intent intent2 = new Intent(getApplicationContext(), JoinGroupActivity.class);
                 startActivity(intent2);
+                break;
+
+            case R.id.activity3:
+                Intent intent3 = new Intent(getApplicationContext(), GroupManagermentActivity.class);
+                startActivity(intent3);
                 break;
 
             default: break;

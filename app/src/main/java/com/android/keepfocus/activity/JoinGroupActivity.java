@@ -2,7 +2,6 @@ package com.android.keepfocus.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,15 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.android.keepfocus.R;
-import com.google.android.gms.common.api.GoogleApiClient;
-
-import java.util.List;
 
 public class JoinGroupActivity extends Activity {
     private ImageButton btnImageDone;

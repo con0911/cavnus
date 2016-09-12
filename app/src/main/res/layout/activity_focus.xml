@@ -15,10 +15,16 @@
         android:layout_height="wrap_content"
         android:text="QR Code 7.0" />
     <Button
-        android:id="@+id/activity2"
+    android:id="@+id/activity2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Join Group 7.1" />
+
+    <Button
+        android:id="@+id/activity3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Join Group 7.1" />
+        android:text="Group 8.1" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

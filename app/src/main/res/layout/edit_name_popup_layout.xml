@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/edit_name_text"
+            style="@style/dialog_body_text_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/alert_dialog_padding_left_right"
+            android:layout_marginRight="@dimen/alert_dialog_padding_left_right"
+            android:layout_marginTop="@dimen/alert_dialog_padding_top"
+            android:gravity="center_vertical" />
+
+        <EditText
+            android:id="@+id/edit_name_edittext_popup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/alert_dialog_padding_bottom"
+            android:layout_marginLeft="@dimen/alert_dialog_padding_left_right"
+            android:layout_marginRight="@dimen/alert_dialog_padding_left_right"
+            android:layout_marginTop="@dimen/alert_dialog_padding_top"
+            android:gravity="center_vertical"
+            android:inputType="textCapSentences"
+            android:hint="Profile name"
+            android:lines="1"
+            android:privateImeOptions="disableEmoticonInput=true" />
+    </LinearLayout>
+
+</ScrollView>
