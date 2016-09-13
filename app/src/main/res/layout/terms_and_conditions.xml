@@ -8,8 +8,6 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
-    android:layout_marginBottom="@dimen/activity_vertical_margin"
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:orientation="vertical">
@@ -25,13 +23,19 @@
         android:textStyle="bold"
         android:text="@string/terms_and_conditions_title"/>
 
-
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="wrap_content"
+   android:background="#FFFFFF"
+   android:layout_marginBottom="@dimen/activity_vertical_margin"
+   android:layout_marginTop="@dimen/activity_vertical_margin"
+   android:layout_height="420dp"
+     android:fillViewport="false">
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="400dp"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="0dp"
     >
-    <View
+<!--    <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/colorPrimaryDark"/>
@@ -40,7 +44,8 @@
         android:layout_width="2dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/colorPrimaryDark"/>-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -102,7 +107,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <View
+<!--    <View
         android:layout_width="2dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
@@ -114,14 +119,15 @@
         android:layout_height="2dp"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/colorPrimaryDark"/>-->
 
 </RelativeLayout>
+ </ScrollView>
     <Button
         android:id="@+id/btn_next"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="10dp"
         android:layout_gravity="right|bottom"
         android:gravity="center"
         android:background="@drawable/btn_border"

@@ -28,12 +28,12 @@
     
     <style name="title_text_style">
         <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
     </style>
 
     <style name="button_text_style">
         <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
     </style>
 
     <style name="content_text_style">
