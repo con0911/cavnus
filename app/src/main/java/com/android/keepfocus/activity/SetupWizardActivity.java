@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,7 +14,7 @@ import android.widget.CompoundButton;
 import com.android.keepfocus.R;
 import com.android.keepfocus.utils.MainUtils;
 
-public class SetupWizardActivity extends Activity {
+public class SetupWizardActivity extends AppCompatActivity {
     private Button btnNext;
     private SharedPreferences agreePref;
     private CheckBox mCheckboxTerm;
@@ -27,6 +28,7 @@ public class SetupWizardActivity extends Activity {
         boolean checkAgree = agreePref.getBoolean(MainUtils.TERMS_AND_CONDITIONS, false);
         if (!checkAgree) {
             setContentView(R.layout.terms_and_conditions);
+            setTitle("Terms and Conditions");
             btnNext = (Button) findViewById(R.id.btn_next);
             mCheckboxTerm = (CheckBox) findViewById(R.id.checkbox_agree);
             mCheckboxTerm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -41,6 +43,15 @@ public class SetupWizardActivity extends Activity {
                                 editor.putBoolean(MainUtils.TERMS_AND_CONDITIONS, true);
                                 editor.commit();
                                 setContentView(R.layout.set_up_mode);
+                                setTitle("Setup mode");
+                                Button btnSkip = (Button) findViewById(R.id.btn_skip);
+                                btnSkip.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent login = new Intent(SetupWizardActivity.this, LoginActivity.class);
+                                        startActivity(login);
+                                    }
+                                });
                             }
                         });
                     }else {
@@ -54,6 +65,7 @@ public class SetupWizardActivity extends Activity {
 
         }else {
             setContentView(R.layout.set_up_mode);
+            setTitle("Setup mode");
             Button btnSkip = (Button) findViewById(R.id.btn_skip);
             btnSkip.setOnClickListener(new View.OnClickListener() {
                 @Override

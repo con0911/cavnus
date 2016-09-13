@@ -29,9 +29,9 @@ public class ServiceConnector {
         jsonArray.put(account);
         boolean isSuccessful = false;
         try {
-            if (account.getString("email").compareTo(email) == 0
-                    && account.getString("password").compareTo(password) == 0
-                    && account.getString("deviceId").compareTo(deviceId) == 0){
+            if (account.getString("email").compareTo(tempEmail) == 0
+                    && account.getString("password").compareTo(tempPassword) == 0
+                    && account.getString("deviceId").compareTo(tempDeviceId) == 0){
                 isSuccessful = true;
             }
         } catch (JSONException e) {

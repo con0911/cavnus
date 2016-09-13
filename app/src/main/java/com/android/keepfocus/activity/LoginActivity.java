@@ -3,6 +3,7 @@ package com.android.keepfocus.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -41,7 +43,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -96,10 +98,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 attemptLogin();
                 //test
                 if (serviceConnector.checkLogin(mEmailView.getText().toString(),
-                        mPasswordView.getText().toString(), "abc123")){
+                        mPasswordView.getText().toString(), "1234")){
                     Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                    Intent groupManagement = new Intent(LoginActivity.this, GroupManagermentActivity.class);
+                    startActivity(groupManagement);
+
                 }else {
-                    Toast.makeText(LoginActivity.this, "email or password is wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Your password or email is wrong", Toast.LENGTH_SHORT).show();
                 }
             }
         });

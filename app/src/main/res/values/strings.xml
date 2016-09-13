@@ -38,13 +38,11 @@
         completions."
     </string>
     <string name="title_activity_create_group">CreateGroupActivity</string>
-
+    <string name="text_no_group">There are no available group. Please add new one by click "Add" button </string>
+    <string name="text_no_member">There are no member in this group. Please add new member by click "Add" button </string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_example">Example action</string>
 

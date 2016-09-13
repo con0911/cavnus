@@ -11,7 +11,7 @@
 
         <TextView
             android:id="@+id/edit_name_text"
-            style="@style/dialog_body_text_style"
+            style="@style/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/alert_dialog_padding_left_right"
@@ -21,6 +21,7 @@
 
         <EditText
             android:id="@+id/edit_name_edittext_popup"
+            style="@style/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/alert_dialog_padding_bottom"
@@ -29,7 +30,7 @@
             android:layout_marginTop="@dimen/alert_dialog_padding_top"
             android:gravity="center_vertical"
             android:inputType="textCapSentences"
-            android:hint="Profile name"
+            android:hint="Enter name group"
             android:lines="1"
             android:privateImeOptions="disableEmoticonInput=true" />
     </LinearLayout>

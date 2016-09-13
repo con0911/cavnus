@@ -11,8 +11,12 @@
 
         <TextView
             android:id="@+id/delete_text"
+            style="@style/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/alert_dialog_padding_left_right"
+            android:layout_marginRight="@dimen/alert_dialog_padding_left_right"
+            android:layout_marginTop="@dimen/alert_dialog_padding_top"
             android:gravity="center_vertical" />
 
     </LinearLayout>

@@ -21,15 +21,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.MainActivity">
+<!--            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity android:name=".activity.ShowQRCodeScreen" />
+        <activity android:name=".activity.JoinGroupActivity" />
+        <activity android:name=".activity.SetupWizardActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ShowQRCodeScreen" />
-        <activity android:name=".activity.JoinGroupActivity" />
-        <activity android:name=".activity.SetupWizardActivity" />
         <activity android:name=".activity.GroupManagermentActivity" />
         <activity android:name=".activity.GroupDetail" />
         <activity

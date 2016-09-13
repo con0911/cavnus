@@ -3,6 +3,10 @@ package com.android.keepfocus.activity;
 import java.util.ArrayList;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,11 +35,13 @@ import com.android.keepfocus.utils.MainUtils;
 /**
  * Created by Sion on 9/12/2016.
  */
-public class GroupManagermentActivity extends Activity implements OnClickListener {
+public class GroupManagermentActivity extends AppCompatActivity implements OnClickListener {
 
     private ListView listProperties;
     private LinearLayout headerView;
-    private ImageView mFABBtnCreate;
+    //private ImageView mFABBtnCreate;
+    private FloatingActionButton fab;
+    private TextView mTextNoGroup;
     public GroupManagermentActivity CustomListView = null;
     public ArrayList<ChildKeepFocusItem> listBlockPropertiesArr;
     private MainDatabaseHelper mDataHelper;
@@ -51,15 +57,22 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.group_management);
+        setContentView(R.layout.activity_group_management);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+        setTitle("Group management");
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
         mContext = this;
 
         listProperties = (ListView) findViewById(R.id.listP);
         headerView = (LinearLayout) getLayoutInflater().inflate(R.layout.header_view_profile, null);
-        mFABBtnCreate = (ImageView) findViewById(R.id.createButton);
+        //mFABBtnCreate = (ImageView) findViewById(R.id.createButton);
         listProperties.addHeaderView(headerView);
         listProperties.addFooterView(headerView);
-        mFABBtnCreate.setOnClickListener(this);
+        //mFABBtnCreate.setOnClickListener(this);
+        fab.setOnClickListener(this);
         listProperties.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -79,8 +92,10 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.createButton:
-                createNewProfile();
+            case R.id.fab:
+                createNewGroup();
+                Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
                 break;
             default:
                 break;
@@ -94,11 +109,11 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
         displayProfile();
     }
 
-    public void createNewProfile() {
+    public void createNewGroup() {
         mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
         mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
         mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
-        mTextMsg.setText("Create new group");
+        mTextMsg.setText("Name group :");
 
         mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Create new group")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -129,9 +144,15 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
 
     public void displayProfile() {
         listBlockPropertiesArr = mDataHelper.getAllKeepFocusFromDb();
-        mProfileAdapter = new AdapterProfile(this, R.layout.tab_group,
-                0, listBlockPropertiesArr);
-        listProperties.setAdapter(mProfileAdapter);
+        if (listBlockPropertiesArr.size() == 0){
+            //mTextNoGroup.setText(R.string.text_no_group);
+        }else{
+            mProfileAdapter = new AdapterProfile(this, R.layout.tab_group,
+                    0, listBlockPropertiesArr);
+            listProperties.setAdapter(mProfileAdapter);
+            mTextNoGroup.setText("");
+        }
+
     }
 
     public void onItemClick(int position) {
@@ -163,7 +184,7 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
         final int mPosition = position;
         View view = getLayoutInflater().inflate(R.layout.delete_profile_popup, null);
         TextView mTextMsg = (TextView) view.findViewById(R.id.delete_text);
-        mTextMsg.setText("Delete?");
+        mTextMsg.setText("Are you sure to delete this group?");
         AlertDialog mDeleteDialog = new AlertDialog.Builder(this).setView(view).setTitle("Delete group")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
