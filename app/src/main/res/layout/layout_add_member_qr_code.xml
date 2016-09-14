@@ -32,12 +32,14 @@
         android:layout_marginTop="20dp"
         android:text="@string/scan_qr_checkbox"/>-->
 
-    <ImageButton
+    <Button
         android:id="@+id/doneImageBtn"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginTop="50dp"
-        android:background="@drawable/layout_border"
+        android:gravity="center"
+        android:src="@drawable/layout_border"
+        android:text="Submit"
         android:layout_gravity="center"/>
 
 

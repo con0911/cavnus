@@ -6,10 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -28,8 +24,8 @@ import android.content.Intent;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.controller.AdapterProfile;
-import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
+import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.utils.MainUtils;
 
 /**
@@ -43,7 +39,7 @@ public class GroupManagermentActivity extends AppCompatActivity implements OnCli
     private FloatingActionButton fab;
     private TextView mTextNoGroup;
     public GroupManagermentActivity CustomListView = null;
-    public ArrayList<ChildKeepFocusItem> listBlockPropertiesArr;
+    public ArrayList<ParentGroupItem> listBlockPropertiesArr;
     private MainDatabaseHelper mDataHelper;
     private Context mContext;
     private View mView;
@@ -121,11 +117,11 @@ public class GroupManagermentActivity extends AppCompatActivity implements OnCli
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (!mEditText.getText().toString().equals("")) {
-                            ChildKeepFocusItem keepFocus = new ChildKeepFocusItem();
-                            keepFocus.setNameFocus(mEditText.getText().toString());
-                            keepFocus.setDayFocus("");
-                            mDataHelper.addNewFocusItem(keepFocus);
-                            MainUtils.childKeepFocusItem = keepFocus;
+                            ParentGroupItem parentItem = new ParentGroupItem();
+                            parentItem.setGroup_name(mEditText.getText().toString());
+                            parentItem.setGroup_code("");
+                            mDataHelper.addGroupItemParent(parentItem);
+                            MainUtils.parentGroupItem = parentItem;
                             Intent intent = new Intent(GroupManagermentActivity.this, GroupDetail.class);
                             startActivity(intent);
                         } else {
@@ -143,9 +139,9 @@ public class GroupManagermentActivity extends AppCompatActivity implements OnCli
     }
 
     public void displayProfile() {
-        listBlockPropertiesArr = mDataHelper.getAllKeepFocusFromDb();
+        listBlockPropertiesArr = mDataHelper.getAllGroupItemParent();
         if (listBlockPropertiesArr.size() == 0){
-            //mTextNoGroup.setText(R.string.text_no_group);
+            mTextNoGroup.setText(R.string.text_no_group);
         }else{
             mProfileAdapter = new AdapterProfile(this, R.layout.tab_group,
                     0, listBlockPropertiesArr);
@@ -156,7 +152,7 @@ public class GroupManagermentActivity extends AppCompatActivity implements OnCli
     }
 
     public void onItemClick(int position) {
-        MainUtils.childKeepFocusItem = mProfileAdapter.getItem(position);
+        MainUtils.parentGroupItem = mProfileAdapter.getItem(position);
         Intent intent = new Intent(this, GroupDetail.class);
         startActivity(intent);
     }
@@ -189,7 +185,7 @@ public class GroupManagermentActivity extends AppCompatActivity implements OnCli
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        mDataHelper.deleteFocusItemById(mProfileAdapter.getItem(mPosition).getKeepFocusId());
+                        //mDataHelper.deleteFocusItemById(mProfileAdapter.getItem(mPosition).getKeepFocusId());
                         displayProfile();
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

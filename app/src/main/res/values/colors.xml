@@ -4,9 +4,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="color_background_button">#3B5998</color>
-    <color name="title_text_color">#3B5998</color>
-    <color name="content_text_color">#3B5998</color>
-    <color name="color_background_screen">#C7B8B8</color>
+    <color name="color_background_button">#f0f0f0</color>
+    <color name="title_text_color">#499ebd</color>
+    <color name="button_text_color">#252525</color>
+    <color name="main_action_bar_bg">#499ebd</color>
+    <color name="content_text_color">#313131</color>
+    <color name="color_background_screen">#fafafa</color>
 
 </resources>

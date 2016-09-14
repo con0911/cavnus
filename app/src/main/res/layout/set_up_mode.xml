@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C7B8B8"
+    android:background="@color/color_background_screen"
+
     >
 
     <LinearLayout
@@ -23,7 +24,6 @@
         android:layout_marginRight="@dimen/content_text_margin_start_end"
         android:gravity="center_horizontal"
         style="@style/textView"
-        android:textStyle="bold"
         android:text="@string/setup_mode_guide"/>
 
 
@@ -34,32 +34,33 @@
         android:layout_marginTop="100dp"
         android:text="JOIN TO GROUP"
         android:gravity="center"
-        android:background="@drawable/btn_border"
-        style="@style/button_text_style"/>
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
-    <View
-        android:id="@+id/line_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="200dp"
-        android:background="@color/colorPrimaryDark"/>
-
-</RelativeLayout>
-    <Button
-        android:id="@+id/btn_skip"
-        android:layout_width="@dimen/button_width"
-        android:layout_height="@dimen/button_height"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_gravity="right|bottom"
-        android:gravity="center"
-        android:text="SKIP"
-        android:background="@drawable/btn_border"
-        style="@style/title_text_style"/>
+        android:textColor="@color/button_text_color"
+        android:textSize="17sp"
+        />
 
         </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_background_button"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d6d6d6" />
+
+        <Button
+            android:id="@+id/btn_skip"
+            style="@style/button_text_style"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_gravity="right|bottom"
+            android:background="@drawable/btn_border"
+            android:gravity="center_vertical"
+            android:text="SKIP >" />
+    </LinearLayout>
+
+</RelativeLayout>

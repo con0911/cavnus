@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#C7B8B8"
+    android:background="@color/color_background_screen"
     tools:context="com.android.keepfocus.activity.LoginActivity">
 
     <!-- Login progress -->
@@ -32,18 +32,21 @@
             android:orientation="vertical">
 
             <TextView
-                android:text="Please enter profile details for your account"
+                android:text="Use CAVNUS account"
                 style="@style/textView"
                 android:gravity="center"
                 android:layout_marginBottom="20dp"
-                android:textStyle="bold"
                 android:id="@+id/tv_title"
                 />
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
-            <ImageView
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="@color/color_background_button"
+                android:orientation="horizontal"
+               >
+           <ImageView
                 style="@style/imageView"
                 android:src="@drawable/email"/>
             <AutoCompleteTextView
@@ -51,7 +54,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
-                android:paddingLeft="70dp"
+                android:textColorHint="@color/title_text_color"
+                android:paddingLeft="60dp"
                 android:textColor="@color/title_text_color"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
@@ -61,8 +65,12 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/color_background_button"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:orientation="horizontal"
                 >
-            <ImageView
+           <ImageView
                 style="@style/imageView"
                 android:src="@drawable/password"/>
             <EditText
@@ -70,7 +78,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
-                android:paddingLeft="70dp"
+                android:paddingLeft="60dp"
+                android:textColorHint="@color/title_text_color"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
@@ -80,14 +89,29 @@
                 android:singleLine="true" />
             </RelativeLayout>
 
-            <TextView
-                android:text="Forget Password ?"
-                style="@style/textView"
-                android:gravity="center"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"
-                android:textStyle="bold"
-                android:id="@+id/text_forget_pass"
-                />
+                >
+
+                <TextView
+                    android:id="@+id/text_forget_pass"
+                    android:layout_width="wrap_content"
+                    style="@style/textView"
+                    android:layout_alignParentLeft="true"
+                    android:text="Forget Password ?"
+                     />
+
+                <TextView
+                    android:id="@+id/text_register"
+                    android:layout_width="wrap_content"
+                    style="@style/textView"
+                    android:layout_alignParentRight="true"
+                    android:text="Register"
+                    />
+
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/email_sign_in_button"
@@ -95,8 +119,8 @@
                 android:textSize="19dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_border"
                 android:layout_marginTop="16dp"
+                android:gravity="center"
                 android:text="@string/action_sign_in"
                 />
 

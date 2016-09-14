@@ -7,9 +7,13 @@ public class ParentAppItem {
     private int id_app_parent;
     private String namePackage;
     private String nameApp;
+    private String iconApp;
 
     public ParentAppItem() {
         this.id_app_parent = -1;
+        this.namePackage = "";
+        this.nameApp = "";
+        this.iconApp = "";
     }
 
     public int getId_app_parent() {
@@ -34,5 +38,13 @@ public class ParentAppItem {
 
     public void setNameApp(String nameApp) {
         this.nameApp = nameApp;
+    }
+
+    public String getIconApp() {
+        return iconApp;
+    }
+
+    public void setIconApp(String iconApp) {
+        this.iconApp = iconApp;
     }
 }

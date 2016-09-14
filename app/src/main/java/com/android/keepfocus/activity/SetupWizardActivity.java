@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -14,7 +15,7 @@ import android.widget.CompoundButton;
 import com.android.keepfocus.R;
 import com.android.keepfocus.utils.MainUtils;
 
-public class SetupWizardActivity extends AppCompatActivity {
+public class SetupWizardActivity extends Activity {
     private Button btnNext;
     private SharedPreferences agreePref;
     private CheckBox mCheckboxTerm;
@@ -23,12 +24,14 @@ public class SetupWizardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
         super.onCreate(savedInstanceState);
         agreePref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean checkAgree = agreePref.getBoolean(MainUtils.TERMS_AND_CONDITIONS, false);
         if (!checkAgree) {
             setContentView(R.layout.terms_and_conditions);
-            setTitle("Terms and Conditions");
+            setTitle("Cavnus");
             btnNext = (Button) findViewById(R.id.btn_next);
             mCheckboxTerm = (CheckBox) findViewById(R.id.checkbox_agree);
             mCheckboxTerm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -76,4 +79,5 @@ public class SetupWizardActivity extends AppCompatActivity {
             });
         }
     }
+
 }

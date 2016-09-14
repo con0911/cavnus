@@ -43,7 +43,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
                 //test
                 if (serviceConnector.checkLogin(mEmailView.getText().toString(),
-                        mPasswordView.getText().toString(), "1234")){
+                        mPasswordView.getText().toString(), "abc123")){
                     Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
                     Intent groupManagement = new Intent(LoginActivity.this, GroupManagermentActivity.class);
                     startActivity(groupManagement);

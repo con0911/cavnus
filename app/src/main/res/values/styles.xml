@@ -1,12 +1,26 @@
 <resources>
 
     <!-- Base application theme. -->
+    <style name="AppTheme" parent="AppTheme.NoActionBar"/>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeCompact" parent="Theme.AppCompat.Light.DarkActionBar">
+
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="KeepFocus.WithActionBar.Common" parent="@android:style/Theme.DeviceDefault.Light"/>
+
+    <style name="CustomizeActionbarAppTheme" parent="KeepFocus.WithActionBar.Common">
+        <item name="android:actionBarStyle">@style/MainActionBarTheme</item>
+    </style>
+
+    <style name="MainActionBarTheme" parent="android:Widget.DeviceDefault.ActionBar">
+        <item name="android:displayOptions">showTitle</item>
+        <item name="android:background">@color/main_action_bar_bg</item>
+        <item name="android:height">@dimen/main_action_bar_height</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -47,7 +61,9 @@
         <item name="android:layout_marginLeft">20dp</item>
         <item name="android:textSize">18dp</item>
         <item name="android:textColor">#00FF00</item>
+<!--
         <item name="android:typeface">monospace</item>
+-->
     </style>
 
     <style name="textView">
@@ -57,9 +73,10 @@
         <item name="android:layout_marginLeft">20dp</item>
         <item name="android:layout_marginRight">20dp</item>
         <item name="android:layout_marginTop">20dp</item>
-        <item name="android:typeface">monospace</item>
-        <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/content_text_color</item>
+<!--        <item name="android:typeface">monospace</item>
+        <item name="android:textColor">@color/title_text_color</item>-->
+        <item name="android:textSize">17sp</item>
     </style>
 
     <style name="imageView">
@@ -67,7 +84,7 @@
         <item name="android:layout_height">30dp</item>
         <item name="android:layout_marginLeft">15dp</item>
         <item name="android:layout_marginBottom">2dp</item>
-        <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingBottom">2dp</item>
     </style>
 
     <style name="dialog_body_text_style">

@@ -27,16 +27,17 @@ import com.android.keepfocus.R;
 import com.android.keepfocus.activity.GroupManagermentActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
+import com.android.keepfocus.data.ParentGroupItem;
 
 /**
  * Created by nguyenthong on 9/6/2016.
  */
-public class AdapterProfile extends ArrayAdapter<ChildKeepFocusItem> {
+public class AdapterProfile extends ArrayAdapter<ParentGroupItem> {
     private Activity activity;
     private static LayoutInflater inflater = null;
 
     public AdapterProfile(Activity activity, int resource,
-                          int textViewResourceId, ArrayList<ChildKeepFocusItem> objects) {
+                          int textViewResourceId, ArrayList<ParentGroupItem> objects) {
         super(activity, resource, textViewResourceId, objects);
         inflater = ( LayoutInflater )activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.activity = activity;
@@ -52,37 +53,10 @@ public class AdapterProfile extends ArrayAdapter<ChildKeepFocusItem> {
         TextView dayBlock = (TextView) convertView.findViewById(R.id.textTab);
         LinearLayout listAppBlock = (LinearLayout) convertView.findViewById(R.id.showAppBlock);
         final int mPosition = position;
-        final ChildKeepFocusItem profileItem = getItem(mPosition);
-        nameProfile.setText(profileItem.getNameFocus());
-        dayBlock.setText(profileItem.getDayFocus());
+        final ParentGroupItem profileItem = getItem(mPosition);
+        nameProfile.setText(profileItem.getGroup_name());
+        dayBlock.setText(profileItem.getCreate_date());
         listAppBlock.removeAllViews();
-        for (int i = 0; i < profileItem.getListAppFocus().size(); i++) {
-            Drawable iconApp = null;
-            try
-            {
-                iconApp = activity.getApplicationContext().getPackageManager().
-                        getApplicationIcon(profileItem.getListAppFocus().get(i).getNamePackage());
-            }
-            catch (PackageManager.NameNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-            if(iconApp != null){
-                CustomIcon appIconView = new CustomIcon(activity);
-                appIconView.setImageDrawable(iconApp);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(0, 5, 5, 5);// icon margin
-                listAppBlock.addView(appIconView, layoutParams);
-                final String appBlockName = profileItem.getListAppFocus().get(i).getNameApp();
-                appIconView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View arg0) {
-                        Toast.makeText(activity.getApplicationContext(), "" + appBlockName, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }
         vi.setOnClickListener(new OnItemClickListener( position ));
         vi.setOnLongClickListener(new OnItemLongClickListener(position) );
         return convertView;

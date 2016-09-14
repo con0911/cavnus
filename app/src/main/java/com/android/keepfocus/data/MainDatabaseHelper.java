@@ -30,6 +30,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
     // Database Table for children
     ////
     // Database Table for parent
+    private static final String TABLE_GROUP_PARENT = "tblGroupParent";
+    private static final String TABLE_MEMBER = "tblMemberParent";
+    private static final String TABLE_GROUP_MEMBER_PARENT = "tblGroupMemberParent";
+    private static final String TABLE_PROFILE_PARENT = "tblProfileParent";
+    private static final String TABLE_MEMBER_PROFILE_PARENT = "tblMemberProfileParent";
+    private static final String TABLE_APP_PARENT = "tblAppParent";
+    private static final String TABLE_PROFILE_APP_PARENT = "tblProfileAppParent";
+    private static final String TABLE_TIME_PARENT = "tblTimeParent";
     // Database Table for parent
     private SQLiteDatabase dbMain;
 
@@ -76,6 +84,55 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         // Database create for children
         ////////
         // Database create for parent
+        // tblGroupParent
+        String CREATE_TABLE_GROUP_PARENT = "CREATE TABLE " + TABLE_GROUP_PARENT + "("
+                + "id_group INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " group_name text not null," + " group_code text not null,"
+                + " create_date text not null" + ")";
+        db.execSQL(CREATE_TABLE_GROUP_PARENT);
+        // tblMemberParent
+        String CREATE_TABLE_MEMBER = "CREATE TABLE " + TABLE_MEMBER + "("
+                + "id_member INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " name_member text not null," + " type_member INTEGER,"
+                + " image_member text not null" + ")";
+        db.execSQL(CREATE_TABLE_MEMBER);
+        // tblGroupMemberParent
+        String CREATE_TABLE_GROUP_MEMBER_PARENT = "CREATE TABLE " + TABLE_GROUP_MEMBER_PARENT + "("
+                + "id_group_member INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " id_group INTEGER,"
+                + " id_member INTEGER" + ")";
+        db.execSQL(CREATE_TABLE_GROUP_MEMBER_PARENT);
+        // tblProfileParent
+        String CREATE_TABLE_PROFILE_PARENT = "CREATE TABLE " + TABLE_PROFILE_PARENT + "("
+                + "id_profile INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " day_profile text not null," + " name_profile text not null,"
+                + " is_active integer" + ")";
+        db.execSQL(CREATE_TABLE_PROFILE_PARENT);
+        // tblMemberProfileParent
+        String CREATE_TABLE_MEMBER_PROFILE_PARENT = "CREATE TABLE " + TABLE_MEMBER_PROFILE_PARENT + "("
+                + "id_member_profile INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " id_member integer,"
+                + " id_profile integer" + ")";
+        db.execSQL(CREATE_TABLE_MEMBER_PROFILE_PARENT);
+        // tblAppParent
+        String CREATE_TABLE_APP_PARENT = "CREATE TABLE " + TABLE_APP_PARENT + "("
+                + "id_app_parent INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " name_package text not null," + " name_app text not null,"
+                + " image_app text not null" + ")";
+        db.execSQL(CREATE_TABLE_APP_PARENT);
+        // tblProfileAppParent
+        String CREATE_TABLE_PROFILE_APP_PARENT = "CREATE TABLE " + TABLE_PROFILE_APP_PARENT + "("
+                + "id_profile_app INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " id_profile integer,"
+                + " id_app_parent integer" + ")";
+        db.execSQL(CREATE_TABLE_PROFILE_APP_PARENT);
+        // tblTimeParent
+        String CREATE_TABLE_TIME_PARENT = "CREATE TABLE " + TABLE_TIME_PARENT + "("
+                + "id_time_parent INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " id_profile integer not null," + " hour_begin integer,"
+                + " minus_begin integer," + " hour_end integer,"
+                + " minus_end integer" + ")";
+        db.execSQL(CREATE_TABLE_TIME_PARENT);
         // Database create for parent
     }
 
@@ -91,6 +148,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         // Database drop for children
         //////////
         // Database drop for parent
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP_PARENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GROUP_MEMBER_PARENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILE_PARENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBER_PROFILE_PARENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP_PARENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILE_APP_PARENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TIME_PARENT);
         // Database drop for parent
         // Create tables again
         onCreate(db);
@@ -520,5 +585,310 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 
     ///===================================================================================///
     // Function for parent
+
+    //============================getData function=================================//
+    public ArrayList<ParentGroupItem> getAllGroupItemParent() {
+        ArrayList<ParentGroupItem> listGroupItem = new ArrayList<ParentGroupItem>();
+        // Select All Query
+        String selectQuery = "SELECT * FROM tblGroupParent";
+        dbMain = this.getWritableDatabase();
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                // get data by cursor
+                int id_group = Integer.parseInt(cursor.getString(0));
+                String group_name = cursor.getString(1);
+                String group_code = cursor.getString(2);
+                String create_date = cursor.getString(3);
+                // make keep focus item
+                ParentGroupItem groupItem = new ParentGroupItem();
+                groupItem.setId_group(id_group);
+                groupItem.setGroup_name(group_name);
+                groupItem.setGroup_code(group_code);
+                groupItem.setCreate_date(create_date);
+                //
+                groupItem.setListMember(getListMember(id_group));
+                //
+                listGroupItem.add(groupItem);
+            } while (cursor.moveToNext());
+        }
+        dbMain.close();
+        return listGroupItem;
+    }
+
+    private ArrayList<ParentMemberItem> getListMember(int idGroup) {
+        ArrayList<ParentMemberItem> listMember = new ArrayList<ParentMemberItem>();
+        if (dbMain == null) {
+            dbMain = this.getWritableDatabase();
+        }
+        String selectQuery = "SELECT * FROM tblGroupMemberParent WHERE id_group = "
+                + idGroup;
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id_member = cursor.getInt(2);
+                ParentMemberItem item = getMemberItemById(id_member);
+                if (item != null) {
+                    listMember.add(item);
+                }
+            } while (cursor.moveToNext());
+        }
+        return listMember;
+    }
+
+    private ParentMemberItem getMemberItemById(int id_member) {
+        ParentMemberItem memberItem = new ParentMemberItem();
+        if (dbMain == null) {
+            dbMain = this.getWritableDatabase();
+        }
+        String selectQuery = "SELECT * FROM tblMemberParent WHERE id_member = " + id_member;
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            String name_member = cursor.getString(1);
+            int type_member = cursor.getInt(2);
+            String image_member = cursor.getString(3);
+            memberItem.setId_member(id_member);
+            memberItem.setName_member(name_member);
+            memberItem.setType_member(type_member);
+            memberItem.setImage_member(image_member);
+            return memberItem;
+        }
+        return null;
+    }
+
+    public void makeDetailOneGroupItemParent(ParentGroupItem groupItem) {
+        int size = groupItem.getListMember().size();
+        dbMain = this.getWritableDatabase();
+        for (int i = 0; i < size; i++) {
+            int id_member = groupItem.getListMember().get(i).getId_member();
+            groupItem.getListMember().get(i).setListProfile(getListProfileMember(id_member));
+        }
+        dbMain.close();
+    }
+
+    private ArrayList<ParentProfileItem> getListProfileMember(int idMember) {
+        ArrayList<ParentProfileItem> listProfile = new ArrayList<ParentProfileItem>();
+        if (dbMain == null) {
+            dbMain = this.getWritableDatabase();
+        }
+        String selectQuery = "SELECT * FROM tblMemberProfileParent WHERE id_member = "
+                + idMember;
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id_profile = cursor.getInt(2);
+                ParentProfileItem item = getProfileItemById(id_profile);
+                if (item != null) {
+                    listProfile.add(item);
+                }
+            } while (cursor.moveToNext());
+        }
+        return listProfile;
+    }
+
+    private ParentProfileItem getProfileItemById(int id_profile) {
+        ParentProfileItem profileItem = new ParentProfileItem();
+        if (dbMain == null) {
+            dbMain = this.getWritableDatabase();
+        }
+        String selectQuery = "SELECT * FROM tblProfileParent WHERE id_profile = " + id_profile;
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            String day_profile = cursor.getString(1);
+            String name_profile = cursor.getString(2);
+            int is_active = cursor.getInt(3);
+            profileItem.setId_profile(id_profile);
+            profileItem.setDay_profile(day_profile);
+            profileItem.setName_profile(name_profile);
+            if (is_active == 1) {
+                profileItem.setActive(true);
+            } else {
+                profileItem.setActive(false);
+            }
+            return profileItem;
+        }
+        return null;
+    }
+
+    public void makeDetailOneMemberItemParent(ParentMemberItem memberItem) {
+        int size = memberItem.getListProfile().size();
+        dbMain = this.getWritableDatabase();
+        for (int i = 0; i < size; i++) {
+            int id_profile = memberItem.getListProfile().get(i).getId_profile();
+            memberItem.getListProfile().get(i).setListAppBlock(getListAppParent(id_profile));
+            //
+            memberItem.getListProfile().get(i).setListTimer(getListTimeParentById(id_profile));
+        }
+        dbMain.close();
+    }
+
+    private ArrayList<ParentAppItem> getListAppParent(int id_profile) {
+        ArrayList<ParentAppItem> listAppParent = new ArrayList<ParentAppItem>();
+        if (dbMain == null) {
+            dbMain = this.getWritableDatabase();
+        }
+        String selectQuery = "SELECT * FROM tblProfileAppParent WHERE id_profile = "
+                + id_profile;
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id_app_parent = cursor.getInt(2);
+                ParentAppItem item = getAppParentItemById(id_app_parent);
+                if (item != null) {
+                    listAppParent.add(item);
+                }
+            } while (cursor.moveToNext());
+        }
+        return listAppParent;
+    }
+
+    private ParentAppItem getAppParentItemById(int id_app_parent) {
+        ParentAppItem appParentItem = new ParentAppItem();
+        if (dbMain == null) {
+            dbMain = this.getWritableDatabase();
+        }
+        String selectQuery = "SELECT * FROM tblAppParent WHERE id_app_parent = " + id_app_parent;
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            String name_package = cursor.getString(1);
+            String name_app = cursor.getString(2);
+            String image_app = cursor.getString(3);
+            appParentItem.setId_app_parent(id_app_parent);
+            appParentItem.setNamePackage(name_package);
+            appParentItem.setNameApp(name_app);
+            appParentItem.setIconApp(image_app);
+            return appParentItem;
+        }
+        return null;
+    }
+
+    private ArrayList<ParentTimeItem> getListTimeParentById(int id_profile) {
+        ArrayList<ParentTimeItem> listTime = new ArrayList<ParentTimeItem>();
+        if (dbMain == null) {
+            dbMain = this.getWritableDatabase();
+        }
+        String selectQuery = "SELECT * FROM tblTimeParent WHERE id_profile = "
+                + id_profile;
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id_time_parent = Integer.parseInt(cursor.getString(0));
+                int hour_begin = cursor.getInt(2);
+                int minus_begin = cursor.getInt(3);
+                int hour_end = cursor.getInt(4);
+                int minus_end = cursor.getInt(5);
+                //
+                ParentTimeItem parentTimeItem = new ParentTimeItem();
+                parentTimeItem.setId_timer_parent(id_time_parent);
+                parentTimeItem.setId_profile(id_profile);
+                parentTimeItem.setHourBegin(hour_begin);
+                parentTimeItem.setMinusBegin(minus_begin);
+                parentTimeItem.setHourEnd(hour_end);
+                parentTimeItem.setMinusEnd(minus_end);
+                listTime.add(parentTimeItem);
+            } while (cursor.moveToNext());
+        }
+        return listTime;
+    }
+
+    //============================getData function=================================//
+    //============================addData function=================================//
+    public int addGroupItemParent(ParentGroupItem groupItem) {
+        dbMain = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("group_name", groupItem.getGroup_name());
+        values.put("group_code", groupItem.getGroup_code());
+        values.put("create_date", groupItem.getCreate_date());
+        int id_group = (int) dbMain.insert("tblGroupParent", null, values);
+        groupItem.setId_group(id_group);
+        dbMain.close();
+        return id_group;
+    }
+
+    public int addMemberItemParent(ParentMemberItem parentMemberItem, int id_group) {
+        int id_member = parentMemberItem.getId_member();
+        dbMain = this.getWritableDatabase();
+        if (id_member == -1) {
+            ContentValues values3 = new ContentValues();
+            values3.put("name_member", parentMemberItem.getName_member());
+            values3.put("type_member", parentMemberItem.getType_member());
+            values3.put("image_member", parentMemberItem.getImage_member());
+            id_member = (int) dbMain.insert("tblMemberParent", null, values3);
+            parentMemberItem.setId_member(id_member);
+        }
+        // InsertTableTemp
+        ContentValues values = new ContentValues();
+        values.put("id_group", id_group);
+        values.put("id_member", id_member);
+        dbMain.insert("tblGroupMemberParent", null, values);
+        dbMain.close();
+        return id_member;
+    }
+
+    public int addProfileItemParent(ParentProfileItem parentProfileItem, int id_member) {
+        int id_profile = parentProfileItem.getId_profile();
+        dbMain = this.getWritableDatabase();
+        if (id_profile == -1) {
+            ContentValues values3 = new ContentValues();
+            values3.put("day_profile", parentProfileItem.getDay_profile());
+            values3.put("name_profile", parentProfileItem.getName_profile());
+            if (parentProfileItem.isActive()) {
+                values3.put("is_active", 1);
+            } else {
+                values3.put("is_active", 0);
+            }
+            id_profile = (int) dbMain.insert("tblProfileParent", null, values3);
+            parentProfileItem.setId_profile(id_profile);
+        }
+        // InsertTableTemp
+        ContentValues values = new ContentValues();
+        values.put("id_member", id_member);
+        values.put("id_profile", id_profile);
+        dbMain.insert("tblMemberProfileParent", null, values);
+        dbMain.close();
+        return id_profile;
+    }
+
+    public int addAppItemParent(ParentAppItem parentAppItem, int id_profile) {
+        int id_app_parent = -1;
+        dbMain = this.getWritableDatabase();
+        String selectQuery = "SELECT tblAppParent.id_app_parent FROM tblAppParent WHERE name_package = '"
+                + parentAppItem.getNamePackage() + "'";
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            id_app_parent = cursor.getInt(0);
+        }
+        if (id_app_parent == -1) {
+            ContentValues values3 = new ContentValues();
+            values3.put("name_package", parentAppItem.getNamePackage());
+            values3.put("name_app", parentAppItem.getNameApp());
+            values3.put("image_app", parentAppItem.getIconApp());
+            id_app_parent = (int) dbMain.insert("tblAppParent", null, values3);
+            parentAppItem.setId_app_parent(id_app_parent);
+        }
+        // InsertTableTemp
+        ContentValues values3 = new ContentValues();
+        values3.put("id_profile", id_profile);
+        values3.put("id_app_parent", id_app_parent);
+        dbMain.insert("tblProfileAppParent", null, values3);
+        dbMain.close();
+        return id_app_parent;
+    }
+
+    public int addTimeItemParent(ParentTimeItem parentTimeItem, int id_profile) {
+        dbMain = this.getWritableDatabase();
+        parentTimeItem.setId_profile(id_profile);
+        ContentValues values2 = new ContentValues();
+        values2.put("id_profile", parentTimeItem.getId_profile());
+        values2.put("hour_begin", parentTimeItem.getHourBegin());
+        values2.put("minus_begin", parentTimeItem.getMinusBegin());
+        values2.put("hour_end", parentTimeItem.getHourEnd());
+        values2.put("minus_end", parentTimeItem.getMinusEnd());
+        int id_time_parent = (int) dbMain.insert("tblTimeParent", null, values2);
+        parentTimeItem.setId_timer_parent(id_time_parent);
+        dbMain.close();
+        return id_time_parent;
+    }
+    //============================addData function=================================//
     // Function for parent
 }
