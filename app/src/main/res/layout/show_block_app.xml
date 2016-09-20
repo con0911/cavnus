@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/lock_screen_shortcut_applist_item_minheight"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/lock_screen_shortcut_applist_item_padding_bottom"
+    android:paddingRight="@dimen/list_item_end_padding"
+    android:paddingLeft="@dimen/list_item_start_padding"
+    android:background="@drawable/select_press"
+    android:paddingTop="@dimen/lock_screen_shortcut_applist_item_padding_top" >
+
+    <ImageView
+        android:id="@+id/app_block_icon"
+        android:layout_width="@dimen/list_app_icon_size"
+        android:layout_height="@dimen/list_app_icon_size"
+        android:layout_gravity="center_vertical"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null" />
+
+    <Button 
+        android:id="@+id/list_item_button"
+        android:layout_width="@dimen/width_button_remove_app"
+        android:layout_height="@dimen/height_button_remove_app"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/ic_remove_app"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/app_block_name"
+        style="@style/list_title_text_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_toLeftOf="@id/list_item_button"
+        android:layout_toRightOf="@+id/app_block_icon"
+        android:ellipsize="marquee"
+        android:gravity="left|center_vertical"
+        android:singleLine="true"
+        android:layout_marginLeft="@dimen/text_name_app_margin_left"
+        android:textSize="@dimen/text_name_app_title_size" />
+
+</RelativeLayout>

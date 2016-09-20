@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/layoutBtTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_top_timerpicker_dialog"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/fromBt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#3B5998"
+            android:textColor="#FFFFFF"
+            android:text="From" />
+
+        <Button
+            android:id="@+id/toBt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:textColor="#000000"
+            android:text="To" />
+    </LinearLayout>
+
+    <TimePicker
+        android:id="@+id/timerPickerFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutBtTimer"
+        android:layout_centerHorizontal="true"
+        android:timePickerMode="clock"
+        android:visibility="visible" />
+
+    <TimePicker
+        android:id="@+id/timerPickerTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutBtTimer"
+        android:layout_centerHorizontal="true"
+        android:timePickerMode="clock"
+        android:visibility="invisible" />
+
+</RelativeLayout>

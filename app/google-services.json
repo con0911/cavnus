@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "468789621454",
+    "project_id": "firebase-cavnus"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468789621454:android:d7bfa4425dc9d167",
+        "android_client_info": {
+          "package_name": "com.android.keepfocus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuFTC_o4nFcr7qC8XqogDSwwA6IVrzEVs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

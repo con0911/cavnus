@@ -1,11 +1,12 @@
 package com.android.keepfocus.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,11 +16,13 @@ import android.widget.CompoundButton;
 import com.android.keepfocus.R;
 import com.android.keepfocus.utils.MainUtils;
 
-public class SetupWizardActivity extends Activity {
+public class SetupWizardActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "SetupWizardActivity";
     private Button btnNext;
     private SharedPreferences agreePref;
     private CheckBox mCheckboxTerm;
-
+    private Button btnSkip;
+    private Button btnJoinGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +35,16 @@ public class SetupWizardActivity extends Activity {
         if (!checkAgree) {
             setContentView(R.layout.terms_and_conditions);
             setTitle("Cavnus");
+
             btnNext = (Button) findViewById(R.id.btn_next);
+            btnNext.setTextColor(Color.parseColor("#808080"));
             mCheckboxTerm = (CheckBox) findViewById(R.id.checkbox_agree);
             mCheckboxTerm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if (isChecked){
                         mCheckboxTerm.setChecked(true);
+                        btnNext.setTextColor(Color.parseColor("#499ebd"));
                         btnNext.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -47,7 +53,10 @@ public class SetupWizardActivity extends Activity {
                                 editor.commit();
                                 setContentView(R.layout.set_up_mode);
                                 setTitle("Setup mode");
-                                Button btnSkip = (Button) findViewById(R.id.btn_skip);
+                                btnSkip = (Button) findViewById(R.id.btn_skip);
+                                btnJoinGroup = (Button) findViewById(R.id.btn_join_group);
+                                //btnSkip.setOnClickListener(this);
+                                //btnJoinGroup.setOnClickListener(this);
                                 btnSkip.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -55,10 +64,20 @@ public class SetupWizardActivity extends Activity {
                                         startActivity(login);
                                     }
                                 });
+                                Button btnJoin = (Button) findViewById(R.id.btn_join_group);
+                                btnJoin.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent join = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                                        startActivity(join);
+                                    }
+                                });
                             }
                         });
                     }else {
                         mCheckboxTerm.setChecked(false);
+                        btnNext.setTextColor(Color.parseColor("#808080"));
+                        btnNext.setClickable(false);
                         SharedPreferences.Editor editor = agreePref.edit();
                         editor.putBoolean(MainUtils.TERMS_AND_CONDITIONS, false);
                         editor.commit();
@@ -69,7 +88,10 @@ public class SetupWizardActivity extends Activity {
         }else {
             setContentView(R.layout.set_up_mode);
             setTitle("Setup mode");
-            Button btnSkip = (Button) findViewById(R.id.btn_skip);
+            btnSkip = (Button) findViewById(R.id.btn_skip);
+            btnJoinGroup = (Button) findViewById(R.id.btn_join_group);
+            //btnSkip.setOnClickListener(this);
+            //btnJoinGroup.setOnClickListener(this);
             btnSkip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -77,6 +99,28 @@ public class SetupWizardActivity extends Activity {
                     startActivity(login);
                 }
             });
+            Button btnJoin = (Button) findViewById(R.id.btn_join_group);
+            btnJoin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent join = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                    startActivity(join);
+                }
+            });
+        }
+    }
+
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_skip :
+                Intent login = new Intent(SetupWizardActivity.this, LoginActivity.class);
+                startActivity(login);
+            case R.id.btn_join_group :
+                Intent joinGroup = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                startActivity(joinGroup);
         }
     }
 

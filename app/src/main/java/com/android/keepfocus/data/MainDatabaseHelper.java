@@ -889,6 +889,140 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         dbMain.close();
         return id_time_parent;
     }
+
     //============================addData function=================================//
+    //============================deleteData function=================================//
+    public void deleteGroupItemById(int id_group) {
+        dbMain = this.getWritableDatabase();
+        // Delete from tblGroupParent
+        String deleteGroupTable = "DELETE FROM tblGroupParent WHERE id_group = "
+                + id_group;
+        dbMain.execSQL(deleteGroupTable);
+        // Delete from tblGroupMemberParent
+        String deleteGroupMember = "DELETE FROM tblGroupMemberParent WHERE id_group = "
+                + id_group;
+        dbMain.execSQL(deleteGroupMember);
+        dbMain.close();
+    }
+
+    public void deleteMemberItemById(int id_member) {
+        dbMain = this.getWritableDatabase();
+        // Delete from tblMemberParent
+        String deletblMemberParent = "DELETE FROM tblMemberParent WHERE id_member = "
+                + id_member;
+        dbMain.execSQL(deletblMemberParent);
+        // Delete from tblGroupMemberParent
+        String deleteGroupMember = "DELETE FROM tblGroupMemberParent WHERE id_member = "
+                + id_member;
+        dbMain.execSQL(deleteGroupMember);
+        // Delete from tblMemberProfileParent
+        String deletblMemberProfileParent = "DELETE FROM tblMemberProfileParent WHERE id_member = "
+                + id_member;
+        dbMain.execSQL(deletblMemberProfileParent);
+        dbMain.close();
+    }
+
+    public void deleteProfileItemById(int id_profile) {
+        dbMain = this.getWritableDatabase();
+        // Delete from tblProfileParent
+        String delettblProfileParent = "DELETE FROM tblProfileParent WHERE id_profile = "
+                + id_profile;
+        dbMain.execSQL(delettblProfileParent);
+        // Delete from tblMemberProfileParent
+        String deltblMemberProfileParent = "DELETE FROM tblMemberProfileParent WHERE id_profile = "
+                + id_profile;
+        dbMain.execSQL(deltblMemberProfileParent);
+        // Delete from tblProfileAppParent
+        String deltblProfileAppParent = "DELETE FROM tblProfileAppParent WHERE id_profile = "
+                + id_profile;
+        dbMain.execSQL(deltblProfileAppParent);
+        // Delete from tblTimeParent
+        String deltblTimeParent = "DELETE FROM tblTimeParent WHERE id_profile = "
+                + id_profile;
+        dbMain.execSQL(deltblTimeParent);
+        dbMain.close();
+    }
+
+    public void deleteAppParentItemById(int id_app_parent) {
+        dbMain = this.getWritableDatabase();
+        // Delete from tblAppParent
+        String deltblAppParent = "DELETE FROM tblAppParent WHERE id_app_parent = "
+                + id_app_parent;
+        dbMain.execSQL(deltblAppParent);
+        // Delete from tblProfileAppParent
+        String deltblProfileAppParent = "DELETE FROM tblProfileAppParent WHERE id_app_parent = "
+                + id_app_parent;
+        dbMain.execSQL(deltblProfileAppParent);
+        dbMain.close();
+    }
+
+    public void deleteTimerParentItemById(int id_time_parent) {
+        dbMain = this.getWritableDatabase();
+        // Delete from tblTimeParent
+        String deltblTimeParent = "DELETE FROM tblTimeParent WHERE id_time_parent = "
+                + id_time_parent;
+        dbMain.execSQL(deltblTimeParent);
+        dbMain.close();
+    }
+
+    //============================deleteData function=================================//
+    //============================updateData function=================================//
+    public void updateGroupItem(ParentGroupItem parentGroupItem) {
+        int id_group = parentGroupItem.getId_group();
+        String group_name = "'" + parentGroupItem.getGroup_name() + "'";
+        String group_code = "'" + parentGroupItem.getGroup_code() + "'";
+        String create_date = "'" + parentGroupItem.getCreate_date() + "'";
+        //
+        dbMain = this.getWritableDatabase();
+        String update = "update tblGroupParent set group_name = " + group_name
+                + ", group_code = " + group_code + ", create_date = " + create_date
+                + " where id_group = " + id_group;
+        dbMain.execSQL(update);
+        dbMain.close();
+    }
+
+    public void updateMemberItem(ParentMemberItem parentMemberItem) {
+        int id_member = parentMemberItem.getId_member();
+        String name_member = "'" + parentMemberItem.getName_member() + "'";
+        int type_member = parentMemberItem.getType_member();
+        String image_member = "'" + parentMemberItem.getImage_member() + "'";
+        //
+        dbMain = this.getWritableDatabase();
+        String update = "update tblMemberParent set name_member = " + name_member
+                + ", type_member = " + type_member + ", image_member = " + image_member
+                + " where id_member = " + id_member;
+        dbMain.execSQL(update);
+        dbMain.close();
+    }
+
+    public void updateProfileItem(ParentProfileItem parentProfileItem) {
+        int id_profile = parentProfileItem.getId_profile();
+        String day_profile = "'" + parentProfileItem.getDay_profile() + "'";
+        String name_profile = "'" + parentProfileItem.getName_profile() + "'";
+        int is_active = parentProfileItem.isActive() ? 1 : 0;
+        //
+        dbMain = this.getWritableDatabase();
+        String update = "update tblProfileParent set day_profile = " + day_profile
+                + ", name_profile = " + name_profile + ", is_active = " + is_active
+                + " where id_profile = " + id_profile;
+        dbMain.execSQL(update);
+        dbMain.close();
+    }
+
+    public void updateTimeParentItem(ParentTimeItem parentTimeItem) {
+        int id_time_parent = parentTimeItem.getId_timer_parent();
+        int hour_begin = parentTimeItem.getHourBegin();
+        int minus_begin = parentTimeItem.getMinusBegin();
+        int hour_end = parentTimeItem.getHourEnd();
+        int minus_end = parentTimeItem.getMinusEnd();
+        //
+        dbMain = this.getWritableDatabase();
+        String update = "update tblTimeParent set hour_begin = " + hour_begin
+                + ", minus_begin = " + minus_begin + ", hour_end = " + hour_end
+                + ", minus_end = " + minus_end + " where id_time_parent = " + id_time_parent;
+        dbMain.execSQL(update);
+        dbMain.close();
+    }
+    //============================updateData function=================================//
     // Function for parent
 }

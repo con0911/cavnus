@@ -17,7 +17,7 @@
         android:top="5dp" />
 
     <stroke
-        android:width="0dp"
+        android:width="1dp"
         android:color="#BEBEBE" />
 
 </shape>

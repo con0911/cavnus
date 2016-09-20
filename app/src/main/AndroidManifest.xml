@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.keepfocus">
 
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="23" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -14,19 +18,22 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission
+        xmlns:tools="http://schemas.android.com/tools"
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppThemeCompact">
-        <activity android:name=".activity.MainActivity">
-            <!--            <intent-filter>
-                            <action android:name="android.intent.action.MAIN" />
 
-                            <category android:name="android.intent.category.LAUNCHER" />
-                        </intent-filter>-->
-        </activity>
         <activity
             android:name=".activity.ShowQRCodeScreen"
             android:theme="@style/CustomizeActionbarAppTheme" />
@@ -36,18 +43,134 @@
         <activity
             android:name=".activity.SetupWizardActivity"
             android:theme="@style/CustomizeActionbarAppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-        <activity android:name=".activity.GroupManagermentActivity" />
-        <activity android:name=".activity.GroupDetail" />
+
+        <activity android:name=".activity.ParentSchedulerActivity"
+            android:theme="@style/CustomizeActionbarAppTheme"/>
+
+        <activity android:name=".activity.GroupManagermentActivity"
+            android:theme="@style/CustomizeActionbarAppTheme">
+
+        </activity>
+
+        <activity android:name=".activity.ChildSchedulerActivity"
+            android:theme="@style/CustomizeActionbarAppTheme"/>
+
+        <activity android:name=".activity.ChildSchedulerDetail"
+            android:theme="@style/CustomizeActionbarAppTheme"/>
+
+        <activity
+            android:name=".activity.SchedulerConfigActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/CustomizeActionbarAppTheme" />
+
+        <activity android:name=".activity.GroupDetail"
+            android:theme="@style/CustomizeActionbarAppTheme"/>
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/CustomizeActionbarAppTheme" />
+
+        <activity android:name=".activity.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.InstalledAppActivity"
+            android:parentActivityName=".activity.SchedulerConfigActivity"
+            android:theme="@style/CustomizeActionbarAppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <receiver android:name="com.android.keepfocus.receive.DevicePolicyReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
+            </intent-filter>
+
+        </receiver>
+        <activity
+            android:name="com.android.keepfocus.activity.BlockLauncher"
+            android:theme="@style/CustomizeActionbarAppTheme">
+        </activity>
+
+        <activity android:name=".activity.InstallAppActivityForChild"
+            android:parentActivityName=".activity.ChildSchedulerDetail"
+            android:theme="@style/CustomizeActionbarAppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+
+        <service
+            android:name="com.android.keepfocus.service.ServiceBlockApp"
+            android:enabled="true" >
+        </service>
+        <service
+            android:name="com.android.keepfocus.service.KeepFocusMainService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!--jsoo server-->
+
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.WAKE_LOCK" />
+        <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+        <permission android:name="com.example.gcm.permission.C2D_MESSAGE"
+            android:protectionLevel="signature" />
+        <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
+        <uses-permission android:name="com.android.keepfocus.permission.C2D_MESSAGE" />
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.ln.androidgcm" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".gcm.MyGcmPushReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".gcm.GcmIntentService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".gcm.MainGcmActivity">
+
+        </activity>
+
     </application>
+
 
 </manifest>

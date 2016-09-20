@@ -11,4 +11,19 @@
     <color name="content_text_color">#313131</color>
     <color name="color_background_screen">#fafafa</color>
 
+    <color name="color_text_button">#FFFFFF</color>
+    <color name="color_text_title">#3B5998</color>
+    <color name="color_text_title_setting">#3B5998</color>
+    <color name="color_text_title_setting_hint">#4C5D63</color>
+    <color name="color_view">#FF3399</color>
+    <color name="transparent">#00000000</color>
+    <color name="main_action_bar_title_color">#fafafa</color>
+    <color name="main_action_bar_menu_title_color">#dafab4</color>
+    <color name="image_create_button_color">#ee5c42</color>
+    <color name="alert_dialog_text_color">#3B5998</color>
+    <color name="button_press">#000055</color>
+    <color name="grey">#808080</color>
+    <color name="black">#0A0A0A</color>
+    <color name="gray_press">#E0E0E0</color>
+    <color name="color_set_pin_code_button">#FFFFFF</color>
 </resources>

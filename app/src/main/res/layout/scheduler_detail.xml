@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/detail_common_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin" >
+
+        <RelativeLayout
+            android:id="@+id/details_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/details_day_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/title_day"
+                android:text="@string/title_day"
+                android:textColor="@color/color_text_title"
+                android:textSize="@dimen/title_text_size"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/details_each_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/details_day_title"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/details_day_sunday"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/height_button_days"
+                    android:layout_weight="1"
+                    android:text="S" />
+
+                <Button
+                    android:id="@+id/details_day_monday"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/height_button_days"
+                    android:layout_marginLeft="@dimen/horizontal_button_margin"
+                    android:layout_weight="1"
+                    android:text="M" />
+
+                <Button
+                    android:id="@+id/details_day_tuesday"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/height_button_days"
+                    android:layout_marginLeft="@dimen/horizontal_button_margin"
+                    android:layout_weight="1"
+                    android:text="T" />
+
+                <Button
+                    android:id="@+id/details_day_wednesday"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/height_button_days"
+                    android:layout_marginLeft="@dimen/horizontal_button_margin"
+                    android:layout_weight="1"
+                    android:text="W" />
+
+                <Button
+                    android:id="@+id/details_day_thursday"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/height_button_days"
+                    android:layout_marginLeft="@dimen/horizontal_button_margin"
+                    android:layout_weight="1"
+                    android:text="T" />
+
+                <Button
+                    android:id="@+id/details_day_friday"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/height_button_days"
+                    android:layout_marginLeft="@dimen/horizontal_button_margin"
+                    android:layout_weight="1"
+                    android:text="F" />
+
+                <Button
+                    android:id="@+id/details_day_saturday"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/height_button_days"
+                    android:layout_marginLeft="@dimen/horizontal_button_margin"
+                    android:layout_weight="1"
+                    android:text="S" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_divider_height"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            android:contentDescription="@null"
+            android:focusable="false" />
+
+        <LinearLayout
+            android:id="@+id/details_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/details_time_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.5"
+                    android:contentDescription="@string/title_time"
+                    android:text="@string/title_time"
+                    android:textColor="@color/color_text_title"
+                    android:textSize="@dimen/title_text_size"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.android.keepfocus.settings.CustomListView
+                android:id="@+id/time_listview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:cacheColorHint="@color/transparent"
+                android:descendantFocusability="blocksDescendants"
+                android:divider="@null" />
+
+            <LinearLayout
+                android:id="@+id/empyTimeView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Active all day"
+                    android:textSize="@dimen/title_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Add new interval to change this settings"
+                    android:textSize="@dimen/description_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/statusBarTime"
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="0 AM"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="6 AM"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="12 AM"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="6 PM"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="12 PM"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_divider_height"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            android:contentDescription="@null"
+            android:focusable="false" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_divider_height"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="?android:attr/listDivider"
+            android:contentDescription="@null"
+            android:focusable="false" />
+
+        <LinearLayout
+            android:id="@+id/selected_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/selected_app_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/selected_app_title"
+                    android:text="List app block"
+                    android:textColor="@color/color_text_title"
+                    android:textSize="@dimen/title_text_size"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/selected_app_add"
+                    android:layout_width="@dimen/width_button_add"
+                    android:layout_height="@dimen/height_button_add"
+                    android:layout_gravity="right"
+                    android:background="@drawable/button_add"
+                    android:text="@string/add_button"
+                    android:textSize="14dp"
+                    android:textColor="@color/color_text_button" />
+            </LinearLayout>
+
+            <com.android.keepfocus.settings.CustomListView
+                android:id="@+id/apps_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/transparent"
+                android:descendantFocusability="blocksDescendants"
+                android:divider="@null" />
+
+            <LinearLayout
+                android:id="@+id/empyAppView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="No applications"
+                    android:textSize="@dimen/title_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Add applications to block"
+                    android:textSize="@dimen/description_text_size" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

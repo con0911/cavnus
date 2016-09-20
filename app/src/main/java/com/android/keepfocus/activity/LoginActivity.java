@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.app.Activity;
@@ -29,6 +30,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +46,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,OnClickListener {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -63,10 +66,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    public AutoCompleteTextView mEmailView;
-    public EditText mPasswordView;
+    private AutoCompleteTextView mEmailView;
+    private EditText mPasswordView;
+    private TextView mTextRegister;
+    private TextView mTextForgetPass;
     private View mProgressView;
     private View mLoginFormView;
+    private RelativeLayout mLayoutLogin;
+    private final String urlRegister = "http://mycavnus.com/my-account/";
+    private final String urlFogetPass = "http://mycavnus.com/my-account/lost-password/";
 
     //test
     ServiceConnector serviceConnector = new ServiceConnector();
@@ -75,9 +83,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //mLayoutLogin = (RelativeLayout) findViewById(R.id.layout_login);
+        //mLayoutLogin.getBackground().setAlpha(210);
+        mTextRegister = (TextView) findViewById(R.id.text_register);
+        mTextForgetPass = (TextView) findViewById(R.id.text_forget_pass);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        mTextRegister.setTextColor(Color.BLUE);
+        mTextForgetPass.setTextColor(Color.BLUE);
+        mTextRegister.setOnClickListener(this);
+        mTextForgetPass.setOnClickListener(this);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -296,6 +313,26 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.text_register :
+                mTextRegister.setTextColor(Color.parseColor("#660066"));
+                Uri uriRegister = Uri.parse(urlRegister);
+                Intent register = new Intent(Intent.ACTION_VIEW, uriRegister);
+                startActivity(register);
+                break;
+            case R.id.text_forget_pass :
+                mTextForgetPass.setTextColor(Color.parseColor("#660066"));
+                Uri uriForgetPass = Uri.parse(urlFogetPass);
+                Intent forgetPass = new Intent(Intent.ACTION_VIEW, uriForgetPass);
+                startActivity(forgetPass);
+                break;
+            default:
+                break;
+        }
     }
 
 
