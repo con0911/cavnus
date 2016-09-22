@@ -1,7 +1,5 @@
 package com.android.keepfocus.controller;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -9,20 +7,23 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.keepfocus.R;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import com.android.keepfocus.activity.ChildSchedulerActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
+
+import java.util.ArrayList;
 
 public class AdapterChildProfile extends ArrayAdapter<ChildKeepFocusItem> {
     private Activity activity;
@@ -54,7 +55,6 @@ public class AdapterChildProfile extends ArrayAdapter<ChildKeepFocusItem> {
         isActive.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                profileItem.setActive(isChecked);
                 kFDHelper.updateFocusItem(profileItem);//issue scroll view lost checkbox
             }
         });

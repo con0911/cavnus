@@ -10,6 +10,10 @@ import com.android.keepfocus.data.ParentProfileItem;
  */
 public class MainUtils {
     public static final String TERMS_AND_CONDITIONS = "terms_and_conditions";
+    public static final String MODE_DEVICE = "mode_device";
+    public static final int MODE_DEFAULT = 0;
+    public static final int MODE_ADMIN = 1;
+    public static final int MODE_MEMBER = 2;
     public static final int NOTIFICATION_BLOCK = 1;
     public static final int LAUNCHER_APP_BLOCK = 2;
     public static String namePackageBlock;
@@ -26,4 +30,6 @@ public class MainUtils {
     public static final String EXTRA_PACKAGE = "extra_package";
     public static final String EXTRA_TITLE = "android.title";
     public static final String EXTRA_NOTI_CONTENT = "android.text";
+
+    public static String UPDATE_CHILD_SCHEDULER = "com.android.keepfocus.UPDATE_CHILD_SCHEDULER";
 }

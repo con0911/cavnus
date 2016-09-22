@@ -1,15 +1,18 @@
 package com.android.keepfocus.service;
 
-import com.android.keepfocus.activity.LoginActivity;
+import com.android.keepfocus.server.model.Group;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by admin on 9/11/2016.
  */
 public class ServiceConnector {
+    public static final String GROUP_BASE_URL = "104.156.224.47/api/group?pRequest=";
     static JSONObject account;
     public static boolean checkLogin(String email, String password, String deviceId){
         String tempEmail = "vinhbka92@gmail.com";
@@ -40,4 +43,23 @@ public class ServiceConnector {
         return isSuccessful;
     }
 
+
+
+    //=====================Block code for connect Group api==================================
+    public ArrayList<Group>  getAllGroupByUser(String jsonRequest){
+        ArrayList<Group> listGroup = new ArrayList<>();
+
+
+
+
+
+        return listGroup;
+    }
+
+    public void createGroup(String jsonRequest){
+
+    }
+
+
+    //=====================End Block code for connect Group api==================================
 }

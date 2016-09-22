@@ -5,9 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +23,7 @@ import com.android.keepfocus.controller.AdapterChildProfile;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildNotificationItemMissHistory;
 import com.android.keepfocus.data.MainDatabaseHelper;
+import com.android.keepfocus.receive.ChildProfileReceiver;
 import com.android.keepfocus.service.KeepFocusMainService;
 import com.android.keepfocus.service.ServiceBlockApp;
 import com.android.keepfocus.utils.MainUtils;
@@ -45,7 +46,8 @@ public class ChildSchedulerActivity extends Activity {
     static int mNotifCount = 0;
     static Button notifCount;
     private DialogNotificationHistory mDialogNotiHistory;
-
+    private ChildProfileReceiver myReceiver;
+    private IntentFilter intentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +63,20 @@ public class ChildSchedulerActivity extends Activity {
 
         mDataHelper = new MainDatabaseHelper(mContext);
         displayProfile();
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             startService(new Intent(this, KeepFocusMainService.class));
         }
         startService(new Intent(this, ServiceBlockApp.class));
+
+        myReceiver = new ChildProfileReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                super.onReceive(context, intent);
+                displayProfile();
+            }
+        };
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(MainUtils.UPDATE_CHILD_SCHEDULER);
     }
 
     @Override
@@ -76,6 +88,13 @@ public class ChildSchedulerActivity extends Activity {
     protected void onResume() {
         super.onResume();
         displayProfile();
+        registerReceiver(myReceiver,intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(myReceiver);
     }
 
     public void createNewGroup() {
@@ -111,7 +130,7 @@ public class ChildSchedulerActivity extends Activity {
         mAlertDialog.show();
     }
 
-    private ArrayList<ChildNotificationItemMissHistory> getListMissingNotification(){
+    private ArrayList<ChildNotificationItemMissHistory> getListMissingNotification() {
         return mDataHelper.getListNotificaionHistoryItem();
     }
 
@@ -120,7 +139,7 @@ public class ChildSchedulerActivity extends Activity {
         setNotifCount(size);
     }
 
-    public void setNotifCount(int count){
+    public void setNotifCount(int count) {
         mNotifCount = count;
         invalidateOptionsMenu();
     }
@@ -130,9 +149,9 @@ public class ChildSchedulerActivity extends Activity {
         mProfileAdapter = new AdapterChildProfile(this, R.layout.tab_group,
                 0, listBlockPropertiesArr);
         listProperties.setAdapter(mProfileAdapter);
-        if (listBlockPropertiesArr.size() == 0){
+        if (listBlockPropertiesArr.size() == 0) {
             mTextNoGroup.setText("No scheduler available");
-        }else{
+        } else {
             mTextNoGroup.setText("");
         }
 
@@ -150,7 +169,7 @@ public class ChildSchedulerActivity extends Activity {
         inflater.inflate(R.menu.child_menu, menu);
         View count = menu.findItem(R.id.notification).getActionView();
         notifCount = (Button) count.findViewById(R.id.notif_count);
-        notifCount.setText(mNotifCount+"");
+        notifCount.setText(mNotifCount + "");
         MenuItem item = menu.findItem(R.id.notification);
         if (mNotifCount == 0) {
             item.setVisible(false);
@@ -166,15 +185,15 @@ public class ChildSchedulerActivity extends Activity {
         return super.onCreateOptionsMenu(menu);
     }
 
-        @Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
         switch (item.getItemId()) {
-            case R.id.add :
+            case R.id.add:
                 createNewGroup();//add for test
                 break;
 
-            case R.id.notification :
+            case R.id.notification:
                 //show notification
                 break;
         }

@@ -1,14 +1,7 @@
 package com.android.keepfocus.activity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,9 +9,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,8 +32,11 @@ import com.android.keepfocus.data.ParentTimeItem;
 import com.android.keepfocus.settings.CustomListView;
 import com.android.keepfocus.utils.MainUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class SchedulerConfigActivity extends FragmentActivity implements
+
+public class SchedulerConfigActivity extends Activity implements
         OnClickListener {
 
     private Button btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday,

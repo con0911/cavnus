@@ -88,7 +88,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_GROUP_PARENT = "CREATE TABLE " + TABLE_GROUP_PARENT + "("
                 + "id_group INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " group_name text not null," + " group_code text not null,"
-                + " create_date text not null" + ")";
+                + " create_date text not null," + " id_group_server INTEGER" + ")";
         db.execSQL(CREATE_TABLE_GROUP_PARENT);
         // tblMemberParent
         String CREATE_TABLE_MEMBER = "CREATE TABLE " + TABLE_MEMBER + "("
@@ -106,7 +106,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_PROFILE_PARENT = "CREATE TABLE " + TABLE_PROFILE_PARENT + "("
                 + "id_profile INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " day_profile text not null," + " name_profile text not null,"
-                + " is_active integer" + ")";
+                + " is_active integer," + " id_profile_server text not null" + ")";
         db.execSQL(CREATE_TABLE_PROFILE_PARENT);
         // tblMemberProfileParent
         String CREATE_TABLE_MEMBER_PROFILE_PARENT = "CREATE TABLE " + TABLE_MEMBER_PROFILE_PARENT + "("
@@ -600,12 +600,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 String group_name = cursor.getString(1);
                 String group_code = cursor.getString(2);
                 String create_date = cursor.getString(3);
+                int id_group_server = cursor.getInt(4);
                 // make keep focus item
                 ParentGroupItem groupItem = new ParentGroupItem();
                 groupItem.setId_group(id_group);
                 groupItem.setGroup_name(group_name);
                 groupItem.setGroup_code(group_code);
                 groupItem.setCreate_date(create_date);
+                groupItem.setId_group_server(id_group_server);
                 //
                 groupItem.setListMember(getListMember(id_group));
                 //
@@ -697,6 +699,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             String day_profile = cursor.getString(1);
             String name_profile = cursor.getString(2);
             int is_active = cursor.getInt(3);
+            String id_profile_server = cursor.getString(4);
             profileItem.setId_profile(id_profile);
             profileItem.setDay_profile(day_profile);
             profileItem.setName_profile(name_profile);
@@ -705,6 +708,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             } else {
                 profileItem.setActive(false);
             }
+            profileItem.setId_profile_server(id_profile_server);
             return profileItem;
         }
         return null;
@@ -799,6 +803,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         values.put("group_name", groupItem.getGroup_name());
         values.put("group_code", groupItem.getGroup_code());
         values.put("create_date", groupItem.getCreate_date());
+        values.put("id_group_server", groupItem.getId_group_server());
         int id_group = (int) dbMain.insert("tblGroupParent", null, values);
         groupItem.setId_group(id_group);
         dbMain.close();
@@ -837,6 +842,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             } else {
                 values3.put("is_active", 0);
             }
+            values3.put("id_profile_server", parentProfileItem.getId_profile_server());
             id_profile = (int) dbMain.insert("tblProfileParent", null, values3);
             parentProfileItem.setId_profile(id_profile);
         }
@@ -972,10 +978,12 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String group_name = "'" + parentGroupItem.getGroup_name() + "'";
         String group_code = "'" + parentGroupItem.getGroup_code() + "'";
         String create_date = "'" + parentGroupItem.getCreate_date() + "'";
+        int id_group_server = parentGroupItem.getId_group_server();
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblGroupParent set group_name = " + group_name
                 + ", group_code = " + group_code + ", create_date = " + create_date
+                + ", id_group_server = " + id_group_server
                 + " where id_group = " + id_group;
         dbMain.execSQL(update);
         dbMain.close();
@@ -1000,10 +1008,12 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String day_profile = "'" + parentProfileItem.getDay_profile() + "'";
         String name_profile = "'" + parentProfileItem.getName_profile() + "'";
         int is_active = parentProfileItem.isActive() ? 1 : 0;
+        String id_profile_server = "'" + parentProfileItem.getId_profile_server() + "'";
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblProfileParent set day_profile = " + day_profile
                 + ", name_profile = " + name_profile + ", is_active = " + is_active
+                + ", id_profile_server = " + id_profile_server
                 + " where id_profile = " + id_profile;
         dbMain.execSQL(update);
         dbMain.close();

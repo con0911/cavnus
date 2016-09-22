@@ -10,6 +10,7 @@ public class ParentGroupItem {
     private String group_name;
     private String group_code;
     private String create_date;
+    private int id_group_server;
     private ArrayList<ParentMemberItem> listMember;
 
     public ParentGroupItem() {
@@ -17,6 +18,7 @@ public class ParentGroupItem {
         this.group_name = "";
         this.group_code = "";
         this.create_date = "";
+        this.id_group_server = -1;
         listMember = new ArrayList<ParentMemberItem>();
     }
 
@@ -58,5 +60,13 @@ public class ParentGroupItem {
 
     public void setListMember(ArrayList<ParentMemberItem> listMember) {
         this.listMember = listMember;
+    }
+
+    public int getId_group_server() {
+        return id_group_server;
+    }
+
+    public void setId_group_server(int id_group_server) {
+        this.id_group_server = id_group_server;
     }
 }

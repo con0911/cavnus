@@ -33,10 +33,17 @@
         android:text="Stop Services" />
 
     <Button
-        android:id="@+id/gcmTest"
+        android:id="@+id/addGroupServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add group server" />
+
+    <Button
+        android:id="@+id/testGCM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Test GCM" />
+
 
 </LinearLayout>
 

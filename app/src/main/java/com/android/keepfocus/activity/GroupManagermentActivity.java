@@ -19,6 +19,7 @@ import com.android.keepfocus.R;
 import com.android.keepfocus.controller.GroupAdapterView;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
+import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
     static Button notifCount;
     static int mNotifCount = 0;
     private GroupAdapterView mProfileAdapter;
+    private GroupRequestController groupRequestController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
         listProperties.addFooterView(headerView);
         mFABBtnCreate.setOnClickListener(this);
         mDataHelper = new MainDatabaseHelper(mContext);
+        groupRequestController = new GroupRequestController();
         displayProfile();
 /*        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
             startService(new Intent(this, KeepFocusMainService.class));
@@ -95,13 +98,14 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (!mEditText.getText().toString().equals("")) {
-                            ParentGroupItem parentItem = new ParentGroupItem();
+                           /* ParentGroupItem parentItem = new ParentGroupItem();
                             parentItem.setGroup_name(mEditText.getText().toString());
                             parentItem.setGroup_code("");
                             mDataHelper.addGroupItemParent(parentItem);
                             MainUtils.parentGroupItem = parentItem;
                             Intent intent = new Intent(GroupManagermentActivity.this, GroupDetail.class);
-                            startActivity(intent);
+                            startActivity(intent);*/
+                            groupRequestController.createGroup();
                         } else {
                             dialog.cancel();
                         }

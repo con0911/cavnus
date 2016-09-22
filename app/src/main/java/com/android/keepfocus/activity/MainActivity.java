@@ -16,7 +16,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.android.keepfocus.R;
+import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.gcm.MainGcmActivity;
+import com.android.keepfocus.server.MainServer;
 import com.android.keepfocus.service.KeepFocusMainService;
 import com.android.keepfocus.service.ServiceBlockApp;
 
@@ -31,13 +33,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Button childBtn = (Button) findViewById(R.id.childBtn);
         Button start = (Button) findViewById(R.id.startSv);
         Button stop = (Button) findViewById(R.id.stopSv);
-        Button gcm = (Button) findViewById(R.id.gcmTest);
+        Button addGroupServer = (Button) findViewById(R.id.addGroupServer);
+        Button testGCM = (Button) findViewById(R.id.testGCM);
 
         parentBtn.setOnClickListener(this);
         childBtn.setOnClickListener(this);
         start.setOnClickListener(this);
         stop.setOnClickListener(this);
-        gcm.setOnClickListener(this);
+        addGroupServer.setOnClickListener(this);
+        testGCM.setOnClickListener(this);
+
+
+    }
+
+    private void testAddGroup() {
+        /*MainServer mainServer = new MainServer(this);
+        ParentGroupItem parentGroupItem = new ParentGroupItem();
+        parentGroupItem.setId_group_server(-1);
+        parentGroupItem.setGroup_name("My home");
+        parentGroupItem.setGroup_code("");
+        parentGroupItem.setCreate_date("21/09/2016");
+        mainServer.testAddGroupInServer(parentGroupItem);*/
 
     }
 
@@ -66,30 +82,33 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.parentBtn:
-                Intent parentIntent = new Intent(this,GroupManagermentActivity.class);
+                Intent parentIntent = new Intent(this, GroupManagermentActivity.class);
                 startActivity(parentIntent);
                 break;
             case R.id.childBtn:
-                Intent childIntent = new Intent(this,ChildSchedulerActivity.class);
+                Intent childIntent = new Intent(this, ChildSchedulerActivity.class);
                 startActivity(childIntent);
                 break;
-            case R.id.gcmTest:
-                Intent gcmIntent = new Intent(this,MainGcmActivity.class);
-                startActivity(gcmIntent);
-                break;
             case R.id.startSv:
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     startService(new Intent(this, KeepFocusMainService.class));
                 }
                 startService(new Intent(this, ServiceBlockApp.class));
                 break;
             case R.id.stopSv:
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     stopService(new Intent(this, KeepFocusMainService.class));
                 }
                 stopService(new Intent(this, ServiceBlockApp.class));
+                break;
+            case R.id.addGroupServer:
+                testAddGroup();
+                break;
+            case R.id.testGCM:
+                Intent gcm = new Intent(this, MainGcmActivity.class);
+                startActivity(gcm);
                 break;
         }
     }

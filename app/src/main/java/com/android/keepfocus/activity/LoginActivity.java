@@ -3,6 +3,7 @@ package com.android.keepfocus.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -22,6 +23,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +42,7 @@ import java.util.List;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.service.ServiceConnector;
+import com.android.keepfocus.utils.MainUtils;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -75,6 +78,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     private RelativeLayout mLayoutLogin;
     private final String urlRegister = "http://mycavnus.com/my-account/";
     private final String urlFogetPass = "http://mycavnus.com/my-account/lost-password/";
+    private Context mContext;
 
     //test
     ServiceConnector serviceConnector = new ServiceConnector();
@@ -83,8 +87,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //mLayoutLogin = (RelativeLayout) findViewById(R.id.layout_login);
-        //mLayoutLogin.getBackground().setAlpha(210);
+
+        mContext = this;
+
         mTextRegister = (TextView) findViewById(R.id.text_register);
         mTextForgetPass = (TextView) findViewById(R.id.text_forget_pass);
         // Set up the login form.
@@ -116,6 +121,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
                 //test
                 if (serviceConnector.checkLogin(mEmailView.getText().toString(),
                         mPasswordView.getText().toString(), "abc123")){
+                    //set mode device is admin
+                    SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, mContext);
+                    Log.e("Login", "current mode : " + SetupWizardActivity.getModeDevice(mContext));
                     Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
                     Intent groupManagement = new Intent(LoginActivity.this, GroupManagermentActivity.class);
                     startActivity(groupManagement);

@@ -20,6 +20,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     private static final String TAG = "SetupWizardActivity";
     private Button btnNext;
     private SharedPreferences agreePref;
+    private static SharedPreferences modeDevice;
     private CheckBox mCheckboxTerm;
     private Button btnSkip;
     private Button btnJoinGroup;
@@ -30,6 +31,12 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         super.onCreate(savedInstanceState);
+        // set mode device is default
+        modeDevice = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = modeDevice.edit();
+        editor.putInt(MainUtils.MODE_DEVICE, MainUtils.MODE_DEFAULT);
+        editor.commit();
+
         agreePref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean checkAgree = agreePref.getBoolean(MainUtils.TERMS_AND_CONDITIONS, false);
         if (!checkAgree) {
@@ -122,6 +129,18 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
                 Intent joinGroup = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
                 startActivity(joinGroup);
         }
+    }
+
+    public static void setModeDevice(int mode, Context context){
+        modeDevice = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = modeDevice.edit();
+        editor.putInt(MainUtils.MODE_DEVICE, mode);
+        editor.commit();
+    }
+
+    public static int getModeDevice(Context context){
+        modeDevice = PreferenceManager.getDefaultSharedPreferences(context);
+        return modeDevice.getInt(MainUtils.MODE_DEVICE, 0);
     }
 
 }

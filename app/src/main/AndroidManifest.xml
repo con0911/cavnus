@@ -129,6 +129,14 @@
             </intent-filter>
         </service>
 
+        <receiver
+            android:name=".receive.ChildProfileReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.android.keepfocus.UPDATE_CHILD_SCHEDULER" />
+            </intent-filter>
+        </receiver>
+
         <!--jsoo server-->
 
         <uses-permission android:name="android.permission.INTERNET" />
@@ -166,9 +174,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".gcm.MainGcmActivity">
-
-        </activity>
+        <activity android:name=".gcm.MainGcmActivity"/>
 
     </application>
 
