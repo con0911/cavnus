@@ -12,32 +12,24 @@ public class Group {
     private String GroupCode;
     private String CreateBy;
     private String CreateDate;
-    private int user_id;
+
 
     public Group(String GroupName, String GroupCode, String CreateBy, String CreateDate) {
-        this.GroupName = GroupName;
-        this.GroupCode = GroupCode;
-        this.CreateBy = CreateBy;
-        this.CreateDate = CreateDate;
-    }
-
-    public Group(String GroupName, String GroupCode, String CreateBy, String CreateDate, int user_id) {
 
         this.GroupName = GroupName;
         this.GroupCode = GroupCode;
         this.CreateBy = CreateBy;
         this.CreateDate = CreateDate;
-        this.user_id = user_id;
+
     }
 
-    public Group(int id, String GroupName, String GroupCode, String CreateBy, String CreateDate, int user_id) {
+    public Group(int id, String GroupName, String GroupCode, String CreateBy, String CreateDate) {
 
         this.id = id;
         this.GroupName = GroupName;
         this.GroupCode = GroupCode;
         this.CreateBy = CreateBy;
         this.CreateDate = CreateDate;
-        this.user_id = user_id;
     }
 
 

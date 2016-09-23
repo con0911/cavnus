@@ -14,6 +14,7 @@ import com.android.keepfocus.server.model.Header;
 import com.android.keepfocus.server.request.model.GroupRequest;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
+import com.android.keepfocus.utils.ServerUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -30,18 +31,20 @@ import java.net.URL;
  * Created by sev_user on 9/22/2016.
  */
 public class GroupRequestController {
-    public static final String BASE_URL = "http://104.156.224.47/api/group?pRequest=";
+    public static final String BASE_URL = "http://104.156.224.47/api/group";
     private static final int NET_READ_TIMEOUT_MILLIS = 10000;
     private static final int NET_CONNECT_TIMEOUT_MILLIS = 10000;
     private Context mContext;
     private GroupRequest groupRequest;
     private String TAG = "contt_Device";
     private MainDatabaseHelper mDataHelper;
+    private ServerUtils serverUtils;
 
 
     public GroupRequestController(Context context) {
         this.mContext = context;
         mDataHelper = new MainDatabaseHelper(context);
+        serverUtils = new ServerUtils();
     }
 
     public void testAddGroupInServer() {
@@ -68,7 +71,7 @@ public class GroupRequestController {
 
     public String createGroup(){
         Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
-        Group groupItem = new Group(0, MainUtils.parentGroupItem.getGroup_name(),MainUtils.parentGroupItem.getGroup_code(),"by","date",0);
+        Group groupItem = new Group(0, MainUtils.parentGroupItem.getGroup_name(),MainUtils.parentGroupItem.getGroup_code(),"","");
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate,groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
@@ -78,9 +81,9 @@ public class GroupRequestController {
 
     public String updateGroup(){
         Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
-        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group(), MainUtils.parentGroupItem.getGroup_name()
-                ,MainUtils.parentGroupItem.getGroup_code(),"email user"
-                ,MainUtils.parentGroupItem.getCreate_date(),MainUtils.parentGroupItem.getId_group_server());
+        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name()
+                ,MainUtils.parentGroupItem.getGroup_code(),""
+                ,"");
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeUpdate,groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
@@ -90,8 +93,8 @@ public class GroupRequestController {
 
     public String deleteGroup(){
         Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
-        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group(), MainUtils.parentGroupItem.getGroup_name()
-                ,MainUtils.parentGroupItem.getGroup_code(),"by","date",0);
+        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name()
+                ,MainUtils.parentGroupItem.getGroup_code(),"","");
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeDelete,groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
@@ -115,10 +118,13 @@ public class GroupRequestController {
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
-            String link;
+            /*String link;
             link = BASE_URL + createGroup();
             Log.d(TAG,"link: "+link);
-            result = connectToServer(link);
+            result = connectToServer(link);*/
+            result = serverUtils.postData(BASE_URL,createGroup());
+
+
             return result;
         }
         @Override
@@ -165,10 +171,11 @@ public class GroupRequestController {
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
-            String link;
+            /*String link;
             link = BASE_URL + getListGroup();
             Log.d(TAG,"link: "+link);
-            result = connectToServer(link);
+            result = connectToServer(link);*/
+            result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
         @Override
@@ -194,10 +201,11 @@ public class GroupRequestController {
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
-            String link;
+            /*String link;
             link = BASE_URL + updateGroup();
             Log.d(TAG,"link: "+link);
-            result = connectToServer(link);
+            result = connectToServer(link);*/
+            result = serverUtils.postData(BASE_URL,updateGroup());
             return result;
         }
         @Override
@@ -241,10 +249,11 @@ public class GroupRequestController {
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
-            String link;
+            /*String link;
             link = BASE_URL + deleteGroup();
             Log.d(TAG,"link: "+link);
-            result = connectToServer(link);
+            result = connectToServer(link);*/
+            result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
         @Override
