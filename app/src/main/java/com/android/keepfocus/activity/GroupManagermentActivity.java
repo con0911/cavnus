@@ -2,9 +2,11 @@ package com.android.keepfocus.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +25,9 @@ import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
-
+/*
+* For Family Managerment screen
+* */
 public class GroupManagermentActivity extends Activity implements OnClickListener {
 
     private ListView listProperties;
@@ -41,6 +45,8 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
     static int mNotifCount = 0;
     private GroupAdapterView mProfileAdapter;
     private GroupRequestController groupRequestController;
+    private GetDatabaseReceiver getDatabaseReceiver;
+    private IntentFilter intentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +66,18 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
         listProperties.addFooterView(headerView);
         mFABBtnCreate.setOnClickListener(this);
         mDataHelper = new MainDatabaseHelper(mContext);
-        groupRequestController = new GroupRequestController();
+        groupRequestController = new GroupRequestController(this);
         displayProfile();
+        getDatabaseReceiver = new GetDatabaseReceiver(){
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                displayProfile();
+            }
+        };
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
+
 /*        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
             startService(new Intent(this, KeepFocusMainService.class));
         }
@@ -84,6 +100,13 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
     protected void onResume() {
         super.onResume();
         displayProfile();
+        registerReceiver(getDatabaseReceiver,intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(getDatabaseReceiver);
     }
 
     public void createNewGroup() {
@@ -98,14 +121,15 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (!mEditText.getText().toString().equals("")) {
-                           /* ParentGroupItem parentItem = new ParentGroupItem();
-                            parentItem.setGroup_name(mEditText.getText().toString());
-                            parentItem.setGroup_code("");
-                            mDataHelper.addGroupItemParent(parentItem);
-                            MainUtils.parentGroupItem = parentItem;
-                            Intent intent = new Intent(GroupManagermentActivity.this, GroupDetail.class);
-                            startActivity(intent);*/
-                            groupRequestController.createGroup();
+                            //ParentGroupItem parentItem = new ParentGroupItem();
+                            //parentItem.setGroup_name(mEditText.getText().toString());
+                            //mDataHelper.addGroupItemParent(parentItem);
+                            MainUtils.parentGroupItem = new ParentGroupItem();
+                            MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
+                            MainUtils.parentGroupItem.setGroup_code("registationId");
+                            //Intent intent = new Intent(GroupManagermentActivity.this, GroupDetail.class);
+                            //startActivity(intent);
+                            groupRequestController.testAddGroupInServer();
                         } else {
                             dialog.cancel();
                         }
@@ -152,8 +176,9 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        mDataHelper.deleteGroupItemById(listBlockPropertiesArr.get(position).getId_group());
-                        displayProfile();
+                        MainUtils.parentGroupItem =listBlockPropertiesArr.get(position);
+                        groupRequestController.deleteGroupInServer();
+                        //displayProfile();
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -162,5 +187,11 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
                     }
                 }).create();
         mDeleteDialog.show();
+    }
+
+    public static class GetDatabaseReceiver extends BroadcastReceiver {//must be static
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        }
     }
 }

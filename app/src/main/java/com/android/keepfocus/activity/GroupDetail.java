@@ -65,7 +65,7 @@ public class GroupDetail extends Activity {
     public void addNewMember() {
         mView = getLayoutInflater().inflate(R.layout.add_member_layout, null);
         mIDText = (TextView) mView.findViewById(R.id.add_member_ID);
-        mIDText.setText("ID Family : XXXXXXXX");
+        mIDText.setText("ID Family : "+MainUtils.parentGroupItem.getGroup_code());
         mTextMsg = (TextView) mView.findViewById(R.id.add_member_text);
         mTextMsg.setText(getResources().getString(R.string.add_member_text));
 

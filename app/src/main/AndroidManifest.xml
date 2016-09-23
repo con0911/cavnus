@@ -137,6 +137,14 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".activity.GroupManagermentActivity$GetDatabaseReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.android.keepfocus.UPDATE_FAMILY_GROUP" />
+            </intent-filter>
+        </receiver>
+
         <!--jsoo server-->
 
         <uses-permission android:name="android.permission.INTERNET" />

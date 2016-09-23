@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.keepfocus.R;
@@ -45,6 +46,14 @@ public class GroupAdapterView extends ArrayAdapter<ParentGroupItem> {
         nameProfile.setText(profileItem.getGroup_name());
         convertView.setOnClickListener(new OnItemClickListener( position ));
         convertView.setOnLongClickListener(new OnItemLongClickListener(position) );
+        ImageButton closeBtn = (ImageButton) convertView.findViewById(R.id.btnClose);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GroupManagermentActivity groupManagermentActivity = (GroupManagermentActivity)activity;
+                groupManagermentActivity.onItemLongClick(mPosition);
+            }
+        });
 
         return convertView;
     }

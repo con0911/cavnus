@@ -32,4 +32,5 @@ public class MainUtils {
     public static final String EXTRA_NOTI_CONTENT = "android.text";
 
     public static String UPDATE_CHILD_SCHEDULER = "com.android.keepfocus.UPDATE_CHILD_SCHEDULER";
+    public static String UPDATE_FAMILY_GROUP = "com.android.keepfocus.UPDATE_FAMILY_GROUP";
 }

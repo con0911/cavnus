@@ -2,8 +2,6 @@ package com.android.keepfocus.controller;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +11,13 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.activity.GroupDetail;
-import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 
@@ -52,6 +49,14 @@ public class AdapterMemberProfile extends ArrayAdapter<ParentMemberItem> {
         final int mPosition = position;
         final ParentMemberItem profileItem = getItem(mPosition);
         nameProfile.setText(profileItem.getName_member());
+        ImageButton closeBtn = (ImageButton) convertView.findViewById(R.id.btnClose);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GroupDetail groupDetail = (GroupDetail)activity;
+                groupDetail.onItemLongClick(mPosition);
+            }
+        });
         //dayBlock.setText(profileItem.getType_member());
         listAppBlock.removeAllViews();
         vi.setOnClickListener(new OnItemClickListener( position ));

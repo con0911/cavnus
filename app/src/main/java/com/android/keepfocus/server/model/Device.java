@@ -5,24 +5,21 @@ package com.android.keepfocus.server.model;
  */
 public class Device {
     private int id;
-    private String device_name;
-    private String device_model;
-    private String device_type;
-    private String registation_id;
-    private String device_code;
-    private int device_mode;
+    private String DeviceCode;
+    private String DeviceName;
+    private String DeviceModel;
+    private String RegistationId;
+    private String DeviceType;
 
-    public Device(int id, String device_name, String device_model, String device_type, String registation_id, String device_code, int device_mode) {
+    public Device(int id, String DeviceCode, String DeviceName, String DeviceModel, String RegistationId, String DeviceType) {
         this.id = id;
-        this.device_name = device_name;
-        this.device_model = device_model;
-        this.device_type = device_type;
-        this.registation_id = registation_id;
-        this.device_code = device_code;
-        this.device_mode = device_mode;
-    }
-
-    public Device() {
+        this.DeviceCode = DeviceCode;
+        this.DeviceName = DeviceName;
+        this.DeviceModel = DeviceModel;
+        this.RegistationId = RegistationId;
+        this.DeviceType = DeviceType;
 
     }
+
+
 }

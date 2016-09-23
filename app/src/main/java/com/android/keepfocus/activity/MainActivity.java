@@ -16,9 +16,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.android.keepfocus.R;
-import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.gcm.MainGcmActivity;
-import com.android.keepfocus.server.MainServer;
+import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.service.KeepFocusMainService;
 import com.android.keepfocus.service.ServiceBlockApp;
 
@@ -35,6 +34,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Button stop = (Button) findViewById(R.id.stopSv);
         Button addGroupServer = (Button) findViewById(R.id.addGroupServer);
         Button testGCM = (Button) findViewById(R.id.testGCM);
+        Button testLogin = (Button) findViewById(R.id.testLogin);
+        Button testDevice = (Button) findViewById(R.id.testDevice);
+
 
         parentBtn.setOnClickListener(this);
         childBtn.setOnClickListener(this);
@@ -42,19 +44,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         stop.setOnClickListener(this);
         addGroupServer.setOnClickListener(this);
         testGCM.setOnClickListener(this);
-
+        testLogin.setOnClickListener(this);
+        testDevice.setOnClickListener(this);
 
     }
 
     private void testAddGroup() {
-        /*MainServer mainServer = new MainServer(this);
-        ParentGroupItem parentGroupItem = new ParentGroupItem();
-        parentGroupItem.setId_group_server(-1);
-        parentGroupItem.setGroup_name("My home");
-        parentGroupItem.setGroup_code("");
-        parentGroupItem.setCreate_date("21/09/2016");
-        mainServer.testAddGroupInServer(parentGroupItem);*/
-
+        GroupRequestController mainServer = new GroupRequestController(this);
+        mainServer.getGroupInServer();
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
@@ -109,6 +106,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.testGCM:
                 Intent gcm = new Intent(this, MainGcmActivity.class);
                 startActivity(gcm);
+                break;
+            case R.id.testLogin :
+                Intent login = new Intent(this, LoginActivity.class);
+                startActivity(login);
+                break;
+            case R.id.testDevice :
+                Intent deviceRequest = new Intent(this, SetupWizardActivity.class);
+                startActivity(deviceRequest);
                 break;
         }
     }

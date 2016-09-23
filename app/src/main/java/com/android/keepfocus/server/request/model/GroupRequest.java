@@ -7,19 +7,28 @@ import com.android.keepfocus.server.model.Header;
  * Created by sev_user on 9/22/2016.
  */
 public class GroupRequest {
-    private Header headerItem;
+    private Header Header;
     private int Type;
     private int Action;
-    private Group group;
+    private Group Group;
 
-    public GroupRequest(Header headerItem, int type, int action, Group group) {
-        this.headerItem = headerItem;
+    public GroupRequest(com.android.keepfocus.server.model.Header header, int type, int action) {
+        Header = header;
         Type = type;
         Action = action;
-        this.group = group;
     }
 
-    public GroupRequest() {
-
+    public GroupRequest(Header header, int type, int action, Group group) {
+        this.Header = header;
+        Type = type;
+        Action = action;
+        this.Group = group;
     }
+
+    public GroupRequest(Header header, int type) {
+        this.Header = header;
+        Type = type;
+    }
+
 }
+

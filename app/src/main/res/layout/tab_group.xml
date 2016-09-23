@@ -5,6 +5,15 @@
     android:background="@drawable/profile_layout"
     android:padding="10dp" >
 
+    <ImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/icon_close"
+        android:layout_centerVertical="true" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
