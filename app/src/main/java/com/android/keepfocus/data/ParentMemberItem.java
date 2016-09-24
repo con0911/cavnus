@@ -10,6 +10,7 @@ public class ParentMemberItem {
     private String name_member;
     private int type_member;
     private String image_member;
+    private int id_member_server;
     private ArrayList<ParentProfileItem> listProfile;
 
     public ParentMemberItem() {
@@ -58,5 +59,13 @@ public class ParentMemberItem {
 
     public void setListProfile(ArrayList<ParentProfileItem> listProfile) {
         this.listProfile = listProfile;
+    }
+
+    public int getId_member_server() {
+        return id_member_server;
+    }
+
+    public void setId_member_server(int id_member_server) {
+        this.id_member_server = id_member_server;
     }
 }

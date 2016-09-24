@@ -10,7 +10,7 @@ public class ParentProfileItem {
     private String day_profile;
     private String name_profile;
     private boolean isActive;
-    private String id_profile_server;
+    private int id_profile_server;
     private ArrayList<ParentTimeItem> listTimer;
     private ArrayList<ParentAppItem> listAppBlock;
 
@@ -19,7 +19,6 @@ public class ParentProfileItem {
         this.day_profile = "";
         this.name_profile = "";
         this.isActive = true;
-        this.id_profile_server = "";
         listTimer = new ArrayList<ParentTimeItem>();
         listAppBlock = new ArrayList<ParentAppItem>();
     }
@@ -72,11 +71,11 @@ public class ParentProfileItem {
         this.listAppBlock = listAppBlock;
     }
 
-    public String getId_profile_server() {
+    public int getId_profile_server() {
         return id_profile_server;
     }
 
-    public void setId_profile_server(String id_profile_server) {
+    public void setId_profile_server(int id_profile_server) {
         this.id_profile_server = id_profile_server;
     }
 }

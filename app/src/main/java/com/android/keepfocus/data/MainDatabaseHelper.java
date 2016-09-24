@@ -94,7 +94,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_MEMBER = "CREATE TABLE " + TABLE_MEMBER + "("
                 + "id_member INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " name_member text not null," + " type_member INTEGER,"
-                + " image_member text not null" + ")";
+                + " image_member text not null,"+ " id_member_server INTEGER" + ")";
         db.execSQL(CREATE_TABLE_MEMBER);
         // tblGroupMemberParent
         String CREATE_TABLE_GROUP_MEMBER_PARENT = "CREATE TABLE " + TABLE_GROUP_MEMBER_PARENT + "("
@@ -106,7 +106,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_PROFILE_PARENT = "CREATE TABLE " + TABLE_PROFILE_PARENT + "("
                 + "id_profile INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " day_profile text not null," + " name_profile text not null,"
-                + " is_active integer," + " id_profile_server text not null" + ")";
+                + " is_active integer," + " id_profile_server integer" + ")";
         db.execSQL(CREATE_TABLE_PROFILE_PARENT);
         // tblMemberProfileParent
         String CREATE_TABLE_MEMBER_PROFILE_PARENT = "CREATE TABLE " + TABLE_MEMBER_PROFILE_PARENT + "("
@@ -649,10 +649,12 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             String name_member = cursor.getString(1);
             int type_member = cursor.getInt(2);
             String image_member = cursor.getString(3);
+            int id_member_server = cursor.getInt(4);
             memberItem.setId_member(id_member);
             memberItem.setName_member(name_member);
             memberItem.setType_member(type_member);
             memberItem.setImage_member(image_member);
+            memberItem.setId_member_server(id_member_server);
             return memberItem;
         }
         return null;
@@ -699,7 +701,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             String day_profile = cursor.getString(1);
             String name_profile = cursor.getString(2);
             int is_active = cursor.getInt(3);
-            String id_profile_server = cursor.getString(4);
+            int id_profile_server = cursor.getInt(4);
             profileItem.setId_profile(id_profile);
             profileItem.setDay_profile(day_profile);
             profileItem.setName_profile(name_profile);
@@ -818,6 +820,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             values3.put("name_member", parentMemberItem.getName_member());
             values3.put("type_member", parentMemberItem.getType_member());
             values3.put("image_member", parentMemberItem.getImage_member());
+            values3.put("id_member_server",parentMemberItem.getId_member_server());
             id_member = (int) dbMain.insert("tblMemberParent", null, values3);
             parentMemberItem.setId_member(id_member);
         }
@@ -994,10 +997,12 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String name_member = "'" + parentMemberItem.getName_member() + "'";
         int type_member = parentMemberItem.getType_member();
         String image_member = "'" + parentMemberItem.getImage_member() + "'";
+        int id_member_server = parentMemberItem.getId_member_server();
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblMemberParent set name_member = " + name_member
                 + ", type_member = " + type_member + ", image_member = " + image_member
+                + ", id_member_server = " + id_member_server
                 + " where id_member = " + id_member;
         dbMain.execSQL(update);
         dbMain.close();
@@ -1008,7 +1013,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String day_profile = "'" + parentProfileItem.getDay_profile() + "'";
         String name_profile = "'" + parentProfileItem.getName_profile() + "'";
         int is_active = parentProfileItem.isActive() ? 1 : 0;
-        String id_profile_server = "'" + parentProfileItem.getId_profile_server() + "'";
+        int id_profile_server =  parentProfileItem.getId_profile_server();
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblProfileParent set day_profile = " + day_profile
