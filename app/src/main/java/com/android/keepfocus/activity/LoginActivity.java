@@ -273,7 +273,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
 
             String registrationId = token;
             String deviceCode = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-            Header headerItem = new Header(email, deviceCode, "abc123", password);
+            Header headerItem = new Header(email, deviceCode, registrationId, password);
             LoginRequest loginRequest = new LoginRequest(headerItem);
             Gson gson = new Gson();
             String headerJsonObject = gson.toJson(loginRequest);

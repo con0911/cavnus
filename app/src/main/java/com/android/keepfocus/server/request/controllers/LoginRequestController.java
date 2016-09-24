@@ -80,13 +80,13 @@ public class LoginRequestController {
             @Override
             protected void onPostExecute(String result) {
                 String jsonStr = result;
-                Log.d(TAG, "onPostExecute" + result);
+                Log.e(TAG, "onPostExecute : " + result);
                 if (jsonStr != null) {
                     try {
                         JSONObject jsonObj = new JSONObject(jsonStr);
                         JSONObject status = jsonObj.getJSONObject("Message");
                         String description_result = status.getString("Status");
-                        Log.d(TAG, "description_result" + description_result);
+                        Log.e(TAG, "description_result : " + description_result);
                         if (description_result.equals("1")) {
                             isSuccess[0] = true;
                             Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
