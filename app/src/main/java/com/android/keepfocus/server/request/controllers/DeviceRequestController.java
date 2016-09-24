@@ -32,24 +32,25 @@ public class DeviceRequestController {
     private static final int NET_CONNECT_TIMEOUT_MILLIS = 10000;
     private Context mContext;
     private String TAG = "DeviceRequestController";
+    static boolean isSuccess;
 
     public DeviceRequestController(Context mContext) {
         this.mContext = mContext;
     }
 
 
-    public String createDevice(){
+/*    public String createDevice(){
         Device deviceItem = new Device(0, "","", "","","");
         deviceRequest = new DeviceRequest(Constants.ActionTypeCreate,deviceItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(deviceRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
-    }
+    }*/
 
 
     public boolean checkDeviceRequest(String jsonObject) {
-        final boolean[] isSuccess = {false};
+        //final boolean[] isSuccess = {false};
         final String json = jsonObject;
         AsyncTask<Device, Void, String> deviceAsyncTask = new AsyncTask<Device, Void, String>() {
 
@@ -89,10 +90,10 @@ public class DeviceRequestController {
                         String description_result = status.getString("Status");
                         Log.d(TAG, "description_result" + description_result);
                         if (description_result.equals("1")) {
-                            isSuccess[0] = true;
+                            isSuccess = true;
                             Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                         } else {
-                            isSuccess[0] = false;
+                            isSuccess = false;
                             Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
                         }
 
@@ -107,7 +108,7 @@ public class DeviceRequestController {
         };
         deviceAsyncTask.execute();
 
-        return isSuccess[0];
+        return isSuccess;
 
     }
 

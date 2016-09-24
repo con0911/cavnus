@@ -8,6 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -101,6 +104,7 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
         super.onResume();
         displayProfile();
         registerReceiver(getDatabaseReceiver,intentFilter);
+        //groupRequestController.getGroupInServer();
     }
 
     @Override
@@ -193,5 +197,27 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
         @Override
         public void onReceive(Context context, Intent intent) {
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.global, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO Auto-generated method stub
+        switch (item.getItemId()) {
+            case R.id.action_settings :
+                groupRequestController.getGroupInServer();
+                break;
+            case R.id.menu_settings :
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import com.android.keepfocus.R;
 import com.android.keepfocus.controller.AdapterMemberProfile;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
+import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
@@ -32,9 +35,13 @@ public class GroupDetail extends Activity {
     private Context mContext;
     private View mView;
     private TextView mIDText;
+    private EditText mEditText;
     private AlertDialog mAlertDialog;
     private TextView mTextMsg;
     private AdapterMemberProfile mProfileAdapter;
+    private GroupRequestController groupRequestController;
+    private GroupManagermentActivity.GetDatabaseReceiver getDatabaseReceiver;
+    private IntentFilter intentFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +54,17 @@ public class GroupDetail extends Activity {
         listProperties.addFooterView(headerView);
         setTitle(MainUtils.parentGroupItem.getGroup_name());
         mDataHelper = new MainDatabaseHelper(mContext);
+        groupRequestController = new GroupRequestController(this);
+        getDatabaseReceiver = new GroupManagermentActivity.GetDatabaseReceiver(){
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                displayMember();
+                setTitle(MainUtils.parentGroupItem.getGroup_name());
+            }
+        };
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
     }
 
     @Override
@@ -58,9 +76,14 @@ public class GroupDetail extends Activity {
     protected void onResume() {
         super.onResume();
         displayMember();
+        registerReceiver(getDatabaseReceiver,intentFilter);
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(getDatabaseReceiver);
+    }
 
     public void addNewMember() {
         mView = getLayoutInflater().inflate(R.layout.add_member_layout, null);
@@ -118,7 +141,7 @@ public class GroupDetail extends Activity {
     public void deleteMember(int position) {
         final int mPosition = position;
         View view = getLayoutInflater().inflate(R.layout.delete_profile_popup, null);
-        TextView mTextMsg = (TextView) view.findViewById(R.id.delete_text);
+        mTextMsg = (TextView) view.findViewById(R.id.delete_text);
         mTextMsg.setText("Are you sure to remove this device?");
         AlertDialog mDeleteDialog = new AlertDialog.Builder(this).setView(view).setTitle("Delete device")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -151,9 +174,40 @@ public class GroupDetail extends Activity {
             case R.id.add :
                 addNewMember();
                 break;
+            case R.id.rename :
+                renameGroup();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void renameGroup() {
+        mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
+        mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
+        mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
+        mTextMsg.setText("Name family:");
+
+            mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Edit name : ")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            if (!mEditText.getText().toString().equals("")) {
+                                MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
+                                groupRequestController.updateGroupInServer();
+                            } else {
+                                dialog.cancel();
+                            }
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.cancel();
+                        }
+                    }).create();
+
+            mAlertDialog.show();
+        }
 
 }
 

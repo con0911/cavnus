@@ -12,7 +12,7 @@ public class GroupRequest {
     private int Action;
     private Group Group;
 
-    public GroupRequest(com.android.keepfocus.server.model.Header header, int type, int action) {
+    public GroupRequest(Header header, int type, int action) {
         Header = header;
         Type = type;
         Action = action;

@@ -8,22 +8,22 @@ package com.android.keepfocus.server.model;
 public class Group {
 
     private int id;
-    private String GroupName;
-    private String GroupCode;
-    private String CreateBy;
-    private String CreateDate;
+    private String group_name;
+    private String group_code;
+    private String create_by;
+    private String create_date;
 
 
-    public Group(String GroupName) {
+    public Group(String group_name) {
 
-        this.GroupName = GroupName;
+        this.group_name = group_name;
 
     }
 
-    public Group(int id, String GroupName) {
+    public Group(int id, String group_name) {
 
         this.id = id;
-        this.GroupName = GroupName;
+        this.group_name = group_name;
     }
 
 
