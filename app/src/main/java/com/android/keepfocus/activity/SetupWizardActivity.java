@@ -174,7 +174,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
                     new IntentFilter(REGISTRATION_COMPLETE));
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                     new IntentFilter(PUSH_NOTIFICATION));
-             sendJsonDeviceRequest();
+            sendJsonDeviceRequest();
         }
 
     }
