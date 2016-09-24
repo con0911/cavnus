@@ -71,7 +71,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             String name_Keepfocus = data.getString("Name");
             String active = data.getString("Active");
             String day = data.getString("Day");
-            String appPackage = data.getString("Application");
+            /*String appPackage = data.getString("Application");
             ChildAppItem app1 = new ChildAppItem();
             try {
                 String appName = appName = (String) getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(appPackage, PackageManager.GET_META_DATA));
@@ -84,7 +84,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             for(int i = 0; i < listApp.size(); i++){
                 if(listApp.get(i).getNamePackage() == appPackage) conflict = true;
             }
-            if(!conflict) kFDHelper.addAppItemToDb(app1, childProfile.getKeepFocusId());
+            if(!conflict) kFDHelper.addAppItemToDb(app1, childProfile.getKeepFocusId());*/
 
             childProfile.setNameFocus(name_Keepfocus);
             childProfile.setDayFocus(day);
