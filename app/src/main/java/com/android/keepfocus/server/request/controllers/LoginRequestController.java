@@ -31,6 +31,7 @@ public class LoginRequestController {
     private LoginRequest mLoginRequest;
     private String TAG = "LoginRequestController";
     private Context mContext;
+    static boolean isSuccess;
 
     public LoginRequestController(Context context) {
         this.mContext = context;
@@ -47,7 +48,7 @@ public class LoginRequestController {
     }
 
     public boolean checkLogin(String jsonObject) {
-        final boolean[] isSuccess = {false};
+        //final boolean[] isSuccess = {false};
         final String json = jsonObject;
         AsyncTask<Header, Void, String> loginAsyncTask = new AsyncTask<Header, Void, String>() {
 
@@ -88,10 +89,10 @@ public class LoginRequestController {
                         String description_result = status.getString("Status");
                         Log.e(TAG, "description_result : " + description_result);
                         if (description_result.equals("1")) {
-                            isSuccess[0] = true;
+                            isSuccess = true;
                             Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                         } else {
-                            isSuccess[0] = false;
+                            isSuccess = false;
                             Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
                         }
 
@@ -105,8 +106,8 @@ public class LoginRequestController {
             }
         };
         loginAsyncTask.execute();
-
-        return isSuccess[0];
+        Log.e(TAG, "isSuccess : " + isSuccess);
+        return isSuccess;
 
     }
 
