@@ -60,9 +60,15 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         // set mode device is default
         mContext = this;
         modeDevice = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = modeDevice.edit();
+        if (getModeDevice(mContext) == MainUtils.MODE_ADMIN){
+            Intent groupManagement = new Intent(this, GroupManagermentActivity.class);
+            startActivity(groupManagement);
+            //setContentView(R.layout.activity_group_management);
+            return;
+        }
+        /*SharedPreferences.Editor editor = modeDevice.edit();
         editor.putInt(MainUtils.MODE_DEVICE, MainUtils.MODE_DEFAULT);
-        editor.commit();
+        editor.commit();*/
 
         agreePref = PreferenceManager.getDefaultSharedPreferences(this);
         checkAgree = agreePref.getBoolean(MainUtils.TERMS_AND_CONDITIONS, false);

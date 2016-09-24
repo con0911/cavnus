@@ -3,7 +3,9 @@ package com.android.keepfocus.server.request.controllers;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -47,12 +49,14 @@ public class GroupRequestController {
     private String TAG = "contt_Device";
     private MainDatabaseHelper mDataHelper;
     private ServerUtils serverUtils;
+    private SharedPreferences joinPref;
 
 
     public GroupRequestController(Context context) {
         this.mContext = context;
         mDataHelper = new MainDatabaseHelper(context);
         serverUtils = new ServerUtils();
+        joinPref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public void testAddGroupInServer() {
@@ -283,6 +287,55 @@ public class GroupRequestController {
     //=====================Block code for delete Family api==================================
 
     private class DeleteGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
+        ProgressDialog mDialog;
+        @Override
+        protected String doInBackground(ParentGroupItem... params) {
+            String result = "";
+            String link;
+            link = BASE_URL + deleteGroup();
+            Log.d(TAG,"link: "+link);
+            result = connectToServer(link);
+            //result = serverUtils.postData(BASE_URL,getListGroup());
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG,"onPostExecute"+result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    if(description_result.equals("Success")) {
+                        mDataHelper.deleteGroupItemById(MainUtils.parentGroupItem.getId_group());
+                        updateSuccess();
+                    } else {
+                        Toast.makeText(mContext, "Error in server", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Can't create new family! Error in database", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+            }
+            mDialog.dismiss();
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setCancelable(false);
+            mDialog.setInverseBackgroundForced(false);
+            mDialog.setMessage("Request to server...");
+            mDialog.show();
+        }
+    }
+
+    //=======================================================================================
+
+    private class JoinGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         ProgressDialog mDialog;
         @Override
         protected String doInBackground(ParentGroupItem... params) {
