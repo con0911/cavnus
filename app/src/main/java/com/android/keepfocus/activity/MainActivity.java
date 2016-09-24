@@ -1,7 +1,10 @@
 package com.android.keepfocus.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,10 +13,15 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.gcm.MainGcmActivity;
@@ -21,22 +29,49 @@ import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.service.KeepFocusMainService;
 import com.android.keepfocus.service.ServiceBlockApp;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+
 public class MainActivity extends Activity implements View.OnClickListener {
+    private ProgressBar progess;
+    private ListView listview;
+    private String[] testCateArr;
+    private Context mContext;
+    Button parentBtn, childBtn, start, stop, addGroupServer, testGCM, testLogin, testDevice, testCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_focus);
 
-        Button parentBtn = (Button) findViewById(R.id.parentBtn);
-        Button childBtn = (Button) findViewById(R.id.childBtn);
-        Button start = (Button) findViewById(R.id.startSv);
-        Button stop = (Button) findViewById(R.id.stopSv);
-        Button addGroupServer = (Button) findViewById(R.id.addGroupServer);
-        Button testGCM = (Button) findViewById(R.id.testGCM);
-        Button testLogin = (Button) findViewById(R.id.testLogin);
-        Button testDevice = (Button) findViewById(R.id.testDevice);
-
+        mContext = this;
+        parentBtn = (Button) findViewById(R.id.parentBtn);
+        childBtn = (Button) findViewById(R.id.childBtn);
+        start = (Button) findViewById(R.id.startSv);
+        stop = (Button) findViewById(R.id.stopSv);
+        addGroupServer = (Button) findViewById(R.id.addGroupServer);
+        testGCM = (Button) findViewById(R.id.testGCM);
+        testLogin = (Button) findViewById(R.id.testLogin);
+        testDevice = (Button) findViewById(R.id.testDevice);
+        testCategory = (Button) findViewById(R.id.testCategory);
+        progess = (ProgressBar) findViewById(R.id.progressBarCate);
+        listview = (ListView) findViewById(R.id.listViewCate);
+        progess.setVisibility(View.GONE);
+        listview.setVisibility(View.GONE);
 
         parentBtn.setOnClickListener(this);
         childBtn.setOnClickListener(this);
@@ -46,12 +81,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         testGCM.setOnClickListener(this);
         testLogin.setOnClickListener(this);
         testDevice.setOnClickListener(this);
+        testCategory.setOnClickListener(this);
 
     }
 
     private void testAddGroup() {
         GroupRequestController mainServer = new GroupRequestController(this);
-        mainServer.getGroupInServer();
+        mainServer.testAddGroupInServer();
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
@@ -107,15 +143,143 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Intent gcm = new Intent(this, MainGcmActivity.class);
                 startActivity(gcm);
                 break;
-            case R.id.testLogin :
+            case R.id.testLogin:
                 Intent login = new Intent(this, LoginActivity.class);
                 startActivity(login);
                 break;
-            case R.id.testDevice :
+            case R.id.testDevice:
                 Intent deviceRequest = new Intent(this, SetupWizardActivity.class);
                 startActivity(deviceRequest);
+                break;
+            case R.id.testCategory:
+                testGetCatelory();
                 break;
         }
     }
 
+    private void testGetCatelory() {
+        progess.setVisibility(View.VISIBLE);
+        listview.setVisibility(View.GONE);
+        testCateArr = new String[1];
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                try {
+                    getAppCategories();
+                } catch (IOException e) {
+                    Log.d("thong.nv", "Net work error: " + e.getMessage(), e);
+                } catch (JSONException e) {
+                    Log.d("thong.nv", "JSON is not valid:  " + e.getMessage(), e);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                progess.setVisibility(View.GONE);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                        (mContext, android.R.layout.simple_list_item_1, testCateArr);
+                //4. Đưa Data source vào ListView
+                listview.setAdapter(adapter);
+                listview.setVisibility(View.VISIBLE);
+                parentBtn.setVisibility(View.GONE);
+                childBtn.setVisibility(View.GONE);
+                start.setVisibility(View.GONE);
+                stop.setVisibility(View.GONE);
+                addGroupServer.setVisibility(View.GONE);
+                testGCM.setVisibility(View.GONE);
+                testLogin.setVisibility(View.GONE);
+                testDevice.setVisibility(View.GONE);
+                super.onPostExecute(aVoid);
+            }
+        }.execute();
+    }
+
+    private void getAppCategories() throws IOException, JSONException {
+
+        BufferedReader bufferedReader = null;
+        HttpURLConnection urlConnection = null;
+        BufferedWriter bufferedWriter = null;
+
+        StringBuilder result = new StringBuilder();
+
+        //Create JSON object to send to webservice
+        JSONObject jsonObjectSend = new JSONObject();
+        JSONArray jsonArrayPakages = new JSONArray();
+        PackageManager packageManager;
+        List<ResolveInfo> listApps; //this list store all app in device
+
+        try {
+            packageManager = getPackageManager();
+            Intent filterApp = new Intent(Intent.ACTION_MAIN);
+            filterApp.addCategory(Intent.CATEGORY_LAUNCHER);
+            listApps = packageManager.queryIntentActivities(filterApp,
+                    PackageManager.GET_META_DATA);
+
+            for (ResolveInfo app : listApps) {
+                jsonArrayPakages.put(app.activityInfo.packageName.trim());
+            }
+
+            jsonObjectSend.put("packages", jsonArrayPakages);
+
+            Log.d("thong.nv", "json = " + jsonObjectSend.toString());
+
+            URL url = new URL("http://getdatafor.appspot.com/data?key=5f8d270bf822c1df90bf617a8bc1b73c3b71d166");
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(50000); /* milliseconds */
+            urlConnection.setReadTimeout(50000); /* milliseconds */
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application-json");
+            urlConnection.setDoOutput(true); /* allow output to send data */
+            urlConnection.setDoInput(true);
+            urlConnection.connect();
+
+            OutputStream outputStream = urlConnection.getOutputStream();
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            bufferedWriter.write(jsonObjectSend.toString());
+            bufferedWriter.flush();
+            int responseCode = urlConnection.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                InputStream inputStream = urlConnection.getInputStream();
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                //Read data
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result.append(line);
+                }
+
+        /*Parse JSON**********************************************************************************/
+                JSONObject jsonObjectResult = new JSONObject(result.toString().trim());
+                JSONArray jsonArrayApps = jsonObjectResult.getJSONArray("apps");
+                testCateArr = new String[jsonArrayApps.length()];
+                for (int j = 0; j < jsonArrayApps.length(); j++) {
+
+                    JSONObject jsonObjectApp = jsonArrayApps.getJSONObject(j);
+
+                    String packageName = jsonObjectApp.getString("package").trim();
+                    String cate = jsonObjectApp.getString("category").trim();
+
+                    Log.d("thong.nv", (j + 1) + "---> : " + packageName + "---" + cate);
+                    testCateArr[j] = packageName + "----->" + cate;
+                }
+                /***********************************************************************************/
+            } else {
+                Log.d("thong.nv", "responseCode = " + responseCode);
+            }
+        } finally {
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
+            }
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+    }
 }

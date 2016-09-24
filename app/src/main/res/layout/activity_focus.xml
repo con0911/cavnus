@@ -9,54 +9,76 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <Button
-        android:id="@+id/parentBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Parent View" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/childBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Child View" />
+        <Button
+            android:id="@+id/parentBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parent View" />
 
-    <Button
-        android:id="@+id/startSv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Services" />
+        <Button
+            android:id="@+id/childBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Child View" />
 
-    <Button
-        android:id="@+id/stopSv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Services" />
+        <Button
+            android:id="@+id/startSv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Services" />
 
-    <Button
-        android:id="@+id/addGroupServer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add group server" />
+        <Button
+            android:id="@+id/stopSv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Services" />
 
-    <Button
-        android:id="@+id/testGCM"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test GCM" />
+        <Button
+            android:id="@+id/addGroupServer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add group server" />
+
+        <Button
+            android:id="@+id/testGCM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test GCM" />
 
 
-    <Button
-        android:id="@+id/testLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test Login" />
+        <Button
+            android:id="@+id/testLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test Login" />
 
-    <Button
-        android:id="@+id/testDevice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test DeviceRequest" />
+        <Button
+            android:id="@+id/testDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test DeviceRequest" />
+
+        <Button
+            android:id="@+id/testCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test Category" />
+
+        <ProgressBar
+            android:id="@+id/progressBarCate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ListView
+            android:id="@+id/listViewCate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 </LinearLayout>
 
