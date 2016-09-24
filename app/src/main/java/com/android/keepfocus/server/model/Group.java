@@ -30,4 +30,9 @@ public class Group {
     public Group(int id) {
         this.id = id;
     }
+
+    public Group(String create_by, String group_code) {
+        this.create_by = create_by;
+        this.group_code = group_code;
+    }
 }

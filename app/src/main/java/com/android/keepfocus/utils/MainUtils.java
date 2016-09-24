@@ -1,5 +1,7 @@
 package com.android.keepfocus.utils;
 
+import android.provider.Settings;
+
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
@@ -16,6 +18,7 @@ public class MainUtils {
     public static final int MODE_MEMBER = 2;
     public static final int NOTIFICATION_BLOCK = 1;
     public static final int LAUNCHER_APP_BLOCK = 2;
+    public static final String REGISTATION_ID = "mode_device";
     public static String namePackageBlock;
     public static ParentGroupItem parentGroupItem;
     public static ParentProfileItem parentProfile;

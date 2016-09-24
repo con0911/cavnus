@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.activity.ChildSchedulerActivity;
+import com.android.keepfocus.data.ChildAppItem;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.utils.MainUtils;
@@ -19,6 +21,8 @@ import com.google.android.gms.gcm.GcmListenerService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 /**
@@ -53,8 +57,9 @@ public class MyGcmPushReceiver extends GcmListenerService {
         kFDHelper = new MainDatabaseHelper(
                 getApplicationContext());
         ChildKeepFocusItem childProfile;
-        if (kFDHelper.getAllKeepFocusFromDb().get(0) == null) {
+        if (kFDHelper.getAllKeepFocusFromDb().size() == 0) {
             childProfile = new ChildKeepFocusItem();
+            kFDHelper.addNewFocusItem(childProfile);
         } else {
             childProfile = kFDHelper.getAllKeepFocusFromDb().get(0);
         }
@@ -67,15 +72,26 @@ public class MyGcmPushReceiver extends GcmListenerService {
             String active = data.getString("Active");
             String day = data.getString("Day");
             String appPackage = data.getString("Application");
+            ChildAppItem app1 = new ChildAppItem();
+            try {
+                String appName = appName = (String) getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(appPackage, PackageManager.GET_META_DATA));
+                app1.setNamePackage(appName);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            ArrayList<ChildAppItem> listApp = childProfile.getListAppFocus();
+            boolean conflict = false;
+            for(int i = 0; i < listApp.size(); i++){
+                if(listApp.get(i).getNamePackage() == appPackage) conflict = true;
+            }
+            if(!conflict) kFDHelper.addAppItemToDb(app1, childProfile.getKeepFocusId());
 
             childProfile.setNameFocus(name_Keepfocus);
             childProfile.setDayFocus(day);
             if(active.equals("TRUE")){
-                if(childProfile != null) {
-                    childProfile.setActive(true);
-                }
+                childProfile.setActive(true);
             } else {
-                    childProfile.setActive(false);
+                childProfile.setActive(false);
             }
         } catch (JSONException e) {
             e.printStackTrace();
