@@ -14,26 +14,20 @@ public class Group {
     private String CreateDate;
 
 
-    public Group(String GroupName, String GroupCode, String CreateBy, String CreateDate) {
+    public Group(String GroupName) {
 
         this.GroupName = GroupName;
-        this.GroupCode = GroupCode;
-        this.CreateBy = CreateBy;
-        this.CreateDate = CreateDate;
 
     }
 
-    public Group(int id, String GroupName, String GroupCode, String CreateBy, String CreateDate) {
+    public Group(int id, String GroupName) {
 
         this.id = id;
         this.GroupName = GroupName;
-        this.GroupCode = GroupCode;
-        this.CreateBy = CreateBy;
-        this.CreateDate = CreateDate;
     }
 
 
-    public Group() {
-
+    public Group(int id) {
+        this.id = id;
     }
 }

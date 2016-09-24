@@ -71,7 +71,7 @@ public class GroupRequestController {
 
     public String createGroup(){
         Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
-        Group groupItem = new Group(0, MainUtils.parentGroupItem.getGroup_name(),MainUtils.parentGroupItem.getGroup_code(),"","");
+        Group groupItem = new Group( MainUtils.parentGroupItem.getGroup_name());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate,groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
@@ -81,9 +81,7 @@ public class GroupRequestController {
 
     public String updateGroup(){
         Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
-        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name()
-                ,MainUtils.parentGroupItem.getGroup_code(),""
-                ,"");
+        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeUpdate,groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
@@ -93,8 +91,7 @@ public class GroupRequestController {
 
     public String deleteGroup(){
         Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
-        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name()
-                ,MainUtils.parentGroupItem.getGroup_code(),"","");
+        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeDelete,groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
