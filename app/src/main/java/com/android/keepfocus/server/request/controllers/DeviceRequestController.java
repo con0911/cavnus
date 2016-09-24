@@ -38,14 +38,14 @@ public class DeviceRequestController {
     }
 
 
-    public String createDevice(){
+/*    public String createDevice(){
         Device deviceItem = new Device(0, "","", "","","");
         deviceRequest = new DeviceRequest(Constants.ActionTypeCreate,deviceItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(deviceRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
-    }
+    }*/
 
 
     public boolean checkDeviceRequest(String jsonObject) {
