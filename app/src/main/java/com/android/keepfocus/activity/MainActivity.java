@@ -3,6 +3,7 @@ package com.android.keepfocus.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -13,15 +14,20 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.gcm.MainGcmActivity;
@@ -49,8 +55,8 @@ import javax.net.ssl.HttpsURLConnection;
 public class MainActivity extends Activity implements View.OnClickListener {
     private ProgressBar progess;
     private ListView listview;
-    private String[] testCateArr;
     private Context mContext;
+    private AppCategolize[] listAppCate;
     Button parentBtn, childBtn, start, stop, addGroupServer, testGCM, testLogin, testDevice, testCategory;
 
     @Override
@@ -160,7 +166,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void testGetCatelory() {
         progess.setVisibility(View.VISIBLE);
         listview.setVisibility(View.GONE);
-        testCateArr = new String[1];
+        listAppCate = new AppCategolize[1];
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -179,8 +185,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute(Void aVoid) {
                 progess.setVisibility(View.GONE);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                        (mContext, android.R.layout.simple_list_item_1, testCateArr);
+                AppCategoryAdapter adapter = new AppCategoryAdapter(mContext, R.layout.test_categolize, 0, listAppCate);
                 //4. Đưa Data source vào ListView
                 listview.setAdapter(adapter);
                 listview.setVisibility(View.VISIBLE);
@@ -255,7 +260,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         /*Parse JSON**********************************************************************************/
                 JSONObject jsonObjectResult = new JSONObject(result.toString().trim());
                 JSONArray jsonArrayApps = jsonObjectResult.getJSONArray("apps");
-                testCateArr = new String[jsonArrayApps.length()];
+                listAppCate = new AppCategolize[jsonArrayApps.length()];
                 for (int j = 0; j < jsonArrayApps.length(); j++) {
 
                     JSONObject jsonObjectApp = jsonArrayApps.getJSONObject(j);
@@ -264,8 +269,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     String cate = jsonObjectApp.getString("category").trim();
 
                     Log.d("thong.nv", (j + 1) + "---> : " + packageName + "---" + cate);
-                    testCateArr[j] = packageName + "----->" + cate;
+                    listAppCate[j] = new AppCategolize(packageName, cate);
                 }
+                sortCate();
                 /***********************************************************************************/
             } else {
                 Log.d("thong.nv", "responseCode = " + responseCode);
@@ -281,5 +287,71 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 urlConnection.disconnect();
             }
         }
+    }
+
+    private void sortCate() {
+        for (int i = 0; i < listAppCate.length; i++)
+            for (int j = i + 1; j < listAppCate.length; j++) {
+                if (listAppCate[i].categolize.compareTo(listAppCate[j].categolize) > 0) {
+                    AppCategolize temp = listAppCate[i];
+                    listAppCate[i] = listAppCate[j];
+                    listAppCate[j] = temp;
+                }
+            }
+    }
+
+    private class AppCategolize {
+        public String packageName;
+        public String categolize;
+
+        public AppCategolize(String pack, String cate) {
+            packageName = pack;
+            categolize = cate;
+        }
+    }
+
+    public class AppCategoryAdapter extends ArrayAdapter<AppCategolize> {
+        AppCategolize[] listApp;
+        Context mContext;
+
+        public AppCategoryAdapter(Context context, int resource, int textViewResourceId, AppCategolize[] objects) {
+            super(context, resource, textViewResourceId, objects);
+            listApp = objects;
+            mContext = context;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = getLayoutInflater();
+            convertView = inflater.inflate(R.layout.test_categolize, null);
+            TextView appName = (TextView) convertView.findViewById(R.id.item_nameApp);
+            TextView category = (TextView) convertView.findViewById(R.id.item_categolize);
+            ImageView appIcon = (ImageView) convertView.findViewById(R.id.item_cate_image);
+            appName.setText(listApp[position].packageName);
+            Drawable iconApp = null;
+            String appNameGet = null;
+            try {
+                iconApp = mContext.getApplicationContext().getPackageManager().
+                        getApplicationIcon(listApp[position].packageName);
+                ApplicationInfo app = mContext.getPackageManager().getApplicationInfo(listApp[position].packageName, 0);
+                appNameGet = getPackageManager().getApplicationLabel(app).toString();
+
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (iconApp != null) {
+                appIcon.setImageDrawable(iconApp);
+            }
+            if (appNameGet != null) {
+                appName.setText(appNameGet);
+            }
+            if (position == 0 || !listApp[position].categolize.equals(listApp[position - 1].categolize)) {
+                category.setVisibility(View.VISIBLE);
+                category.setText(listApp[position].categolize);
+            } else {
+                category.setVisibility(View.GONE);
+            }
+            return convertView;
+        }
+
     }
 }
