@@ -108,7 +108,7 @@ public class JoinGroupActivity extends Activity {
         }
     }
 
-    private void createRequestDialog() {
+    public void createRequestDialog() {
         AlertDialog.Builder requestBuilder = new AlertDialog.Builder(
                 JoinGroupActivity.this);
         requestBuilder.setCancelable(false);

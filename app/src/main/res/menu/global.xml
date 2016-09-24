@@ -3,5 +3,10 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_settings" />
+        android:title="Get all family from server" />
+    <item
+        android:id="@+id/menu_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Main Menu" />
 </menu>

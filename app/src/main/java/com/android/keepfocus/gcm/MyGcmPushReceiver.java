@@ -17,6 +17,9 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.android.gms.gcm.GcmListenerService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  * Created by sev_user on 9/20/2016.
@@ -39,24 +42,45 @@ public class MyGcmPushReceiver extends GcmListenerService {
         String message = bundle.getString("message");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
+/*
+        {"Data":{
+            "Name": "ABDC",
+                    "Active": "FALSE",
+                    "Day": "Mon, Tue, Sun"
+        }}*/
+
         sendNotification(message);
         kFDHelper = new MainDatabaseHelper(
                 getApplicationContext());
-        ChildKeepFocusItem childProfile = kFDHelper.getAllKeepFocusFromDb().get(0);
-        if(message.equals("TRUE")){
-            if(childProfile != null) {
-                Log.d(TAG, "ON childKeepFocusItem");
-                childProfile.setActive(true);
-                childProfile.setNameFocus(message);
-            }
-
+        ChildKeepFocusItem childProfile;
+        if (kFDHelper.getAllKeepFocusFromDb().get(0) == null) {
+            childProfile = new ChildKeepFocusItem();
         } else {
-            if(childProfile != null) {
-                Log.d(TAG, "OFF childKeepFocusItem");
-                childProfile.setActive(false);
-                childProfile.setNameFocus(message);
-            }
+            childProfile = kFDHelper.getAllKeepFocusFromDb().get(0);
         }
+
+                JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(message);
+            JSONObject data = jsonObj.getJSONObject("Data");
+            String name_Keepfocus = data.getString("Name");
+            String active = data.getString("Active");
+            String day = data.getString("Day");
+            String appPackage = data.getString("Application");
+
+            childProfile.setNameFocus(name_Keepfocus);
+            childProfile.setDayFocus(day);
+            if(active.equals("TRUE")){
+                if(childProfile != null) {
+                    childProfile.setActive(true);
+                }
+            } else {
+                    childProfile.setActive(false);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         kFDHelper.updateFocusItem(childProfile);
         Intent intent = new Intent();
         intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
@@ -72,7 +96,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.email)
-                .setContentTitle("GCM Message")
+                .setContentTitle("Family join request")
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
