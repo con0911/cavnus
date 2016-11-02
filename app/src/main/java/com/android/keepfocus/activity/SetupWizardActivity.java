@@ -1,5 +1,6 @@
 package com.android.keepfocus.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -17,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.keepfocus.R;
@@ -37,11 +40,12 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     private SharedPreferences agreePref;
     private static SharedPreferences modeDevice;
     private CheckBox mCheckboxTerm;
-    private Button btnSkip;
-    private Button btnJoinGroup;
+    private Button btnParent, btnChild, btnAddParent;
 
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
     public static final String PUSH_NOTIFICATION = "pushNotification";
+    private final String TERMS_URL = "http://mycavnus.com/terms-and-conditions/";
+    private TextView mTerms;
 
     private boolean checkAgree;
 
@@ -59,172 +63,127 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         // set mode device is default
         mContext = this;
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
         modeDevice = PreferenceManager.getDefaultSharedPreferences(this);
-        if (getModeDevice(mContext) == MainUtils.MODE_ADMIN){
+        if (getModeDevice(mContext) == MainUtils.MODE_ADMIN) {
             Intent groupManagement = new Intent(this, GroupManagermentActivity.class);
             startActivity(groupManagement);
             //setContentView(R.layout.activity_group_management);
             return;
         }
-        /*SharedPreferences.Editor editor = modeDevice.edit();
+        SharedPreferences.Editor editor = modeDevice.edit();
         editor.putInt(MainUtils.MODE_DEVICE, MainUtils.MODE_DEFAULT);
-        editor.commit();*/
+        editor.commit();
+        setContentView(R.layout.set_up_mode);
+        setTitle("Cavnus");
+        btnParent = (Button) findViewById(R.id.btn_parent);
+        btnAddParent = (Button) findViewById(R.id.btn_additional_parent);
+        btnChild = (Button) findViewById(R.id.btn_child);
+        mTerms = (TextView) findViewById(R.id.terms_link);
+        //mTerms.setTextColor(Color.BLUE);
+        btnParent.setOnClickListener(this);
+        //btnAddParent.setOnClickListener(this);
+        //btnChild.setOnClickListener(this);
+        mTerms.setOnClickListener(this);
 
-        agreePref = PreferenceManager.getDefaultSharedPreferences(this);
-        checkAgree = agreePref.getBoolean(MainUtils.TERMS_AND_CONDITIONS, false);
-        if (!checkAgree) {
-            setContentView(R.layout.terms_and_conditions);
-            setTitle("Cavnus");
 
-            btnNext = (Button) findViewById(R.id.btn_next);
-            btnNext.setTextColor(Color.parseColor("#808080"));
-            mCheckboxTerm = (CheckBox) findViewById(R.id.checkbox_agree);
-            mCheckboxTerm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    if (isChecked){
-                        mCheckboxTerm.setChecked(true);
-                        btnNext.setTextColor(Color.parseColor("#499ebd"));
-                        btnNext.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                SharedPreferences.Editor editor = agreePref.edit();
-                                editor.putBoolean(MainUtils.TERMS_AND_CONDITIONS, true);
-                                editor.commit();
-                                setContentView(R.layout.set_up_mode);
-                                setTitle("Setup mode");
-                                btnSkip = (Button) findViewById(R.id.btn_skip);
-                                btnJoinGroup = (Button) findViewById(R.id.btn_join_group);
-                                //btnSkip.setOnClickListener(this);
-                                //btnJoinGroup.setOnClickListener(this);
-                                mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-                                    @Override
-                                    public void onReceive(Context context, Intent intent) {
-                                        if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
-                                            token = intent.getStringExtra("token");
-                                        }
-                                    }
-                                };
-                                Intent intent = new Intent(SetupWizardActivity.this, GcmIntentService.class);
-                                intent.putExtra("key", "register");
-                                startService(intent);
-                                btnSkip.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        Intent login = new Intent(SetupWizardActivity.this, LoginActivity.class);
-                                        startActivity(login);
-                                    }
-                                });
-                                Button btnJoin = (Button) findViewById(R.id.btn_join_group);
-                                btnJoin.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent join = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
-                                        startActivity(join);
-                                    }
-                                });
-                            }
-                        });
-                    }else {
-                        mCheckboxTerm.setChecked(false);
-                        btnNext.setTextColor(Color.parseColor("#808080"));
-                        btnNext.setClickable(false);
-                        SharedPreferences.Editor editor = agreePref.edit();
-                        editor.putBoolean(MainUtils.TERMS_AND_CONDITIONS, false);
-                        editor.commit();
-                    }
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
+                    token = intent.getStringExtra("token");
                 }
-            });
+            }
+        };
+        Intent intent = new Intent(this, GcmIntentService.class);
+        intent.putExtra("key", "register");
+        startService(intent);
 
-        }else {
-            setContentView(R.layout.set_up_mode);
-            setTitle("Setup mode");
-            btnSkip = (Button) findViewById(R.id.btn_skip);
-            btnJoinGroup = (Button) findViewById(R.id.btn_join_group);
-            //btnSkip.setOnClickListener(this);
-            //btnJoinGroup.setOnClickListener(this);
-            mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
-                        token = intent.getStringExtra("token");
-                    }
-                }
-            };
-            Intent intent = new Intent(this, GcmIntentService.class);
-            intent.putExtra("key", "register");
-            startService(intent);
-            btnSkip.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent login = new Intent(SetupWizardActivity.this, LoginActivity.class);
-                    startActivity(login);
-                }
-            });
-            Button btnJoin = (Button) findViewById(R.id.btn_join_group);
-            btnJoin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent join = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
-                    startActivity(join);
-                }
-            });
-        }
+        btnChild.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent joinGroupChild = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                startActivity(joinGroupChild);
+            }
+        });
+
+        btnAddParent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent joinGroupAddParent = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                startActivity(joinGroupAddParent);
+            }
+        });
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (checkAgree){
-            LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                    new IntentFilter(REGISTRATION_COMPLETE));
-            LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                    new IntentFilter(PUSH_NOTIFICATION));
-            sendJsonDeviceRequest();
-        }
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(REGISTRATION_COMPLETE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(PUSH_NOTIFICATION));
+        sendJsonDeviceRequest();
 
     }
 
-    public void sendJsonDeviceRequest(){
+    public void sendJsonDeviceRequest() {
 
         String registrationId = token;
         String deviceCode = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
         Device device = new Device(deviceCode, "", "", registrationId, "");
-        DeviceRequest loginRequest = new DeviceRequest(Constants.ActionTypeCreate,device);
+        DeviceRequest loginRequest = new DeviceRequest(Constants.ActionTypeCreate, device);
         Gson gson = new Gson();
         String deviceJsonObject = gson.toJson(loginRequest);
-        Log.e("Device", "URL : "+ "http://104.156.224.47/api/device?pRequest=" + deviceJsonObject);
-        mDeviceRequestController =  new DeviceRequestController(mContext);
+        Log.e("Device", "URL : " + "http://104.156.224.47/api/device?pRequest=" + deviceJsonObject);
+        mDeviceRequestController = new DeviceRequestController(mContext);
         boolean isSuccess = mDeviceRequestController.checkDeviceRequest(deviceJsonObject);
         //Log.e("Login", "isSuccess : " + isSuccess);
-        if (isSuccess){
+        if (isSuccess) {
             Toast.makeText(SetupWizardActivity.this, "Send request device success", Toast.LENGTH_SHORT).show();
 
-        }else {
+        } else {
             Toast.makeText(SetupWizardActivity.this, "Send request device false", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_skip :
+        switch (v.getId()) {
+            case R.id.btn_parent:
                 Intent login = new Intent(SetupWizardActivity.this, LoginActivity.class);
                 startActivity(login);
-            case R.id.btn_join_group :
-                Intent joinGroup = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
-                startActivity(joinGroup);
+                break;
+
+            case R.id.btn_additional_parent:
+                Intent joinGroupAddParent = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                startActivity(joinGroupAddParent);
+                break;
+            case R.id.btn_child:
+                Intent joinGroupChild = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                startActivity(joinGroupChild);
+                break;
+            case R.id.terms_link:
+                //mTerms.setTextColor(Color.parseColor("#660066"));
+                Uri uriTerms = Uri.parse(TERMS_URL);
+                Intent terms = new Intent(Intent.ACTION_VIEW, uriTerms);
+                startActivity(terms);
+                break;
+            default:
+                break;
         }
     }
 
-    public static void setModeDevice(int mode, Context context){
+    public static void setModeDevice(int mode, Context context) {
         modeDevice = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = modeDevice.edit();
         editor.putInt(MainUtils.MODE_DEVICE, mode);
         editor.commit();
     }
 
-    public static int getModeDevice(Context context){
+    public static int getModeDevice(Context context) {
         modeDevice = PreferenceManager.getDefaultSharedPreferences(context);
         return modeDevice.getInt(MainUtils.MODE_DEVICE, 0);
     }

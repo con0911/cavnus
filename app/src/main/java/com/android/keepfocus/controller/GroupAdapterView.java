@@ -68,7 +68,7 @@ public class GroupAdapterView extends ArrayAdapter<ParentGroupItem> {
         @Override
         public void onClick(View v) {
             GroupManagermentActivity groupManagermentActivity = (GroupManagermentActivity)activity;
-            groupManagermentActivity.onItemClick(mPosition);
+            groupManagermentActivity.showListMember(mPosition);
         }
     }
 

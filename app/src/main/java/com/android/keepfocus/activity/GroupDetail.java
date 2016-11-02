@@ -11,22 +11,29 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.keepfocus.R;
-import com.android.keepfocus.controller.AdapterMemberProfile;
+import com.android.keepfocus.controller.MemberViewAdapter;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
+import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
 
-public class GroupDetail extends Activity {
-    private ListView listProperties;
+public class GroupDetail extends Activity implements View.OnClickListener{
+    private HorizontalListView listProperties;
     private LinearLayout headerView;
     //private ImageView mFABBtnCreate;
     private TextView mTextNoGroup;
@@ -38,20 +45,27 @@ public class GroupDetail extends Activity {
     private EditText mEditText;
     private AlertDialog mAlertDialog;
     private TextView mTextMsg;
-    private AdapterMemberProfile mProfileAdapter;
+    private MemberViewAdapter mProfileAdapter;
     private GroupRequestController groupRequestController;
     private GroupManagermentActivity.GetDatabaseReceiver getDatabaseReceiver;
     private IntentFilter intentFilter;
+
+
+    private LinearLayout detailLayout;
+    private ImageButton layoutClose;
+    private Animation bottomUp;
+    private Animation bottomDown;
+    private EditText editName;
+    private Button doneEdit;
+    private ImageView memberIconEdit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_group_management);
+        setContentView(R.layout.list_member_layout);
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
         mContext = this;
-        listProperties = (ListView) findViewById(R.id.listP);
-        headerView = (LinearLayout) getLayoutInflater().inflate(R.layout.header_view_profile, null);
-        listProperties.addHeaderView(headerView);
-        listProperties.addFooterView(headerView);
+        listProperties = (HorizontalListView) findViewById(R.id.listMember);
         setTitle(MainUtils.parentGroupItem.getGroup_name());
         mDataHelper = new MainDatabaseHelper(mContext);
         groupRequestController = new GroupRequestController(this);
@@ -65,6 +79,22 @@ public class GroupDetail extends Activity {
         };
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
+
+
+        detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
+        editName = (EditText) findViewById(R.id.editMemberName);
+        memberIconEdit = (ImageView) findViewById(R.id.editMemberIcon);
+        memberIconEdit.setOnClickListener(this);
+
+        doneEdit = (Button) findViewById(R.id.layoutEditDone);
+        doneEdit.setOnClickListener(this);
+
+        detailLayout.setVisibility(View.GONE);
+        layoutClose = (ImageButton) findViewById(R.id.layoutClose);
+        layoutClose.setOnClickListener(this);
+        bottomUp = AnimationUtils.loadAnimation(this, R.anim.bottom_up);
+        bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
+
     }
 
     @Override
@@ -117,8 +147,8 @@ public class GroupDetail extends Activity {
     public void displayMember() {
         mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
         listBlockPropertiesArr = MainUtils.parentGroupItem.getListMember();
-        mProfileAdapter = new AdapterMemberProfile(this, R.layout.tab_group,
-                0, listBlockPropertiesArr);
+        mProfileAdapter = new MemberViewAdapter(this, R.layout.layout_member,
+                0, listBlockPropertiesArr) ;
         listProperties.setAdapter(mProfileAdapter);
         if (listBlockPropertiesArr.size() == 0){
             mTextNoGroup.setText(R.string.text_no_member);
@@ -129,6 +159,12 @@ public class GroupDetail extends Activity {
     }
 
     public void onItemClick(int position) {
+        MainUtils.memberItem = mProfileAdapter.getItem(position);
+        Intent intent = new Intent(GroupDetail.this, ParentSchedulerActivity.class);
+        startActivity(intent);
+    }
+
+    public void listScheduler(int position) {
         MainUtils.memberItem = mProfileAdapter.getItem(position);
         Intent intent = new Intent(GroupDetail.this, ParentSchedulerActivity.class);
         startActivity(intent);
@@ -209,5 +245,53 @@ public class GroupDetail extends Activity {
             mAlertDialog.show();
         }
 
+    public void showDetail(int position) {
+        MainUtils.memberItem = mProfileAdapter.getItem(position);
+        editName.setText(MainUtils.memberItem.getName_member().toString());
+        if(detailLayout.getVisibility() == View.GONE) {
+            detailLayout.startAnimation(bottomUp);
+            detailLayout.setVisibility(View.VISIBLE);
+        } else {
+            detailLayout.setVisibility(View.GONE);
+            detailLayout.startAnimation(bottomUp);
+            detailLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.layoutClose:
+                if(detailLayout.getVisibility() == View.VISIBLE) {
+                    hideKeyboard();
+                    detailLayout.startAnimation(bottomDown);
+                    detailLayout.setVisibility(View.GONE);
+                }
+
+            case R.id.layoutEditDone:
+                String name = editName.getText().toString();
+                MainUtils.memberItem.setName_member(name);
+                mDataHelper.updateMemberItem(MainUtils.memberItem);
+                displayMember();
+                if(detailLayout.getVisibility() == View.VISIBLE) {
+                    hideKeyboard();
+                    detailLayout.startAnimation(bottomDown);
+                    detailLayout.setVisibility(View.GONE);
+                }
+
+                break;
+            case R.id.editFamilyName:
+                Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
+
+            default:
+                break;
+        }
+    }
+
+    private void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editName.getWindowToken(), 0);
+    }
 }
 

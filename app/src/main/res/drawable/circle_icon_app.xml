@@ -4,5 +4,7 @@
     <solid android:color="#C0C0C0"/>
     <size android:width="40dp"
         android:height="40dp"/>
-
+    <stroke
+        android:width="3dp"
+        android:color="@color/main_action_bar_bg" />
 </shape>

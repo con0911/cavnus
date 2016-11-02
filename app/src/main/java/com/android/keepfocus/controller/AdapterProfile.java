@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +13,13 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Toast;
+
 import com.android.keepfocus.R;
 
 import com.android.keepfocus.activity.GroupManagermentActivity;
-import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 
@@ -98,7 +92,7 @@ public class AdapterProfile extends ArrayAdapter<ParentGroupItem> {
         @Override
         public void onClick(View v) {
             GroupManagermentActivity groupManagermentActivity = (GroupManagermentActivity)activity;
-            groupManagermentActivity.onItemClick(mPosition);
+            groupManagermentActivity.showDetail(mPosition);
         }
     }
 

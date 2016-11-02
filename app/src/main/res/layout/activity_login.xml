@@ -2,14 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#3B5998"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/color_background_screen"
+    android:weightSum="6"
     tools:context="com.android.keepfocus.activity.LoginActivity">
+
+    <ImageView
+        android:id="@+id/img_cavnus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@drawable/cavnus_bg" />
 
     <!-- Login progress -->
     <ProgressBar
@@ -23,127 +29,137 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:paddingLeft="@dimen/form_login_margin"
+        android:paddingRight="@dimen/form_login_margin"
+        android:paddingTop="@dimen/form_login_margin"
+        android:orientation="vertical"
+        android:fillViewport="false">
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imageBlock"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:background="@drawable/circle_icon_app"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_launch" />
-
-            <TextView
-                android:text="Use CAVNUS account"
-                style="@style/textView"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
+            <!--<TextView
                 android:id="@+id/tv_title"
-                />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:background="@color/color_background_button"
-                android:orientation="horizontal"
-               >
-           <ImageView
-                style="@style/imageView"
-                android:src="@drawable/email"/>
-            <AutoCompleteTextView
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_email"
-                android:textColorHint="@color/title_text_color"
-                android:paddingLeft="60dp"
-                android:textColor="@color/title_text_color"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true" />
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_background_button"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:orientation="horizontal"
-                >
-           <ImageView
-                style="@style/imageView"
-                android:src="@drawable/password"/>
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_password"
-                android:paddingLeft="60dp"
-                android:textColorHint="@color/title_text_color"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
-                android:inputType="textPassword"
-                android:textColor="@color/title_text_color"
-                android:maxLines="1"
-                android:singleLine="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                style="@style/textView"
                 android:layout_marginBottom="20dp"
-                >
+                android:gravity="center"
+                android:text="Use CAVNUS account" />-->
 
-                <TextView
-                    android:id="@+id/text_forget_pass"
-                    android:layout_width="wrap_content"
-                    style="@style/textView"
-                    android:textColor="@android:color/holo_blue_light"
-                    android:layout_alignParentLeft="true"
-                    android:text="Forget Password ?"
-                    android:autoLink="web"
-                    android:linksClickable="true"
-                    android:textColorLink="@color/title_text_color"
-                     />
+            <RelativeLayout
+                android:id="@+id/layout_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp">
 
-                <TextView
-                    android:id="@+id/text_register"
-                    android:layout_width="wrap_content"
-                    style="@style/textView"
-                    android:textColor="@android:color/holo_blue_light"
-                    android:layout_alignParentRight="true"
-                    android:text="Register"
-                    android:autoLink="web"
-                    android:linksClickable="true"
-                    android:textColorLink="@color/title_text_color"
-                    />
+<!--                <ImageView
+                    style="@style/imageView"
+                    android:src="@drawable/email" />-->
 
+                <AutoCompleteTextView
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:paddingLeft="15dp"
+                    android:singleLine="true"
+                    android:textColor="#9daccb"
+                    android:textColorHint="#9daccb"
+                    android:textSize="17sp" />
             </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_below="@+id/layout_email"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp">
+
+<!--
+                <ImageView
+                    style="@style/imageView"
+                    android:src="@drawable/password" />
+-->
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_password"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:paddingLeft="15dp"
+                    android:singleLine="true"
+                    android:textColor="#9daccb"
+                    android:textColorHint="#9daccb"
+                    android:textSize="17sp" />
+            </RelativeLayout>
+
 
             <Button
                 android:id="@+id/email_sign_in_button"
                 style="@style/button_text_style"
-                android:textSize="19dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/btn_join_add_border"
+                android:background="@drawable/button_layout"
                 android:gravity="center"
+                android:layout_below="@+id/layout_password"
                 android:text="@string/action_sign_in"
-                />
+                android:textColor="#9daccb"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_forget_pass"
+                style="@style/textView"
+                android:textSize="15sp"
+                android:layout_width="wrap_content"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:layout_below="@+id/email_sign_in_button"
+                android:gravity="center"
+                android:text="Forgot Password?"
+                android:textColor="#fafafa"
+                android:textColorLink="@color/title_text_color" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/text_forget_pass"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/register_button"
+                    style="@style/button_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="@dimen/button_margin_bottom"
+                    android:background="@drawable/btn_signup"
+                    android:gravity="center"
+                    android:text="CREATE NEW CAVNUS ACCOUNT"
+                    android:textColor="#fafafa"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+
 
         </LinearLayout>
+
     </ScrollView>
 </LinearLayout>

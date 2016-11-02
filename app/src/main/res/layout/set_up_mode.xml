@@ -1,66 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_background_screen"
+    android:layout_height="wrap_content"
+    android:background="#3B5998"
+    android:orientation="vertical"
+    android:weightSum="6">
 
-    >
-
-    <LinearLayout
+    <ImageView
+        android:id="@+id/img_cavnus_setup_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_weight="3"
+        android:background="@drawable/cavnus_bg"
+ />
+
+    <LinearLayout
+        android:id="@+id/layout_setup_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:layout_marginLeft="@dimen/content_text_margin_start_end"
-        android:layout_marginRight="@dimen/content_text_margin_start_end"
-        android:gravity="center_horizontal"
-        style="@style/textView"
-        android:text="@string/setup_mode_guide"/>
-
-
-    <Button
-        android:id="@+id/btn_join_group"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height"
-        android:layout_marginTop="100dp"
-        android:text="JOIN TO GROUP"
-        android:gravity="center"
-        android:textColor="@color/button_text_color"
-        android:textSize="17sp"
-        />
-
-        </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_background_button"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#d6d6d6" />
 
         <Button
-            android:id="@+id/btn_skip"
-            style="@style/button_text_style"
-            android:layout_width="@dimen/button_width"
+            android:id="@+id/btn_parent"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/button_height"
-            android:layout_gravity="right|bottom"
+            android:layout_marginTop="30dp"
             android:background="@drawable/btn_border"
-            android:gravity="center_vertical"
-            android:text="SKIP >" />
+            android:gravity="center"
+            android:text="PARENT DEVICE"
+            android:textColor="#9daccb"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_additional_parent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/btn_border"
+            android:gravity="center"
+            android:text="ADDITIONAL PARENT DEVICE"
+            android:textColor="#9daccb"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_child"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/btn_border"
+            android:gravity="center"
+            android:text="CHILD DEVICE"
+            android:textColor="#9daccb"
+            android:textSize="15sp" />
+
+
     </LinearLayout>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/terms_link"
+        style="@style/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/layout_setup_mode"
+        android:layout_marginBottom="60dp"
+        android:autoLink="web"
+        android:gravity="center"
+        android:linksClickable="true"
+        android:text="@string/term_link"
+        android:textColor="#fafafa"
+        android:textSize="15sp" />
+
+
+</LinearLayout>

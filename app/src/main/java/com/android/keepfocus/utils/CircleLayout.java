@@ -1,5 +1,6 @@
 package com.android.keepfocus.utils;
 
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -16,16 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
-
 import com.android.keepfocus.R;
 
 import java.security.InvalidParameterException;
 
-/**
- * @author Szugyi Creates a rotatable circle menu which can be parameterized by
- *         custom attributes. Handles touches and gestures to make the menu
- *         rotatable, and to make the menu items selectable and clickable.
- */
 public class CircleLayout extends ViewGroup {
     public enum FirstChildPosition {
         EAST(0), SOUTH(90), WEST(180), NORTH(270);
@@ -46,7 +41,7 @@ public class CircleLayout extends ViewGroup {
     private OnItemClickListener onItemClickListener = null;
     private OnItemSelectedListener onItemSelectedListener = null;
     private OnCenterClickListener onCenterClickListener = null;
-    private OnRotatiON_FINISHedListener onRotatiON_FINISHedListener = null;
+    private OnRotationFinishedListener onRotationFinishedListener = null;
 
     // Background image
     private Bitmap originalBackground, scaledBackground;
@@ -413,7 +408,10 @@ public class CircleLayout extends ViewGroup {
 
             @Override
             public void onAnimationStart(Animator animation) {
+            }
 
+            @Override
+            public void onAnimationRepeat(Animator animation) {
             }
 
             @Override
@@ -422,20 +420,15 @@ public class CircleLayout extends ViewGroup {
                     return;
                 }
 
-                if (onRotatiON_FINISHedListener != null) {
+                if (onRotationFinishedListener != null) {
                     View view = getSelectedItem();
-                    onRotatiON_FINISHedListener.onRotatiON_FINISHed(view);
+                    //onRotationFinishedListener.onRotationFinished(view);//rotate first child button contt
                 }
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
                 wasCanceled = true;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
         animator.start();
@@ -667,12 +660,12 @@ public class CircleLayout extends ViewGroup {
         this.onCenterClickListener = onCenterClickListener;
     }
 
-    public interface OnRotatiON_FINISHedListener {
-        void onRotatiON_FINISHed(View view);
+    public interface OnRotationFinishedListener {
+        void onRotationFinished(View view);
     }
 
-    public void setOnRotatiON_FINISHedListener(
-            OnRotatiON_FINISHedListener onRotatiON_FINISHedListener) {
-        this.onRotatiON_FINISHedListener = onRotatiON_FINISHedListener;
+    public void setOnRotationFinishedListener(
+            OnRotationFinishedListener onRotationFinishedListener) {
+        this.onRotationFinishedListener = onRotationFinishedListener;
     }
 }

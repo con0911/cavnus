@@ -3,6 +3,7 @@ package com.android.keepfocus.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -80,7 +81,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private TextView mTextRegister;
+    private Button mTextRegister;
     private TextView mTextForgetPass;
     private View mProgressView;
     private View mLoginFormView;
@@ -101,14 +102,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
 
         mContext = this;
 
-        mTextRegister = (TextView) findViewById(R.id.text_register);
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
+
+        mTextRegister = (Button) findViewById(R.id.register_button);
         mTextForgetPass = (TextView) findViewById(R.id.text_forget_pass);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mTextRegister.setTextColor(Color.BLUE);
-        mTextForgetPass.setTextColor(Color.BLUE);
+        //mTextRegister.setTextColor(Color.BLUE);
+        //mTextForgetPass.setTextColor(Color.BLUE);
         mTextRegister.setOnClickListener(this);
         mTextForgetPass.setOnClickListener(this);
 
@@ -391,14 +395,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.text_register :
-                mTextRegister.setTextColor(Color.parseColor("#660066"));
+            case R.id.register_button :
+                //mTextRegister.setTextColor(Color.parseColor("#660066"));
                 Uri uriRegister = Uri.parse(urlRegister);
                 Intent register = new Intent(Intent.ACTION_VIEW, uriRegister);
                 startActivity(register);
                 break;
             case R.id.text_forget_pass :
-                mTextForgetPass.setTextColor(Color.parseColor("#660066"));
+                //mTextForgetPass.setTextColor(Color.parseColor("#660066"));
                 Uri uriForgetPass = Uri.parse(urlFogetPass);
                 Intent forgetPass = new Intent(Intent.ACTION_VIEW, uriForgetPass);
                 startActivity(forgetPass);

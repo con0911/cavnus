@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -50,6 +51,8 @@ public class GroupRequestController {
     private MainDatabaseHelper mDataHelper;
     private ServerUtils serverUtils;
     private SharedPreferences joinPref;
+    public String deviceCode;
+    private String registationId;
 
 
     public GroupRequestController(Context context) {
@@ -57,6 +60,8 @@ public class GroupRequestController {
         mDataHelper = new MainDatabaseHelper(context);
         serverUtils = new ServerUtils();
         joinPref = PreferenceManager.getDefaultSharedPreferences(context);
+        registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
+        deviceCode = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     public void testAddGroupInServer() {
@@ -82,7 +87,7 @@ public class GroupRequestController {
 
 
     public String createGroup(){
-        Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
+        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");;//add data via contructor
         Group groupItem = new Group( MainUtils.parentGroupItem.getGroup_name());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate,groupItem);
         Gson gson = new Gson();
@@ -92,7 +97,7 @@ public class GroupRequestController {
     }
 
     public String updateGroup(){
-        Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
+        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");//add data via contructor
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeUpdate,groupItem);
         Gson gson = new Gson();
@@ -102,7 +107,7 @@ public class GroupRequestController {
     }
 
     public String deleteGroup(){
-        Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");//add data via contructor
+        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");//add data via contructor
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeDelete,groupItem);
         Gson gson = new Gson();
@@ -111,7 +116,7 @@ public class GroupRequestController {
     }
 
     public String getListGroup(){
-        Header headerItem = new Header("testlogin2@gmail.com","1dfgdfg","abc123","testpass");
+        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet,0,null);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);

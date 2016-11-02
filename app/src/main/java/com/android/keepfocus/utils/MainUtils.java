@@ -12,7 +12,7 @@ import com.android.keepfocus.data.ParentProfileItem;
  */
 public class MainUtils {
     public static final String TERMS_AND_CONDITIONS = "terms_and_conditions";
-    public static final String MODE_DEVICE = "mode_device";
+    public static final String MODE_DEVICE = "device_mode";
     public static final int MODE_DEFAULT = 0;
     public static final int MODE_ADMIN = 1;
     public static final int MODE_MEMBER = 2;

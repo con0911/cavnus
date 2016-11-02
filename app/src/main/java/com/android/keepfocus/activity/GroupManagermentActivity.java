@@ -13,18 +13,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.keepfocus.R;
-import com.android.keepfocus.controller.GroupAdapterView;
+import com.android.keepfocus.controller.FamilyViewAdapter;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
+import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
@@ -33,7 +38,7 @@ import java.util.ArrayList;
 * */
 public class GroupManagermentActivity extends Activity implements OnClickListener {
 
-    private ListView listProperties;
+    private HorizontalListView listProperties;
     private LinearLayout headerView;
     private ImageView mFABBtnCreate;
     private TextView mTextNoGroup;
@@ -46,15 +51,22 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
     private TextView mTextMsg;
     static Button notifCount;
     static int mNotifCount = 0;
-    private GroupAdapterView mProfileAdapter;
+    private FamilyViewAdapter mProfileAdapter;
     private GroupRequestController groupRequestController;
     private GetDatabaseReceiver getDatabaseReceiver;
     private IntentFilter intentFilter;
+    private LinearLayout detailLayout;
+    private ImageButton layoutClose;
+    private Animation bottomUp;
+    private Animation bottomDown;
+    private EditText editName;
+    private Button doneEdit;
+    private ImageView familyIconEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_management);
+        setContentView(R.layout.family_group_layout);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         setTitle("Family management");
@@ -62,11 +74,27 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
         mContext = this;
 
-        listProperties = (ListView) findViewById(R.id.listP);
-        headerView = (LinearLayout) getLayoutInflater().inflate(R.layout.header_view_profile, null);
+        listProperties = (HorizontalListView) findViewById(R.id.listFamily);
+
         mFABBtnCreate = (ImageView) findViewById(R.id.createButton);
-        listProperties.addHeaderView(headerView);
-        listProperties.addFooterView(headerView);
+
+        detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
+        editName = (EditText) findViewById(R.id.editFamilyName);
+        familyIconEdit = (ImageView) findViewById(R.id.editFamilyIcon);
+        familyIconEdit.setOnClickListener(this);
+
+        doneEdit = (Button) findViewById(R.id.layoutEditDone);
+        doneEdit.setOnClickListener(this);
+
+        detailLayout.setVisibility(View.GONE);
+        layoutClose = (ImageButton) findViewById(R.id.layoutClose);
+        layoutClose.setOnClickListener(this);
+
+        bottomUp = AnimationUtils.loadAnimation(this,
+                R.anim.bottom_up);
+        bottomDown = AnimationUtils.loadAnimation(this,
+                R.anim.bottom_down);
+
         mFABBtnCreate.setOnClickListener(this);
         mDataHelper = new MainDatabaseHelper(mContext);
         groupRequestController = new GroupRequestController(this);
@@ -93,11 +121,38 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
             case R.id.createButton:
                 createNewGroup();
                 break;
+
+            case R.id.layoutClose:
+                if(detailLayout.getVisibility() == View.VISIBLE) {
+                    hideKeyboard();
+                    detailLayout.startAnimation(bottomDown);
+                    detailLayout.setVisibility(View.GONE);
+                }
+
+            case R.id.layoutEditDone:
+                String name = editName.getText().toString();
+                MainUtils.parentGroupItem.setGroup_name(name);
+                mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
+                displayProfile();
+                if(detailLayout.getVisibility() == View.VISIBLE) {
+                    hideKeyboard();
+                    detailLayout.startAnimation(bottomDown);
+                    detailLayout.setVisibility(View.GONE);
+                }
+
+                break;
+            case R.id.editFamilyIcon:
+                Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
+
             default:
                 break;
         }
     }
 
+    private void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editName.getWindowToken(), 0);
+    }
 
     @Override
     protected void onResume() {
@@ -125,15 +180,14 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (!mEditText.getText().toString().equals("")) {
-                            //ParentGroupItem parentItem = new ParentGroupItem();
-                            //parentItem.setGroup_name(mEditText.getText().toString());
-                            //mDataHelper.addGroupItemParent(parentItem);
-                            MainUtils.parentGroupItem = new ParentGroupItem();
-                            MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
-                            MainUtils.parentGroupItem.setGroup_code("registationId");
-                            //Intent intent = new Intent(GroupManagermentActivity.this, GroupDetail.class);
-                            //startActivity(intent);
-                            groupRequestController.testAddGroupInServer();
+                            ParentGroupItem parentItem = new ParentGroupItem();
+                            parentItem.setGroup_name(mEditText.getText().toString());
+                            mDataHelper.addGroupItemParent(parentItem);
+                            //MainUtils.parentGroupItem = new ParentGroupItem();
+                            //MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
+                            //MainUtils.parentGroupItem.setGroup_code("registationId");
+                            displayProfile();
+                            //groupRequestController.testAddGroupInServer();
                         } else {
                             dialog.cancel();
                         }
@@ -150,7 +204,7 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
 
     public void displayProfile() {
         listBlockPropertiesArr = mDataHelper.getAllGroupItemParent();
-        mProfileAdapter = new GroupAdapterView(this, R.layout.radial,
+        mProfileAdapter = new FamilyViewAdapter(this, R.layout.layout_family,
                 0, listBlockPropertiesArr);
         listProperties.setAdapter(mProfileAdapter);
         if (listBlockPropertiesArr.size() == 0){
@@ -161,10 +215,27 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
 
     }
 
-    public void onItemClick(int position) {
+
+    public void showListMember(int position) {
         MainUtils.parentGroupItem = mProfileAdapter.getItem(position);
         Intent intent = new Intent(this, GroupDetail.class);
         startActivity(intent);
+    }
+
+
+    public void showDetail(int position) {
+        MainUtils.parentGroupItem = mProfileAdapter.getItem(position);
+        editName.setText(MainUtils.parentGroupItem.getGroup_name().toString());
+        //Intent intent = new Intent(this, GroupDetail.class);
+        //startActivity(intent);
+        if(detailLayout.getVisibility() == View.GONE) {
+            detailLayout.startAnimation(bottomUp);
+            detailLayout.setVisibility(View.VISIBLE);
+        } else {
+            detailLayout.setVisibility(View.GONE);
+            detailLayout.startAnimation(bottomUp);
+            detailLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     public void onItemLongClick(int position) {
@@ -220,4 +291,23 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void addNewMember(int position) {
+        mView = getLayoutInflater().inflate(R.layout.add_member_layout, null);
+        TextView mIDText = (TextView) mView.findViewById(R.id.add_member_ID);
+        mIDText.setText("ID Family : " + listBlockPropertiesArr.get(position).getGroup_code());
+        mTextMsg = (TextView) mView.findViewById(R.id.add_member_text);
+        mTextMsg.setText(getResources().getString(R.string.add_member_text));
+
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add new device")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                }).create();
+        mAlertDialog.show();
+    }
+
+
 }
