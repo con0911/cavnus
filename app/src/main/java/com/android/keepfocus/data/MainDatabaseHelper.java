@@ -131,7 +131,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 + "id_time_parent INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " id_profile integer not null," + " hour_begin integer,"
                 + " minus_begin integer," + " hour_end integer,"
-                + " minus_end integer" + ")";
+                + " minus_end integer," + " id_time_server integer" + ")";
         db.execSQL(CREATE_TABLE_TIME_PARENT);
         // Database create for parent
     }
@@ -783,6 +783,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 int minus_begin = cursor.getInt(3);
                 int hour_end = cursor.getInt(4);
                 int minus_end = cursor.getInt(5);
+                int id_time_server = cursor.getInt(6);
                 //
                 ParentTimeItem parentTimeItem = new ParentTimeItem();
                 parentTimeItem.setId_timer_parent(id_time_parent);
@@ -791,6 +792,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 parentTimeItem.setMinusBegin(minus_begin);
                 parentTimeItem.setHourEnd(hour_end);
                 parentTimeItem.setMinusEnd(minus_end);
+                parentTimeItem.setId_time_server(id_time_server);
                 listTime.add(parentTimeItem);
             } while (cursor.moveToNext());
         }
@@ -893,6 +895,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         values2.put("minus_begin", parentTimeItem.getMinusBegin());
         values2.put("hour_end", parentTimeItem.getHourEnd());
         values2.put("minus_end", parentTimeItem.getMinusEnd());
+        values2.put("id_time_server",parentTimeItem.getId_time_server());
         int id_time_parent = (int) dbMain.insert("tblTimeParent", null, values2);
         parentTimeItem.setId_timer_parent(id_time_parent);
         dbMain.close();
@@ -1030,11 +1033,13 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         int minus_begin = parentTimeItem.getMinusBegin();
         int hour_end = parentTimeItem.getHourEnd();
         int minus_end = parentTimeItem.getMinusEnd();
+        int id_time_server = parentTimeItem.getId_time_server();
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblTimeParent set hour_begin = " + hour_begin
                 + ", minus_begin = " + minus_begin + ", hour_end = " + hour_end
-                + ", minus_end = " + minus_end + " where id_time_parent = " + id_time_parent;
+                + ", minus_end = " + minus_end
+                + ", id_time_server = " + id_time_server + " where id_time_parent = " + id_time_parent;
         dbMain.execSQL(update);
         dbMain.close();
     }

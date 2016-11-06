@@ -5,15 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context="com.android.keepfocus.activity.GroupManagermentActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:layout_height="wrap_content"
         android:background="@color/color_background_screen"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -22,20 +24,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@android:color/transparent"
-            android:scrollbars="horizontal" >
-        </com.android.keepfocus.utils.HorizontalListView>
+            android:scrollbars="horizontal"></com.android.keepfocus.utils.HorizontalListView>
 
 
         <TextView
+            android:id="@+id/text_no_group"
+            style="@style/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/text_no_group"
-            style="@style/textView"
-            android:id="@+id/text_no_group"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="163dp" />
+            android:layout_marginTop="163dp"
+            android:text="@string/text_no_group"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
     <LinearLayout
@@ -44,70 +45,81 @@
         android:layout_height="300dp"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-        android:background="@drawable/circle_red"
-        android:orientation="vertical"
-        android:layout_marginBottom="100dp">
-        <ImageButton
-            android:id="@+id/layoutClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:background="@drawable/icon_close" />
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/button_white_color"
+        android:orientation="vertical">
 
 
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
-                android:textColor="@color/color_background_button"
-                android:text="Member Icon : "/>
-            <ImageView
-                android:id="@+id/editMemberIcon"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/person"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
-        </LinearLayout>
+                android:text="Scheduler "
+                android:layout_alignParentLeft="true"
+                android:background="@color/grey"
+                android:textColor="@color/color_text_button"
+                android:textSize="23dp"
+                android:textStyle="bold"/>
 
-        <LinearLayout
+            <Button
+                android:id="@+id/details_time_add"
+                android:layout_width="@dimen/width_button_add"
+                android:layout_height="@dimen/height_button_add"
+                android:background="@drawable/button_add"
+                android:layout_alignParentRight="true"
+                android:text="@string/add_button"
+                android:textSize="14dp"
+                android:textColor="@color/color_text_button" />
+        </RelativeLayout>
+
+
+
+
+<!--        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
-                android:textColor="@color/color_background_button"
-                android:text="Member Name: "/>
-            <EditText
+                android:text="Schedule "
+                android:textColor="@color/colorPrimary"
+                android:textSize="15dp" />
+
+&lt;!&ndash;            <EditText
                 android:id="@+id/editMemberName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:background="@color/common_google_signin_btn_text_dark_pressed"
-                android:singleLine="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
-        </LinearLayout>
+                android:layout_marginRight="20dp"
+                android:background="@drawable/layout_border"
+                android:imeOptions="actionDone"
+                android:singleLine="true" />&ndash;&gt;
+        </LinearLayout>-->
 
-        <Button
-            android:id="@+id/layoutEditDone"
-            android:layout_width="wrap_content"
+
+
+
+        <ListView
+            android:id="@+id/listTime"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="10dp"
-            android:text="Done"/>
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:divider="@color/transparent"
+            android:dividerHeight="5dp"
+            android:layout_marginTop="10dp"
+            android:scrollbars="none"
+            android:orientation="horizontal"></ListView>
 
     </LinearLayout>
-
 
 
 </RelativeLayout>

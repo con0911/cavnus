@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -22,8 +23,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +61,8 @@ public class JoinGroupActivity extends Activity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String token = "";
     private SharedPreferences joinPref;
-    private EditText joinGroupIDText;
+    private EditText joinFamilyIDText, mActiveCode;
+    private RadioButton mRBtnManage, mRBtnChild;
     public String deviceCode;
     private GroupRequestController groupRequestController;
     private MainDatabaseHelper mDataHelper;
@@ -70,38 +74,65 @@ public class JoinGroupActivity extends Activity {
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminName = new ComponentName(this, DevicePolicyReceiver.class);
 
-        joinGroupIDText = (EditText) findViewById(R.id.joinGroupIDText);
+        joinFamilyIDText = (EditText) findViewById(R.id.familyId);
+        mActiveCode = (EditText) findViewById(R.id.activeCode);
         btnImageDone = (Button) findViewById(R.id.doneImageBtn);
-        btnImageDone.setOnClickListener(new View.OnClickListener() {
+        mRBtnManage = (RadioButton) findViewById(R.id.rbtn_manage);
+        mRBtnChild = (RadioButton) findViewById(R.id.rbtn_child);
+        mRBtnChild.setChecked(true);
+        //SetupWizardActivity.setModeDevice(MainUtils.MODE_MEMBER, getApplicationContext());
+        mRBtnManage.setChecked(false);
+        mRBtnManage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                //createRequestDialog();
-                JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
-                joinAsyn.execute();
-
-
-            }
-        });
-        joinPref = PreferenceManager.getDefaultSharedPreferences(this);
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
-                    token = intent.getStringExtra("token");
-                    SharedPreferences.Editor editor = joinPref.edit();
-                    editor.putString(MainUtils.REGISTATION_ID, token);
-                    editor.commit();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mRBtnManage.setChecked(true);
+                    //SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, getApplicationContext());
+                } else {
+                    mRBtnManage.setChecked(false);
+                    //SetupWizardActivity.setModeDevice(MainUtils.MODE_MEMBER, getApplicationContext());
                 }
             }
-        };
-        Intent intent = new Intent(this, GcmIntentService.class);//send intent to get token
-        intent.putExtra("key", "register");
-        startService(intent);
+        });
+        if (mActiveCode.getText().toString().equals("")) {
+            btnImageDone.setBackground(getDrawable(R.drawable.btn_join_add_border));
+            btnImageDone.setTextColor(Color.parseColor("#000000"));
+            //return;
+        } else {
+            btnImageDone.setBackground(getDrawable(R.drawable.btn_signup));
+            btnImageDone.setTextColor(Color.parseColor("#FFFFFF"));
+            btnImageDone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //createRequestDialog();
+                    JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
+                    joinAsyn.execute();
 
-        groupRequestController = new GroupRequestController(this);
-        mDataHelper = new MainDatabaseHelper(this);
-        deviceCode = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
+                }
+            });
+            joinPref = PreferenceManager.getDefaultSharedPreferences(this);
+            mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
+                        token = intent.getStringExtra("token");
+                        Log.d(TAG,"REGISTATION_ID = "+token);
+                        SharedPreferences.Editor editor = joinPref.edit();
+                        editor.putString(MainUtils.REGISTATION_ID, token);
+                        editor.commit();
+                    }
+                }
+            };
+            Intent intent = new Intent(this, GcmIntentService.class);//send intent to get token
+            intent.putExtra("key", "register");
+            startService(intent);
+
+            groupRequestController = new GroupRequestController(this);
+            mDataHelper = new MainDatabaseHelper(this);
+            deviceCode = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        }
     }
 
     @Override
@@ -116,7 +147,7 @@ public class JoinGroupActivity extends Activity {
                 startActivityForResult(intent, REQUEST_ADMIN_CODE);*/
                     showAdminDialog(SHOW_DIALOG_REQUEST_ADMIN_PERMISSION);
                 } else {
-                    mDPM.lockNow();
+                    //mDPM.lockNow();
                 }
             }
         } catch (Exception e) {
@@ -240,7 +271,7 @@ public class JoinGroupActivity extends Activity {
         String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
         Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
 
-        Group groupItem = new Group("", joinGroupIDText.getText().toString());
+        Group groupItem = new Group("", joinFamilyIDText.getText().toString());
         GroupRequest groupRequest = new GroupRequest(headerItem, 3,4,groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);

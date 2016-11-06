@@ -19,6 +19,7 @@ public class ParentProfileItem {
         this.day_profile = "";
         this.name_profile = "";
         this.isActive = true;
+        this.id_profile_server = -1;
         listTimer = new ArrayList<ParentTimeItem>();
         listAppBlock = new ArrayList<ParentAppItem>();
     }

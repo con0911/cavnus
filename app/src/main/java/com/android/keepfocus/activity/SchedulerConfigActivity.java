@@ -329,7 +329,7 @@ public class SchedulerConfigActivity extends Activity implements
                             @Override
                             public void onClick(DialogInterface dialog,
                                     int whichButton) {
-                                keepData.deleteFocusItemById(MainUtils.parentProfile
+                                keepData.deleteProfileItemById(MainUtils.parentProfile
                                         .getId_profile());
                                 finish();
                             }
@@ -646,7 +646,7 @@ public class SchedulerConfigActivity extends Activity implements
                             .get(mPosition);
                     MainUtils.parentProfile.getListTimer().remove(mPosition);
                     // delete in db
-                    kFDHelper.deleteTimeItemById(timeItem.getId_timer_parent());
+                    kFDHelper.deleteTimerParentItemById(timeItem.getId_timer_parent());
                     // update in view
                     updateTimerList();
                 }

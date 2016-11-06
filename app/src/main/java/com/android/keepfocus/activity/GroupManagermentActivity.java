@@ -180,14 +180,14 @@ public class GroupManagermentActivity extends Activity implements OnClickListene
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (!mEditText.getText().toString().equals("")) {
-                            ParentGroupItem parentItem = new ParentGroupItem();
-                            parentItem.setGroup_name(mEditText.getText().toString());
-                            mDataHelper.addGroupItemParent(parentItem);
-                            //MainUtils.parentGroupItem = new ParentGroupItem();
-                            //MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
+                            //ParentGroupItem parentItem = new ParentGroupItem();
+                            //parentItem.setGroup_name(mEditText.getText().toString());
+                            //mDataHelper.addGroupItemParent(parentItem);
+                            MainUtils.parentGroupItem = new ParentGroupItem();
+                            MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
                             //MainUtils.parentGroupItem.setGroup_code("registationId");
-                            displayProfile();
-                            //groupRequestController.testAddGroupInServer();
+                            //displayProfile();
+                            groupRequestController.testAddGroupInServer();
                         } else {
                             dialog.cancel();
                         }

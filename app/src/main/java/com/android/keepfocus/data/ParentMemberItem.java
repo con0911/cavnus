@@ -18,6 +18,7 @@ public class ParentMemberItem {
         this.name_member = "";
         this.type_member = 1;
         this.image_member = "";
+        this.id_member_server = -1;
         this.listProfile = new ArrayList<ParentProfileItem>();
     }
 

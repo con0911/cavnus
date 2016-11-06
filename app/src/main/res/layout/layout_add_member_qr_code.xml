@@ -2,29 +2,84 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <TextView
+        style="@style/textStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_member_qr_text_join"
-        style="@style/textStyle" />
+        android:text="@string/add_member_qr_text_join" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d6d6d6" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/group_id" />
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
 
         <EditText
-            android:id="@+id/joinGroupIDText"
+            style="@style/textStyle"
+            android:id="@+id/familyId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_group_id"/>
+            android:hint="@string/enter_family_id" />
+
+        <EditText
+            style="@style/textStyle"
+            android:id="@+id/deviceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_device_name" />
     </LinearLayout>
+
+    <TextView
+        style="@style/textStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/device_type"
+        android:textStyle="bold"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rbtn_manage"
+            style="@style/textStyle"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Management"
+            />
+
+        <RadioButton
+            android:id="@+id/rbtn_child"
+            style="@style/textStyle"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Children"
+            android:checked="true"
+            />
+
+
+    </RelativeLayout>
     <!--<CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,15 +87,26 @@
         android:layout_marginTop="20dp"
         android:text="@string/scan_qr_checkbox"/>-->
 
+    <EditText
+        style="@style/textStyle"
+        android:id="@+id/activeCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/active_code" />
+
     <Button
         android:id="@+id/doneImageBtn"
-        android:layout_width="100dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="50dp"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:src="@drawable/layout_border"
-        android:text="Submit"
-        android:layout_gravity="center"/>
-
-
+        android:background="@drawable/btn_signup"
+        android:textColor="#9daccb"
+        android:textSize="@dimen/button_text_size"
+        android:text="OK" />
+</LinearLayout>
+</ScrollView>
 </LinearLayout>

@@ -25,7 +25,7 @@
                 android:id="@+id/scheduler"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_action"
+                android:background="@drawable/blocked"
                 android:elevation="2dp"
                 android:scaleType="centerCrop" />
         </RelativeLayout>

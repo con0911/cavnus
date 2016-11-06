@@ -25,24 +25,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by sev_user on 9/22/2016.
  */
 public class GroupRequestController {
-    public static final String BASE_URL = "http://104.156.224.47/api/group?pRequest=";
+    public static final String BASE_URL = "http://45.32.103.87/api/group?pRequest=";
     private static final int NET_READ_TIMEOUT_MILLIS = 10000;
     private static final int NET_CONNECT_TIMEOUT_MILLIS = 10000;
     private Context mContext;
@@ -53,6 +47,8 @@ public class GroupRequestController {
     private SharedPreferences joinPref;
     public String deviceCode;
     private String registationId;
+    private String testEmail = "testlogin3@gmail.com";
+    private String testPass = "testpass";
 
 
     public GroupRequestController(Context context) {
@@ -60,7 +56,8 @@ public class GroupRequestController {
         mDataHelper = new MainDatabaseHelper(context);
         serverUtils = new ServerUtils();
         joinPref = PreferenceManager.getDefaultSharedPreferences(context);
-        registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
+        //registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
+        registationId = MainUtils.getRegistationId;
         deviceCode = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
@@ -87,7 +84,7 @@ public class GroupRequestController {
 
 
     public String createGroup(){
-        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");;//add data via contructor
+        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);;//add data via contructor
         Group groupItem = new Group( MainUtils.parentGroupItem.getGroup_name());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate,groupItem);
         Gson gson = new Gson();
@@ -97,7 +94,7 @@ public class GroupRequestController {
     }
 
     public String updateGroup(){
-        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");//add data via contructor
+        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);//add data via contructor
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeUpdate,groupItem);
         Gson gson = new Gson();
@@ -107,7 +104,7 @@ public class GroupRequestController {
     }
 
     public String deleteGroup(){
-        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");//add data via contructor
+        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);//add data via contructor
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeDelete,groupItem);
         Gson gson = new Gson();
@@ -116,7 +113,7 @@ public class GroupRequestController {
     }
 
     public String getListGroup(){
-        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
+        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet,0,null);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);

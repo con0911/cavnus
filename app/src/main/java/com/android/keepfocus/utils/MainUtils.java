@@ -1,7 +1,5 @@
 package com.android.keepfocus.utils;
 
-import android.provider.Settings;
-
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
@@ -24,6 +22,7 @@ public class MainUtils {
     public static ParentProfileItem parentProfile;
     public static ParentMemberItem memberItem;
     public static ChildKeepFocusItem childKeepFocusItem;
+    public static String getRegistationId = "";//get token in login screen
 
     public static final String[] DAY_OF_WEEK = { "Sun", "Mon", "Tue", "Wed",
             "Thu", "Fri", "Sat" };

@@ -12,6 +12,7 @@ public class ParentTimeItem {
     private int minusBegin;
     private int hourEnd;
     private int minusEnd;
+    private int id_time_server;
     public static final int INTIME_TYPE = 1;
     public static final int OUTTIME_TYPE = 2;
     public static final String TAG = "ParentTimeItem";
@@ -23,6 +24,7 @@ public class ParentTimeItem {
         this.minusBegin = 0;
         this.hourEnd = 10;
         this.minusEnd = 0;
+        this.id_time_server = -1;
     }
 
     public int getId_timer_parent() {
@@ -152,5 +154,13 @@ public class ParentTimeItem {
                 return 0;
             }
         }
+    }
+
+    public int getId_time_server() {
+        return id_time_server;
+    }
+
+    public void setId_time_server(int id_time_server) {
+        this.id_time_server = id_time_server;
     }
 }

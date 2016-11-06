@@ -14,18 +14,19 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.keepfocus.R;
+import com.android.keepfocus.controller.ChildTimeListAdapter;
 import com.android.keepfocus.controller.MemberViewAdapter;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
+import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
@@ -50,14 +51,19 @@ public class GroupDetail extends Activity implements View.OnClickListener{
     private GroupManagermentActivity.GetDatabaseReceiver getDatabaseReceiver;
     private IntentFilter intentFilter;
 
+    private ArrayList<ParentProfileItem> listProfileItem;
+    private ListView listTime;
+    private ChildTimeListAdapter timeListAdapter;
+
 
     private LinearLayout detailLayout;
     private ImageButton layoutClose;
     private Animation bottomUp;
     private Animation bottomDown;
     private EditText editName;
-    private Button doneEdit;
-    private ImageView memberIconEdit;
+    private ImageButton doneEdit;
+
+    private ArrayList<TextView> listStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +88,17 @@ public class GroupDetail extends Activity implements View.OnClickListener{
 
 
         detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
-        editName = (EditText) findViewById(R.id.editMemberName);
-        memberIconEdit = (ImageView) findViewById(R.id.editMemberIcon);
-        memberIconEdit.setOnClickListener(this);
+        //editName = (EditText) findViewById(R.id.editMemberName);
 
-        doneEdit = (Button) findViewById(R.id.layoutEditDone);
-        doneEdit.setOnClickListener(this);
+        //doneEdit = (ImageButton) findViewById(R.id.layoutEditDone);
+        //doneEdit.setOnClickListener(this);
+
+        listTime = (ListView) findViewById(R.id.listTime);
+
 
         detailLayout.setVisibility(View.GONE);
-        layoutClose = (ImageButton) findViewById(R.id.layoutClose);
-        layoutClose.setOnClickListener(this);
+        //layoutClose = (ImageButton) findViewById(R.id.layoutClose);
+        //layoutClose.setOnClickListener(this);
         bottomUp = AnimationUtils.loadAnimation(this, R.anim.bottom_up);
         bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
 
@@ -113,7 +120,13 @@ public class GroupDetail extends Activity implements View.OnClickListener{
     protected void onPause() {
         super.onPause();
         unregisterReceiver(getDatabaseReceiver);
+        if(detailLayout.getVisibility() == View.VISIBLE) {
+            //hideKeyboard();
+            //detailLayout.startAnimation(bottomDown);
+            //detailLayout.setVisibility(View.GONE);
+        }
     }
+
 
     public void addNewMember() {
         mView = getLayoutInflater().inflate(R.layout.add_member_layout, null);
@@ -156,6 +169,20 @@ public class GroupDetail extends Activity implements View.OnClickListener{
             mTextNoGroup.setText("");
         }
 
+    }
+
+
+    public void displayDetailTime(){
+        mDataHelper.makeDetailOneMemberItemParent(MainUtils.memberItem);
+        listProfileItem = MainUtils.memberItem.getListProfile();
+        timeListAdapter = new ChildTimeListAdapter(this, R.layout.time_adapter, 0, listProfileItem);
+        listTime.setAdapter(timeListAdapter);
+    }
+
+    public void goToScheduler(int position){
+        MainUtils.parentProfile = timeListAdapter.getItem(position);
+        Intent intent = new Intent(GroupDetail.this, SchedulerConfigActivity.class);
+        startActivity(intent);
     }
 
     public void onItemClick(int position) {
@@ -247,7 +274,7 @@ public class GroupDetail extends Activity implements View.OnClickListener{
 
     public void showDetail(int position) {
         MainUtils.memberItem = mProfileAdapter.getItem(position);
-        editName.setText(MainUtils.memberItem.getName_member().toString());
+        //editName.setText(MainUtils.memberItem.getName_member().toString());
         if(detailLayout.getVisibility() == View.GONE) {
             detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
@@ -256,6 +283,7 @@ public class GroupDetail extends Activity implements View.OnClickListener{
             detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
         }
+        displayDetailTime();
     }
 
     @Override
@@ -289,9 +317,12 @@ public class GroupDetail extends Activity implements View.OnClickListener{
         }
     }
 
+
+
     private void hideKeyboard(){
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editName.getWindowToken(), 0);
     }
+
 }
 
