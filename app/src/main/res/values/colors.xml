@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
     <color name="color_background_button">#f0f0f0</color>
     <color name="title_text_color">#499ebd</color>
     <color name="button_text_color">#252525</color>
@@ -23,23 +20,27 @@
     <color name="alert_dialog_text_color">#3B5998</color>
     <color name="button_press">#000055</color>
     <color name="grey">#808080</color>
-    <color name="black">#0A0A0A</color>
     <color name="gray_press">#E0E0E0</color>
     <color name="color_set_pin_code_button">#FFFFFF</color>
 
+
+    <color name="colorPrimary">#00994d</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
     <color name="white">#ffffffff</color>
     <color name="red">#ffdc4b4e</color>
     <color name="darker_red">#ff97373a</color>
     <color name="orange">#ffdc8d3e</color>
-    <color name="darker_orange">#ff945e2a</color>
+    <color name="darker_orange">#999999</color>
     <color name="yellow">#ffdccf57</color>
-    <color name="darker_yellow">#ffa89b46</color>
+    <color name="darker_yellow">#999999</color>
     <color name="green">#ff6bdc60</color>
-    <color name="darker_green">#ff4a9544</color>
+    <color name="darker_green">#999999</color>
     <color name="blue">#ff6081dc</color>
     <color name="darker_blue">#ff4a59a0</color>
     <color name="indigo">#ffce8fdc</color>
     <color name="darker_indigo">#ff8d6399</color>
     <color name="violet">#ff865fdc</color>
     <color name="darker_violet">#ff4d3980</color>
+    <color name="black">#000</color>
 </resources>

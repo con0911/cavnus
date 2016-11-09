@@ -3,6 +3,7 @@ package com.android.keepfocus.settings;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -82,7 +83,8 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
         //viewHolder.gameImage.setImageBitmap(getCircleBitmap(avatar));
         //viewHolder.iconFamily.setImageResource(R.drawable.blocked);
 
-
+        Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
+        viewHolder.iconFamily.setImageBitmap(icon);
         convertView.setTag(String.valueOf(position));
 
         viewHolder.iconFamily.setOnClickListener(onClickListener(position));
@@ -109,12 +111,18 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
                         deviceMemberManagerment.onItemClick(position);
                         break;
                     case R.id.txt_green:
+                        View parent1 = (View) v.getParent();
+                        parent1.setPressed(true);
                         //deviceMemberManagerment.onItemLongClick(position);
                         break;
                     case R.id.txt_yellow:
+                        View parent2 = (View) v.getParent();
+                        parent2.setPressed(true);
                         deviceMemberManagerment.showDetail(position);
                         break;
                     case R.id.txt_orange:
+                        View parent3 = (View) v.getParent();
+                        parent3.setPressed(true);
                         //deviceMemberManagerment.showDetail(position);
                         break;
 

@@ -1,7 +1,5 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="main_action_bar_height">55dp</dimen>
 
     <dimen name="form_login_margin">32dp</dimen>
@@ -64,6 +62,8 @@
     <dimen name="main_action_bar_title_text_size">20dp</dimen>
     <dimen name="image_button_create_width_height">65dp</dimen>
 
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="viewpager_margin">-64dp</dimen>
     <dimen name="viewpager_margin_fix">20dp</dimen>
 
