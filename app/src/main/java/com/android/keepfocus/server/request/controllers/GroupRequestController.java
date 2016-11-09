@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.keepfocus.activity.LoginActivity;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
@@ -48,8 +49,8 @@ public class GroupRequestController {
     private SharedPreferences joinPref;
     public String deviceCode;
     private String registationId;
-    private String testEmail = "testlogin3@gmail.com";
-    private String testPass = "testpass";
+    private String testEmail = "";
+    private String testPass = "";
 
 
     public GroupRequestController(Context context) {
@@ -57,9 +58,15 @@ public class GroupRequestController {
         mDataHelper = new MainDatabaseHelper(context);
         serverUtils = new ServerUtils();
         joinPref = PreferenceManager.getDefaultSharedPreferences(context);
+        getEmailandPass();
         //registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
         registationId = MainUtils.getRegistationId;
         deviceCode = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
+    public void getEmailandPass(){
+        testEmail = joinPref.getString(LoginActivity.EMAILLOGIN, "null");
+        testPass = joinPref.getString(LoginActivity.PASSWORDLOGIN, "null");
     }
 
     public void testAddGroupInServer() {

@@ -85,6 +85,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     private LoginRequestController mLoginRequestController;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String token = "";
+    public static String emailLogin = "";
+    public static String passwordLogin = "";
+    public static String EMAILLOGIN = "LoginEmail";
+    public static String PASSWORDLOGIN = "LoginPassword";
 
 
     @Override
@@ -235,6 +239,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        emailLogin = email;
+        passwordLogin = password;
 
         boolean cancel = false;
         View focusView = null;
@@ -275,7 +281,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
             LoginRequest loginRequest = new LoginRequest(headerItem);
             Gson gson = new Gson();
             String headerJsonObject = gson.toJson(loginRequest);
-            Log.e("Login", "URL : "+ "http://104.156.224.47/api/account?pRequest=" + headerJsonObject);
             mLoginRequestController =  new LoginRequestController(mContext);
             mLoginRequestController.checkLogin(headerJsonObject);
 

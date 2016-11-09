@@ -3,7 +3,9 @@ package com.android.keepfocus.server.request.controllers;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,8 +40,11 @@ public class LoginRequestController {
     private Context mContext;
     static boolean isSuccess;
 
+    private SharedPreferences loginPref;
+
     public LoginRequestController(Context context) {
         this.mContext = context;
+        loginPref = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
 
@@ -82,6 +87,13 @@ public class LoginRequestController {
                         isSuccess = true;
                         Toast.makeText(mContext, "Login Successfully", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "current mode : " + SetupWizardActivity.getModeDevice(mContext));
+
+                        //save email and pass
+                        SharedPreferences.Editor editor = loginPref.edit();
+                        editor.putString(LoginActivity.EMAILLOGIN, LoginActivity.emailLogin);
+                        editor.putString(LoginActivity.PASSWORDLOGIN, LoginActivity.passwordLogin);
+                        editor.commit();
+
                         SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, mContext);
                         Intent groupManagement = new Intent(mContext, FamilyManagerment.class);
                         mContext.startActivity(groupManagement);
