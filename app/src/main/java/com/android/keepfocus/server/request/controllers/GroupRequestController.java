@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
+import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.model.Group;
 import com.android.keepfocus.server.model.Header;
 import com.android.keepfocus.server.request.model.GroupRequest;
@@ -81,6 +82,10 @@ public class GroupRequestController {
         updateAsyn.execute();
     }
 
+    public void updateListDevice() {
+        GetListDeviceAsynTask updateAsyn = new GetListDeviceAsynTask();
+        updateAsyn.execute();
+    }
 
 
     public String createGroup(){
@@ -114,7 +119,17 @@ public class GroupRequestController {
 
     public String getListGroup(){
         Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet,0,null);
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet,Constants.ActionTypeGetList,null);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(groupRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    public String getListDevice(){
+        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);
+        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server());
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet,Constants.ActionTypeGetDevice,groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -238,7 +253,68 @@ public class GroupRequestController {
             }
         }
     }
+    //=====================Get List device==================================
+
+    private class GetListDeviceAsynTask extends AsyncTask<ParentMemberItem, Void, String> {
+        @Override
+        protected String doInBackground(ParentMemberItem... params) {
+            String result = "";
+            String link;
+            link = BASE_URL + getListDevice();
+            Log.d(TAG,"link: "+link);
+            result = connectToServer(link);
+            //result = serverUtils.postData(BASE_URL,getListGroup());
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG,"onPostExecute"+result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    JSONArray data = jsonObj.getJSONArray("Data");
+                    ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
+
+                    if(description_result.equals("Success") && data != null) {
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject deviceItem = data.getJSONObject(i);
+                            boolean conflict = false;
+                            if(listDevice.size()>0) {
+                                for (int j = 0; j < listDevice.size(); j++) {
+                                    if(deviceItem.getInt("id")==listDevice.get(j).getId_member_server()) {
+                                        conflict = true;
+                                        listDevice.get(j).setImage_member(deviceItem.getString("device_model"));
+                                        listDevice.get(j).setName_member(deviceItem.getString("device_name"));
+                                        mDataHelper.updateMemberItem(listDevice.get(j));
+                                    }
+                                }
+                            }
+                            if(!conflict) {
+                                ParentMemberItem parentMemberItem = new ParentMemberItem();
+                                parentMemberItem.setImage_member(deviceItem.getString("device_model"));
+                                parentMemberItem.setName_member(deviceItem.getString("device_name"));
+                                parentMemberItem.setId_member_server(deviceItem.getInt("id"));
+                                MainUtils.parentGroupItem.getListMember().add(parentMemberItem);
+                                mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
+                            }
+
+                        }
+                        updateSuccess();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Error in database", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     //=====================Block code for update Family api==================================
+
+
 
     private class UpdateGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         ProgressDialog mDialog;

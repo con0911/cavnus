@@ -30,7 +30,7 @@
             android:layout_marginTop="@dimen/alert_dialog_padding_top"
             android:gravity="center_vertical"
             android:inputType="textCapSentences"
-            android:hint="Enter name group"
+            android:hint="Enter name family"
             android:lines="1"
             android:privateImeOptions="disableEmoticonInput=true" />
     </LinearLayout>

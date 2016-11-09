@@ -123,7 +123,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.parentBtn:
-                Intent parentIntent = new Intent(this, GroupManagermentActivity.class);
+                Intent parentIntent = new Intent(this, FamilyManagerment.class);
                 startActivity(parentIntent);
                 break;
             case R.id.childBtn:

@@ -41,14 +41,14 @@
         <activity
             android:name=".activity.JoinGroupActivity"
             android:theme="@style/CustomizeActionbarAppTheme" />
+        <!--setup wizard-->
         <activity
             android:name=".activity.SetupWizardActivity"
             android:theme="@style/CustomizeActionbarAppTheme">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-
+            </intent-filter>
         </activity>
 
 
@@ -59,10 +59,7 @@
         <activity android:name=".activity.GroupManagermentActivity"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/CustomizeActionbarAppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <activity android:name=".activity.ChildSchedulerActivity"
@@ -110,6 +107,14 @@
             android:name="com.android.keepfocus.activity.BlockLauncher"
             android:theme="@style/CustomizeActionbarAppTheme">
         </activity>
+
+        <activity android:name=".activity.FamilyManagerment"
+            android:theme="@style/CustomizeActionbarAppTheme">
+
+        </activity>
+
+        <activity android:name=".activity.DeviceMemberManagerment"
+            android:theme="@style/CustomizeActionbarAppTheme"/>
 
         <activity android:name=".activity.InstallAppActivityForChild"
             android:parentActivityName=".activity.ChildSchedulerDetail"

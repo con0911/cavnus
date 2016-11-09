@@ -64,5 +64,7 @@
     <dimen name="main_action_bar_title_text_size">20dp</dimen>
     <dimen name="image_button_create_width_height">65dp</dimen>
 
+    <dimen name="viewpager_margin">-64dp</dimen>
+    <dimen name="viewpager_margin_fix">20dp</dimen>
 
 </resources>

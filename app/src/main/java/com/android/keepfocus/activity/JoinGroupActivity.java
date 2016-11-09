@@ -1,5 +1,6 @@
 package com.android.keepfocus.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -13,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -36,10 +38,12 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.gcm.GcmIntentService;
 import com.android.keepfocus.receive.DevicePolicyReceiver;
+import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
+import com.android.keepfocus.server.model.GroupUser;
 import com.android.keepfocus.server.model.Header;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
-import com.android.keepfocus.server.request.model.GroupRequest;
+import com.android.keepfocus.server.request.model.JoinGroupRequest;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.gson.Gson;
 
@@ -66,16 +70,25 @@ public class JoinGroupActivity extends Activity {
     public String deviceCode;
     private GroupRequestController groupRequestController;
     private MainDatabaseHelper mDataHelper;
+    private Context mContext;
+    public static String MANAGER = "manager";
+    public static String CHILDREN = "child";
+    private int typeJoin = 0;
+    private EditText nameDevice;
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_add_member_qr_code);
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminName = new ComponentName(this, DevicePolicyReceiver.class);
+        mContext = this;
+
 
         joinFamilyIDText = (EditText) findViewById(R.id.familyId);
         mActiveCode = (EditText) findViewById(R.id.activeCode);
+        nameDevice = (EditText) findViewById(R.id.deviceName);
         btnImageDone = (Button) findViewById(R.id.doneImageBtn);
         mRBtnManage = (RadioButton) findViewById(R.id.rbtn_manage);
         mRBtnChild = (RadioButton) findViewById(R.id.rbtn_child);
@@ -86,53 +99,59 @@ public class JoinGroupActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    mRBtnManage.setChecked(true);
+                    typeJoin = 1;
+                    mRBtnChild.setChecked(false);
                     //SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, getApplicationContext());
-                } else {
-                    mRBtnManage.setChecked(false);
-                    //SetupWizardActivity.setModeDevice(MainUtils.MODE_MEMBER, getApplicationContext());
                 }
             }
         });
-        if (mActiveCode.getText().toString().equals("")) {
-            btnImageDone.setBackground(getDrawable(R.drawable.btn_join_add_border));
-            btnImageDone.setTextColor(Color.parseColor("#000000"));
-            //return;
-        } else {
-            btnImageDone.setBackground(getDrawable(R.drawable.btn_signup));
-            btnImageDone.setTextColor(Color.parseColor("#FFFFFF"));
-            btnImageDone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //createRequestDialog();
+        mRBtnChild.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    typeJoin = 0;
+                    mRBtnManage.setChecked(false);
+                    //SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, getApplicationContext());
+                }
+            }
+        });
+        joinPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
+                    token = intent.getStringExtra("token");
+                    Log.d(TAG,"REGISTATION_ID = "+token);
+                    SharedPreferences.Editor editor = joinPref.edit();
+                    editor.putString(MainUtils.REGISTATION_ID, token);
+                    editor.commit();
+                }
+            }
+        };
+        Intent intent = new Intent(mContext, GcmIntentService.class);//send intent to get token
+        intent.putExtra("key", "register");
+        startService(intent);
+        groupRequestController = new GroupRequestController(mContext);
+        mDataHelper = new MainDatabaseHelper(mContext);
+        deviceCode = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        btnImageDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //createRequestDialog();
+                if (mActiveCode.getText().toString().equals("")) {
+                    btnImageDone.setBackground(getDrawable(R.drawable.btn_join_add_border));
+                    btnImageDone.setTextColor(Color.parseColor("#000000"));
+                    //return;
+                } else {
+                    btnImageDone.setBackground(getDrawable(R.drawable.btn_signup));
+                    btnImageDone.setTextColor(Color.parseColor("#FFFFFF"));
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
 
-
                 }
-            });
-            joinPref = PreferenceManager.getDefaultSharedPreferences(this);
-            mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
-                        token = intent.getStringExtra("token");
-                        Log.d(TAG,"REGISTATION_ID = "+token);
-                        SharedPreferences.Editor editor = joinPref.edit();
-                        editor.putString(MainUtils.REGISTATION_ID, token);
-                        editor.commit();
-                    }
-                }
-            };
-            Intent intent = new Intent(this, GcmIntentService.class);//send intent to get token
-            intent.putExtra("key", "register");
-            startService(intent);
+            }
+        });
 
-            groupRequestController = new GroupRequestController(this);
-            mDataHelper = new MainDatabaseHelper(this);
-            deviceCode = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        }
     }
 
     @Override
@@ -267,14 +286,20 @@ public class JoinGroupActivity extends Activity {
         }
     }
 
+    private String checkType(){
+        if (typeJoin == 0) return CHILDREN;
+        else return MANAGER;
+    }
+
     public String joinGroup(){
         String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
         Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
-
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
-        GroupRequest groupRequest = new GroupRequest(headerItem, 3,4,groupItem);
+        Device deviceItem = new Device(0,nameDevice.getText().toString(),"ss","android",registationId,"",checkType());
+        GroupUser groupUser = new GroupUser(0,0,0,"");
+        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(headerItem, 3, groupItem, deviceItem, groupUser);
         Gson gson = new Gson();
-        String jsonRequest = gson.toJson(groupRequest);
+        String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
     }

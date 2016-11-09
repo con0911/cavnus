@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,7 +34,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.gcm.GcmIntentService;
@@ -45,6 +45,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -177,7 +179,33 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     }
 
     private void populateAutoComplete() {
+        if (!mayRequestContacts()) {
+            return;
+        }
+
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    private boolean mayRequestContacts() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        }
+        return false;
     }
 
     /**
@@ -249,21 +277,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
             String headerJsonObject = gson.toJson(loginRequest);
             Log.e("Login", "URL : "+ "http://104.156.224.47/api/account?pRequest=" + headerJsonObject);
             mLoginRequestController =  new LoginRequestController(mContext);
-            boolean isSuccess = mLoginRequestController.checkLogin(headerJsonObject);
-            Log.e("Login", "isSuccess : " + isSuccess);
-            if (isSuccess){
-                //set mode device is admin
-                SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, mContext);
-                Log.e("Login", "current mode : " + SetupWizardActivity.getModeDevice(mContext));
-                Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                Intent groupManagement = new Intent(LoginActivity.this, GroupManagermentActivity.class);
-                startActivity(groupManagement);
-            }else {
-                Toast.makeText(LoginActivity.this, "Your password or email is wrong", Toast.LENGTH_SHORT).show();
-                Intent login = new Intent(this, LoginActivity.class);
-                startActivity(login);
+            mLoginRequestController.checkLogin(headerJsonObject);
 
-            }
             //mAuthTask = new UserLoginTask(email, password);
             //mAuthTask.execute((Void) null);
         }

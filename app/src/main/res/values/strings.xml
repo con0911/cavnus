@@ -142,4 +142,16 @@
 
     <string name="request_admin_text">You have to enable device administrators to use this application</string>
     <string name="title_request_admin">Request administrators</string>
+
+    <string name="click_the_button">Click the \'Red\' button</string>
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+    <string name="red">Red</string>
+    <string name="orange">Orange</string>
+    <string name="yellow">Yellow</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
+    <string name="indigo">Indigo</string>
 </resources>

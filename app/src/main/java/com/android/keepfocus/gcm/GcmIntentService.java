@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.keepfocus.R;
+import com.android.keepfocus.utils.MainUtils;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -65,6 +66,7 @@ public class GcmIntentService extends IntentService {
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
             Log.e(TAG, "GCM Registration Token: " + token);
+            MainUtils.getRegistationId = token;
 
             // sending the registration id to our server
             sendRegistrationToServer(token);
