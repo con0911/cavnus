@@ -296,7 +296,7 @@ public class JoinGroupActivity extends Activity {
         Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
         Device deviceItem = new Device(0,nameDevice.getText().toString(),"ss","android",registationId,"",checkType());
-        GroupUser groupUser = new GroupUser(0,0,0,"");
+        GroupUser groupUser = new GroupUser(0,0,0,mActiveCode.getText().toString());
         JoinGroupRequest joinGroupRequest = new JoinGroupRequest(headerItem, 3, groupItem, deviceItem, groupUser);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
