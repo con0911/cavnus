@@ -11,6 +11,9 @@ public class ParentGroupItem {
     private String group_code;
     private String create_date;
     private int id_group_server;
+
+
+    private String icon_uri;
     private ArrayList<ParentMemberItem> listMember;
 
     public ParentGroupItem() {
@@ -19,7 +22,17 @@ public class ParentGroupItem {
         this.group_code = "";
         this.create_date = "";
         this.id_group_server = -1;
+        this.icon_uri = "";
         listMember = new ArrayList<ParentMemberItem>();
+    }
+
+
+    public String getIcon_uri() {
+        return icon_uri;
+    }
+
+    public void setIcon_uri(String icon_uri) {
+        this.icon_uri = icon_uri;
     }
 
     public int getId_group() {

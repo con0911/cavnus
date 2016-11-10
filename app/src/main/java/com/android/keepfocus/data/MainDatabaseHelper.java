@@ -4,8 +4,6 @@ package com.android.keepfocus.data;
  * Created by nguyenthong on 9/6/2016.
  */
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,6 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.android.keepfocus.utils.MainUtils;
+
+import java.util.ArrayList;
 
 public class MainDatabaseHelper extends SQLiteOpenHelper {
     // All Static variables
@@ -88,7 +88,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_GROUP_PARENT = "CREATE TABLE " + TABLE_GROUP_PARENT + "("
                 + "id_group INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " group_name text not null," + " group_code text not null,"
-                + " create_date text not null," + " id_group_server INTEGER" + ")";
+                + " create_date text not null," + " icon_uri text not null," + " id_group_server INTEGER" + ")";
         db.execSQL(CREATE_TABLE_GROUP_PARENT);
         // tblMemberParent
         String CREATE_TABLE_MEMBER = "CREATE TABLE " + TABLE_MEMBER + "("
@@ -600,7 +600,8 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 String group_name = cursor.getString(1);
                 String group_code = cursor.getString(2);
                 String create_date = cursor.getString(3);
-                int id_group_server = cursor.getInt(4);
+                String icon_uri = cursor.getString(4);
+                int id_group_server = cursor.getInt(5);
                 // make keep focus item
                 ParentGroupItem groupItem = new ParentGroupItem();
                 groupItem.setId_group(id_group);
@@ -610,6 +611,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 groupItem.setId_group_server(id_group_server);
                 //
                 groupItem.setListMember(getListMember(id_group));
+                groupItem.setIcon_uri(icon_uri);
                 //
                 listGroupItem.add(groupItem);
             } while (cursor.moveToNext());
@@ -808,6 +810,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         values.put("group_code", groupItem.getGroup_code());
         values.put("create_date", groupItem.getCreate_date());
         values.put("id_group_server", groupItem.getId_group_server());
+        values.put("icon_uri",groupItem.getIcon_uri());
         int id_group = (int) dbMain.insert("tblGroupParent", null, values);
         groupItem.setId_group(id_group);
         dbMain.close();
@@ -985,11 +988,13 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String group_code = "'" + parentGroupItem.getGroup_code() + "'";
         String create_date = "'" + parentGroupItem.getCreate_date() + "'";
         int id_group_server = parentGroupItem.getId_group_server();
+        String icon_uri = "'" + parentGroupItem.getIcon_uri() + "'";
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblGroupParent set group_name = " + group_name
                 + ", group_code = " + group_code + ", create_date = " + create_date
                 + ", id_group_server = " + id_group_server
+                + ", icon_uri = " + icon_uri
                 + " where id_group = " + id_group;
         dbMain.execSQL(update);
         dbMain.close();

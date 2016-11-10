@@ -3,14 +3,17 @@ package com.android.keepfocus.controller;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.keepfocus.R;
+import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.activity.GroupDetail;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentProfileItem;
@@ -29,8 +32,10 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
 
     private TextView titleTime;
     private TextView dayScheduler;
+    private ImageButton btnDeleteSchedule;
     private LinearLayout statusTime;
     private ArrayList<TextView> listStatus;
+    private Context mContext;
 
 
     public ChildTimeListAdapter(Activity activity, int resource,
@@ -40,11 +45,19 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         this.activity = activity;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         convertView = inflater.inflate(R.layout.time_adapter, null);
         titleTime = (TextView) convertView.findViewById(R.id.details_time_title);
         statusTime = (LinearLayout) convertView.findViewById(R.id.statusBarTime);
         dayScheduler = (TextView) convertView.findViewById(R.id.day_scheduler);
+        btnDeleteSchedule = (ImageButton) convertView.findViewById(R.id.btn_delete_schedule);
+        btnDeleteSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment)activity;
+                deviceMemberManagerment.deleteProfile(position);
+            }
+        });
 
         final int mPosition = position;
         final ParentProfileItem item = getItem(mPosition);
@@ -73,8 +86,15 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         }
         @Override
         public void onClick(View v) {
-            GroupDetail groupDetail = (GroupDetail)activity;
-            groupDetail.goToScheduler(mPosition);
+            DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment)activity;
+            deviceMemberManagerment.goToScheduler(mPosition);
+
+            switch (v.getId()){
+                case R.id.btn_delete_schedule :
+                    Log.e("vinh", "delete");
+                    deviceMemberManagerment.deleteProfile(mPosition);
+                    break;
+            }
 
         }
     }

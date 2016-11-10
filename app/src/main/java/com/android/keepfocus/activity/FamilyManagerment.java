@@ -7,7 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +40,8 @@ import com.android.keepfocus.settings.CoverFlowAdapter2;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
@@ -43,7 +49,7 @@ import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
 /**
  * Created by sev_user on 11/7/2016.
  */
-public class FamilyManagerment extends Activity implements View.OnClickListener {
+public class FamilyManagerment extends Activity implements View.OnClickListener{
 
     private FeatureCoverFlow coverFlow;
     private CoverFlowAdapter adapter;
@@ -78,13 +84,14 @@ public class FamilyManagerment extends Activity implements View.OnClickListener 
     private RelativeLayout layoutList;
     private ArrayList<ParentGroupItem> listDefault;
     private HorizontalListView listTwoFamily;
+    private static int PICK_IMAGE = 1;
+    private static final int REQUEST_READ_FILE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_family_layout);
         coverFlow = (FeatureCoverFlow) findViewById(R.id.coverflow);
-
         mContext = this;
         mDataHelper = new MainDatabaseHelper(mContext);
         ParentGroupItem defaultParent = new ParentGroupItem();
@@ -141,6 +148,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener 
                 if (currentView != null) {
                     lable[position] = true;
                     onMainButtonClicked(currentView);
+                    MainUtils.parentGroupItem = adapter.getItem(position);
+                    showDetail(position);
                 }
 
             }
@@ -174,6 +183,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener 
             adapter = new CoverFlowAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listTwoFamily.setVisibility(View.GONE);
+            detailLayout.setVisibility(View.GONE);
+
         }else if (listFamily.size() > 0 && listFamily.size() <= 3) {
             mTextNoGroup.setText(" ");
             layoutList.setVisibility(View.GONE);
@@ -269,7 +280,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener 
                 if(detailLayout.getVisibility() == View.VISIBLE) {
                     hideKeyboard();
                     detailLayout.startAnimation(bottomDown);
-                    detailLayout.setVisibility(View.GONE);
+                    //detailLayout.setVisibility(View.GONE);
                 }
 
             case R.id.layoutEditDone:
@@ -280,15 +291,49 @@ public class FamilyManagerment extends Activity implements View.OnClickListener 
                 if(detailLayout.getVisibility() == View.VISIBLE) {
                     hideKeyboard();
                     detailLayout.startAnimation(bottomDown);
-                    detailLayout.setVisibility(View.GONE);
+                    //detailLayout.setVisibility(View.GONE);
                 }
 
                 break;
             case R.id.editFamilyIcon:
                 Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
+                /*Intent intent = new Intent();
+                intent.setType("image*//*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);*/
+                Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, PICK_IMAGE);
 
             default:
                 break;
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("contt","onActivityResult= "+ requestCode +"-"+ resultCode +"-"+ data);
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data!=null) {
+            Uri selectedImage = data.getData();
+            boolean success = true;
+            Log.d("contt","Uri= " + selectedImage);
+            Bitmap bitmap = null;
+            try
+            {
+                bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver() , selectedImage);
+            }
+            catch (Exception e)
+            {
+                success = false;
+            }
+            if(success) {
+                MainUtils.parentGroupItem.setIcon_uri(selectedImage.toString());
+                mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
+            }
+            //familyIconEdit.setImageBitmap(bitmap);
+            displayProfile();
+            //familyIconEdit.setImageURI(selectedImage);
         }
     }
 
@@ -376,6 +421,28 @@ public class FamilyManagerment extends Activity implements View.OnClickListener 
             detailLayout.setVisibility(View.GONE);
             detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
+        }
+
+        Uri selectedImage = Uri.parse(MainUtils.parentGroupItem.getIcon_uri());
+        InputStream is = null;
+        try {
+            is = mContext.getContentResolver().openInputStream(selectedImage);
+        }catch (Exception e){
+            Log.d("TAG", "Exception " + e);
+        }
+        if (is!=null) {
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver() , selectedImage);
+                familyIconEdit.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.images);
+                familyIconEdit.setImageBitmap(icon);
+            }
+        } else {
+            Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.images);
+            familyIconEdit.setImageBitmap(icon);
         }
     }
 

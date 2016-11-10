@@ -281,6 +281,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
             LoginRequest loginRequest = new LoginRequest(headerItem);
             Gson gson = new Gson();
             String headerJsonObject = gson.toJson(loginRequest);
+            Log.e("Login", "URL : "+ LoginRequestController.ACCOUNT_BASE_URL + headerJsonObject);
             mLoginRequestController =  new LoginRequestController(mContext);
             mLoginRequestController.checkLogin(headerJsonObject);
 

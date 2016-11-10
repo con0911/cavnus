@@ -48,7 +48,7 @@ public class SchedulerConfigActivity extends Activity implements
     private Button mBtnAddTime;
     private AppListAdapter mAppListAdapter;
     private TimeListAdapter mTimeListAdapter;
-    private CustomListView listAppView, listTimer;
+    private CustomListView listTimer;
     private Context mContext;
     private TimePicker timePickerFrom, timePickerTo;
     private Button fromBt, toBt;
@@ -73,17 +73,17 @@ public class SchedulerConfigActivity extends Activity implements
         // updateBlockAppList();
     }
 
-    public void updateBlockAppList() {
+/*    public void updateBlockAppList() {
         keepData.makeDetailOneMemberItemParent(MainUtils.memberItem);
         mAppListAdapter = new AppListAdapter(this, R.layout.show_block_app, 0,
                 MainUtils.parentProfile.getListAppBlock());
-        listAppView.setAdapter(mAppListAdapter);
+        //listAppView.setAdapter(mAppListAdapter);
         if (MainUtils.parentProfile.getListAppBlock().size() == 0) {
             emptyAppView.setVisibility(View.VISIBLE);
         } else {
             emptyAppView.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     public void updateTimerList() {
         mTimeListAdapter = new TimeListAdapter(this, R.layout.show_block_app,
@@ -121,13 +121,13 @@ public class SchedulerConfigActivity extends Activity implements
         getActionBar().setTitle(MainUtils.parentProfile.getName_profile() + " schedule detail");
         dayBlock = MainUtils.parentProfile.getDay_profile();
 
-        mBtnAddApplication = (Button) findViewById(R.id.selected_app_add);
+        //mBtnAddApplication = (Button) findViewById(R.id.selected_app_add);
         mBtnAddTime = (Button) findViewById(R.id.details_time_add);
-        listAppView = (CustomListView) findViewById(R.id.apps_list);
-        listAppView.setFocusable(false); // start in top
+        //listAppView = (CustomListView) findViewById(R.id.apps_list);
+        //listAppView.setFocusable(false); // start in top
         listTimer = (CustomListView) findViewById(R.id.time_listview);
         listTimer.setFocusable(false);
-        mBtnAddApplication.setOnClickListener(this);
+        //mBtnAddApplication.setOnClickListener(this);
         mBtnAddTime.setOnClickListener(this);
     }
 
@@ -233,7 +233,7 @@ public class SchedulerConfigActivity extends Activity implements
 
     @Override
     protected void onResume() {
-        updateBlockAppList();
+        //updateBlockAppList();
         updateTimerList();
         super.onResume();
     }
@@ -598,7 +598,7 @@ public class SchedulerConfigActivity extends Activity implements
                     // delete in db
                     kFDHelper.deleteAppParentItemById(appBlock.getId_app_parent());
                     // update in view
-                    updateBlockAppList();
+                    //updateBlockAppList();
                 }
             });
             if (getItem(position).getNameApp() != null) {

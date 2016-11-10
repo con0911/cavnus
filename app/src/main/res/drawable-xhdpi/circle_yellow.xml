@@ -7,10 +7,10 @@
                 android:height="150dp"
                 android:width="150dp"/>
             <stroke
-                android:width="40dp"
+                android:width="41.5dp"
                 android:dashGap="228dp"
                 android:dashWidth="77dp"
-                android:color="@color/yellow" />
+                android:color="#80999999" />
         </shape>
     </item>
 </layer-list>

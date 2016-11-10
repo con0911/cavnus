@@ -63,7 +63,7 @@
         android:layout_height="300dp"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-        android:background="@drawable/circle_red"
+        android:background="@drawable/layout_border"
         android:orientation="vertical"
         android:layout_marginBottom="100dp">
         <ImageButton
@@ -86,13 +86,13 @@
                 android:textSize="15dp"
                 android:textColor="@color/color_background_button"
                 android:text="Family Icon : "/>
-            <ImageView
+            <com.android.keepfocus.settings.CircleImageView
                 android:id="@+id/editFamilyIcon"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/circle_border"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_gravity="center"
+                android:src="@drawable/images"
+                android:gravity="center"/>
         </LinearLayout>
 
         <LinearLayout
