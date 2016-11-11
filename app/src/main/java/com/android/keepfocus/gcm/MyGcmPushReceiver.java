@@ -4,7 +4,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,17 +11,17 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.android.keepfocus.R;
-import com.android.keepfocus.activity.ChildSchedulerActivity;
-import com.android.keepfocus.data.ChildAppItem;
-import com.android.keepfocus.data.ChildKeepFocusItem;
+import com.android.keepfocus.activity.DeviceMemberManagerment;
+import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.data.MainDatabaseHelper;
+import com.android.keepfocus.data.ParentGroupItem;
+import com.android.keepfocus.data.ParentMemberItem;
+import com.android.keepfocus.server.request.controllers.NotificationController;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.android.gms.gcm.GcmListenerService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 /**
@@ -30,7 +29,17 @@ import java.util.ArrayList;
  */
 public class MyGcmPushReceiver extends GcmListenerService {
 
+    public static String DELETE_NOTI = "del";
+    public static String CREATE_NOTI = "create";
+    public static String UPDATE_NOTI = "update";
+    public static String JOIN_GROUP = "join";
+
+    private MainDatabaseHelper mDataHelper;
+    private String contentNotification = "";
+
     private static final String TAG = MyGcmPushReceiver.class.getSimpleName();
+    private NotificationController notificationController;
+
 
     /**
      * Called when message is received.
@@ -39,13 +48,22 @@ public class MyGcmPushReceiver extends GcmListenerService {
      * @param bundle Data bundle containing message data as key/value pairs.
      *               For Set of keys use data.keySet().
      */
-    private MainDatabaseHelper kFDHelper;
 
     @Override
     public void onMessageReceived(String from, Bundle bundle) {
         String message = bundle.getString("message");
+        String title = bundle.getString("tickerText");
         Log.d(TAG, "From: " + from);
+        Log.d(TAG, "bundle: " + bundle);
         Log.d(TAG, "Message: " + message);
+        mDataHelper = new MainDatabaseHelper(getApplicationContext());
+
+        handleNotification(title, message);
+
+        //sendNotification(message, title);
+
+
+
 /*
         {"Data":{
             "Name": "ABDC",
@@ -53,8 +71,9 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     "Day": "Mon, Tue, Sun"
         }}*/
 
-        sendNotification(message);
-        kFDHelper = new MainDatabaseHelper(
+        //sendNotification(message);
+
+        /*kFDHelper = new MainDatabaseHelper(
                 getApplicationContext());
         ChildKeepFocusItem childProfile;
         if (kFDHelper.getAllKeepFocusFromDb().size() == 0) {
@@ -71,7 +90,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             String name_Keepfocus = data.getString("Name");
             String active = data.getString("Active");
             String day = data.getString("Day");
-            /*String appPackage = data.getString("Application");
+            *//*String appPackage = data.getString("Application");
             ChildAppItem app1 = new ChildAppItem();
             try {
                 String appName = appName = (String) getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(appPackage, PackageManager.GET_META_DATA));
@@ -84,7 +103,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             for(int i = 0; i < listApp.size(); i++){
                 if(listApp.get(i).getNamePackage() == appPackage) conflict = true;
             }
-            if(!conflict) kFDHelper.addAppItemToDb(app1, childProfile.getKeepFocusId());*/
+            if(!conflict) kFDHelper.addAppItemToDb(app1, childProfile.getKeepFocusId());*//*
 
             childProfile.setNameFocus(name_Keepfocus);
             childProfile.setDayFocus(day);
@@ -100,26 +119,82 @@ public class MyGcmPushReceiver extends GcmListenerService {
         kFDHelper.updateFocusItem(childProfile);
         Intent intent = new Intent();
         intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
-        getApplicationContext().sendBroadcast(intent);
+        getApplicationContext().sendBroadcast(intent);*/
     }
 
-    private void sendNotification(String message) {
-        Intent intent = new Intent(this, ChildSchedulerActivity.class);
+    public void handleNotification(String title, String message) {
+        String titleText = title;
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(message);
+
+            if(titleText.equals(DELETE_NOTI)){
+                //Delete
+            } else if (titleText.equals(CREATE_NOTI)){
+                //Create
+            } else if (titleText.equals(UPDATE_NOTI)){
+                //Update
+            } else if (titleText.equals(JOIN_GROUP)){
+                //Join
+                setJoinGroup(jsonObj);
+            } else {
+                //Another
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setJoinGroup(JSONObject data) throws JSONException {
+
+        ParentMemberItem joinDevice = new ParentMemberItem();
+        String group_code = "";//not have now
+        ParentGroupItem joinToGroup = mDataHelper.getGroupByCode(group_code);
+        MainUtils.parentGroupItem = joinToGroup;
+
+        int type;
+        if(data.getString("device_mode").equals(JoinGroupActivity.MANAGER)) {
+            type = 1;
+        } else type = 0;
+        try {
+            joinDevice.setId_member_server(data.getInt("id"));
+            joinDevice.setName_member(data.getString("device_name"));
+            joinDevice.setType_member(type);
+            //joinDevice.setId_member(joinToGroup.getId_group());
+
+            joinToGroup.getListMember().add(joinDevice);
+
+            contentNotification = "Device "+ data.getString("device_name")
+                    + ", Model " + data.getString("device_model")
+                    + ", Mode " + data.getString("device_mode")
+                    + ", Type " + data.getString("device_type");
+
+            sendNotification(contentNotification, "A device join your family");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mDataHelper.makeDetailOneGroupItemParent(joinToGroup);
+    }
+
+    private void sendNotification(String message, String title) {
+        Intent intent = new Intent(this, DeviceMemberManagerment.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
-
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.email)
-                .setContentTitle("Family join request")
+                .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
 
+
         NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }

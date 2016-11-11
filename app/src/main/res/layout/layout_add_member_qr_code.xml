@@ -55,6 +55,7 @@
         android:textStyle="bold"/>
 
     <RelativeLayout
+        android:id="@+id/layout_choose_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">

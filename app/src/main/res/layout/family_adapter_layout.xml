@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/family_name"
+        android:layout_width="match_parent"
+        android:text="Unknown"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_gravity="top|center"
+        android:layout_height="wrap_content"/>
+
+    <include layout="@layout/layout_radial_buttons" />
+
+
+
+
+</FrameLayout>

@@ -14,9 +14,6 @@
             style="@style/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/alert_dialog_padding_left_right"
-            android:layout_marginRight="@dimen/alert_dialog_padding_left_right"
-            android:layout_marginTop="@dimen/alert_dialog_padding_top"
             android:gravity="center_vertical" />
 
         <EditText
@@ -24,13 +21,11 @@
             style="@style/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/alert_dialog_padding_bottom"
-            android:layout_marginLeft="@dimen/alert_dialog_padding_left_right"
-            android:layout_marginRight="@dimen/alert_dialog_padding_left_right"
-            android:layout_marginTop="@dimen/alert_dialog_padding_top"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:gravity="center_vertical"
             android:inputType="textCapSentences"
-            android:hint="Enter name family"
+            android:hint="Enter family name"
             android:lines="1"
             android:privateImeOptions="disableEmoticonInput=true" />
     </LinearLayout>

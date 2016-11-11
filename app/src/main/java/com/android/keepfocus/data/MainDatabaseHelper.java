@@ -620,6 +620,38 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         return listGroupItem;
     }
 
+
+    public ParentGroupItem getGroupByCode(String code) {
+        ArrayList<ParentGroupItem> listGroupItem = new ArrayList<ParentGroupItem>();
+        // Select All Query
+        String selectQuery = "SELECT * FROM tblGroupParent";
+        dbMain = this.getWritableDatabase();
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        ParentGroupItem groupItem = new ParentGroupItem();
+        if (cursor.moveToFirst()) {
+            do {
+                String group_code = cursor.getString(2);
+                if(group_code == code){
+                    int id_group = Integer.parseInt(cursor.getString(0));
+                    String group_name = cursor.getString(1);
+                    String create_date = cursor.getString(3);
+                    String icon_uri = cursor.getString(4);
+                    int id_group_server = cursor.getInt(5);
+                    groupItem.setId_group(id_group);
+                    groupItem.setGroup_name(group_name);
+                    groupItem.setGroup_code(group_code);
+                    groupItem.setCreate_date(create_date);
+                    groupItem.setId_group_server(id_group_server);
+                    //
+                    groupItem.setListMember(getListMember(id_group));
+                    groupItem.setIcon_uri(icon_uri);
+                }
+            } while (cursor.moveToNext());
+        }
+        dbMain.close();
+        return groupItem;
+    }
+
     private ArrayList<ParentMemberItem> getListMember(int idGroup) {
         ArrayList<ParentMemberItem> listMember = new ArrayList<ParentMemberItem>();
         if (dbMain == null) {

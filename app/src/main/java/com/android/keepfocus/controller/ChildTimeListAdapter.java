@@ -72,6 +72,8 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
 
         addItemStatusTime();
         updateStatusTime(item.getListTimer());
+        //DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment)activity;
+        //deviceMemberManagerment.updateStatusTime(item.getListTimer());
 
         convertView.setOnClickListener(new OnItemClickListener( position ));
 
@@ -91,7 +93,6 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
 
             switch (v.getId()){
                 case R.id.btn_delete_schedule :
-                    Log.e("vinh", "delete");
                     deviceMemberManagerment.deleteProfile(mPosition);
                     break;
             }

@@ -11,9 +11,9 @@ import com.android.keepfocus.data.ParentProfileItem;
 public class MainUtils {
     public static final String TERMS_AND_CONDITIONS = "terms_and_conditions";
     public static final String MODE_DEVICE = "device_mode";
-    public static final int MODE_DEFAULT = 0;
-    public static final int MODE_ADMIN = 1;
-    public static final int MODE_MEMBER = 2;
+    public static final int MODE_PARENT = 1;
+    public static final int MODE_ADDITION_PARENT = 2;
+    public static final int MODE_CHILD = 3;
     public static final int NOTIFICATION_BLOCK = 1;
     public static final int LAUNCHER_APP_BLOCK = 2;
     public static final String REGISTATION_ID = "mode_device";

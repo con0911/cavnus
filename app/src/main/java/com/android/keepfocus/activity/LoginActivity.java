@@ -275,7 +275,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
             email = mEmailView.getText().toString();
             password = mPasswordView.getText().toString();
 
-            String registrationId = token;
+            String registrationId = MainUtils.getRegistationId;
             String deviceCode = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
             Header headerItem = new Header(email, deviceCode, registrationId, password);
             LoginRequest loginRequest = new LoginRequest(headerItem);

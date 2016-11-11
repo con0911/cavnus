@@ -15,7 +15,6 @@ import com.android.keepfocus.activity.SetupWizardActivity;
 import com.android.keepfocus.server.model.Header;
 import com.android.keepfocus.server.request.model.LoginRequest;
 import com.android.keepfocus.utils.MainUtils;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,14 +47,14 @@ public class LoginRequestController {
     }
 
 
-    public String login() {
-        Header header = new Header("testlogin3@gmail.com", "devicecode1", "registationId1", "testpass");
-        mLoginRequest = new LoginRequest(header);
-        Gson gson = new Gson();
-        String jsonRequest = gson.toJson(mLoginRequest);
-        Log.e(TAG, " " + jsonRequest);
-        return null;
-    }
+//    public String login() {
+//        Header header = new Header("testlogin3@gmail.com", "devicecode1", "registationId1", "testpass");
+//        mLoginRequest = new LoginRequest(header);
+//        Gson gson = new Gson();
+//        String jsonRequest = gson.toJson(mLoginRequest);
+//        Log.e(TAG, " " + jsonRequest);
+//        return null;
+//    }
 
 
     private class LoginAsynTask extends AsyncTask<Header, Void, String> {
@@ -94,7 +93,7 @@ public class LoginRequestController {
                         editor.putString(LoginActivity.PASSWORDLOGIN, LoginActivity.passwordLogin);
                         editor.commit();
 
-                        SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, mContext);
+                        SetupWizardActivity.setModeDevice(MainUtils.MODE_PARENT, mContext);
                         Intent groupManagement = new Intent(mContext, FamilyManagerment.class);
                         mContext.startActivity(groupManagement);
                     } else {

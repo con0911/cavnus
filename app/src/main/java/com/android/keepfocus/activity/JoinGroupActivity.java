@@ -29,6 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +67,7 @@ public class JoinGroupActivity extends Activity {
     private String token = "";
     private SharedPreferences joinPref;
     private EditText joinFamilyIDText, mActiveCode;
+    private RelativeLayout layoutChooseMode;
     private RadioButton mRBtnManage, mRBtnChild;
     public String deviceCode;
     private GroupRequestController groupRequestController;
@@ -90,9 +92,25 @@ public class JoinGroupActivity extends Activity {
         mActiveCode = (EditText) findViewById(R.id.activeCode);
         nameDevice = (EditText) findViewById(R.id.deviceName);
         btnImageDone = (Button) findViewById(R.id.doneImageBtn);
+        layoutChooseMode = (RelativeLayout) findViewById(R.id.layout_choose_mode);
+        //layoutChooseMode.setAlpha((float) 0.9);
+        layoutChooseMode.setClickable(false);
+        layoutChooseMode.setEnabled(false);
         mRBtnManage = (RadioButton) findViewById(R.id.rbtn_manage);
         mRBtnChild = (RadioButton) findViewById(R.id.rbtn_child);
-        mRBtnChild.setChecked(true);
+        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_ADDITION_PARENT){
+            mActiveCode.setVisibility(View.GONE);
+            mRBtnManage.setChecked(true);
+            mRBtnChild.setChecked(false);
+        }else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_CHILD){
+            mRBtnManage.setChecked(false);
+            mRBtnChild.setChecked(true);
+        }
+        mRBtnManage.setClickable(false);
+        mRBtnManage.setEnabled(false);
+        mRBtnChild.setClickable(false);
+        mRBtnChild.setEnabled(false);
+/*        mRBtnChild.setChecked(true);
         //SetupWizardActivity.setModeDevice(MainUtils.MODE_MEMBER, getApplicationContext());
         mRBtnManage.setChecked(false);
         mRBtnManage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -114,7 +132,7 @@ public class JoinGroupActivity extends Activity {
                     //SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, getApplicationContext());
                 }
             }
-        });
+        });*/
         joinPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -158,20 +176,19 @@ public class JoinGroupActivity extends Activity {
     protected void onResume() {
         try {
 
-            if (!isTurnOnAdmin) {
-                if (!mDPM.isAdminActive(mAdminName)) {
-                /*Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click on Activate button to enable admin permission.");
-                startActivityForResult(intent, REQUEST_ADMIN_CODE);*/
-                    showAdminDialog(SHOW_DIALOG_REQUEST_ADMIN_PERMISSION);
-                } else {
-                    //mDPM.lockNow();
+            if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_CHILD) {//if children -> request admin permission
+                if (!isTurnOnAdmin) {//if not enable yet
+                    if (!mDPM.isAdminActive(mAdminName)) {
+                        showAdminDialog(SHOW_DIALOG_REQUEST_ADMIN_PERMISSION);
+                    } else {
+                        //mDPM.lockNow();
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         isTurnOnAdmin = true;
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(REGISTRATION_COMPLETE));
@@ -196,6 +213,7 @@ public class JoinGroupActivity extends Activity {
                 AlertDialog alertDialog = new AlertDialog.Builder(this)
                         .setView(view)
                         .setTitle(getString(R.string.title_request_admin))
+                        .setCancelable(false)
                         .setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
 
                             @Override
@@ -208,14 +226,14 @@ public class JoinGroupActivity extends Activity {
 
                             }
                         })
-                        .setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
+                        /*.setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
 
                             }
-                        }).create();
+                        })*/.create();
                 alertDialog.show();
                 break;
             default:
@@ -293,11 +311,11 @@ public class JoinGroupActivity extends Activity {
 
     public String joinGroup(){
         String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
-        Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
+        //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
         Device deviceItem = new Device(0,nameDevice.getText().toString(),"ss","android",registationId,"",checkType());
         GroupUser groupUser = new GroupUser(0,0,0,mActiveCode.getText().toString());
-        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(headerItem, 3, groupItem, deviceItem, groupUser);
+        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(3, groupItem, deviceItem, groupUser);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);

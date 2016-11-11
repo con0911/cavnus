@@ -10,6 +10,9 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,8 @@ import com.android.keepfocus.R;
 import com.android.keepfocus.activity.FamilyManagerment;
 import com.android.keepfocus.data.ParentGroupItem;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class CoverFlowAdapter2 extends BaseAdapter {
@@ -67,7 +72,7 @@ public class CoverFlowAdapter2 extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.layout_radial_buttons, null, false);
+            convertView = inflater.inflate(R.layout.family_adapter_layout, null, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
@@ -77,6 +82,29 @@ public class CoverFlowAdapter2 extends BaseAdapter {
         viewHolder.addmember.setText("Add member");
         viewHolder.detail.setText("Details");
         viewHolder.name.setText(profileItem.getGroup_name());
+
+
+        Uri selectedImage = Uri.parse(profileItem.getIcon_uri());
+        InputStream is = null;
+        try {
+            is = activity.getContentResolver().openInputStream(selectedImage);
+        }catch (Exception e){
+            Log.d("TAG", "Exception " + e);
+        }
+        if (is!=null) {
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage);
+                viewHolder.iconFamily.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
+                viewHolder.iconFamily.setImageBitmap(icon);
+            }
+        } else {
+            Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
+            viewHolder.iconFamily.setImageBitmap(icon);
+        }
 
         //Bitmap avatar = BitmapFactory.decodeResource(activity.getResources(), R.drawable.blocked);
         //viewHolder.gameImage.setImageBitmap(getCircleBitmap(avatar));

@@ -54,7 +54,9 @@
             android:id="@+id/text_no_group"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="163dp" />
+            android:layout_marginTop="120dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -104,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
-                android:textColor="@color/color_background_button"
+                android:textColor="@color/black"
                 android:text="Family Name: "/>
             <EditText
                 android:id="@+id/editFamilyName"

@@ -10,15 +10,13 @@ import com.android.keepfocus.server.model.Header;
  */
 public class JoinGroupRequest {
 
-    private Header Header;
     private int Type;
     private Group Group;
     private Device Device;
     private GroupUser GroupUser;
 
 
-    public JoinGroupRequest(Header header, int type, Group group, Device device, GroupUser groupUser) {
-        Header = header;
+    public JoinGroupRequest(int type, Group group, Device device, GroupUser groupUser) {
         Type = type;
         Group = group;
         Device = device;

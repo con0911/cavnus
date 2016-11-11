@@ -38,7 +38,6 @@ import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
-import com.android.keepfocus.server.request.model.LoginRequest;
 import com.android.keepfocus.settings.CustomListView;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
@@ -189,10 +188,6 @@ public class GroupDetail extends Activity implements View.OnClickListener{
         btnSunday = (Button) mView.findViewById(R.id.details_day_sunday);
         statusBarTime = (LinearLayout) mView.findViewById(R.id.statusBarTime);
         emptyTimeView = (LinearLayout) mView.findViewById(R.id.empyTimeView);
-        mEditScheduleName = (EditText) mView.findViewById(R.id.editScheduleName);
-        if (MainUtils.parentProfile.getName_profile() != null){
-            mEditScheduleName.setText(MainUtils.parentProfile.getName_profile());
-        }
         addItemStatusTime();
 
         btnMonday.setOnClickListener(this);
@@ -486,7 +481,7 @@ public class GroupDetail extends Activity implements View.OnClickListener{
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MainUtils.parentProfile.setName_profile(mEditScheduleName.getText().toString()); // set name
+                       // MainUtils.parentProfile.setName_profile(mEditScheduleName.getText().toString()); // set name
                         // profile
                         keepData.updateProfileItem(MainUtils.parentProfile); // update
                         formatStringDayBlock(dayBlock);
@@ -568,7 +563,7 @@ public class GroupDetail extends Activity implements View.OnClickListener{
         MainUtils.memberItem = mProfileAdapter.getItem(position);
 //        Intent intent = new Intent(GroupDetail.this, ParentSchedulerActivity.class);
 //        startActivity(intent);
-        editSchedule();
+        //editSchedule();
     }
 
     public void listScheduler(int position) {

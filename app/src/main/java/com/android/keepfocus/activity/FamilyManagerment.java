@@ -84,6 +84,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     private RelativeLayout layoutList;
     private ArrayList<ParentGroupItem> listDefault;
     private HorizontalListView listTwoFamily;
+    private TextView textName;
     private static int PICK_IMAGE = 1;
     private static final int REQUEST_READ_FILE = 0;
 
@@ -212,21 +213,25 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         btnGreen = (LinearLayout) btn.findViewById(R.id.btn_green);
         btnOrange = (LinearLayout) btn.findViewById(R.id.btn_orange);
         btnYellow = (LinearLayout) btn.findViewById(R.id.btn_yellow);
+        textName = (TextView) btn.findViewById(R.id.family_name);
 
         if (btnGreen.getVisibility() != View.VISIBLE && btnOrange.getVisibility() != View.VISIBLE && btnYellow.getVisibility() != View.VISIBLE) {
             show(btnYellow, 1, 0);
             show(btnGreen, 2, 0);
             show(btnOrange, 3, 0);
             btn.playSoundEffect(SoundEffectConstants.CLICK);
+            textName.setVisibility(View.GONE);
         }
 
         if (preView != null && preView != btn) {
             btnGreen = (LinearLayout) preView.findViewById(R.id.btn_green);
             btnOrange = (LinearLayout) preView.findViewById(R.id.btn_orange);
             btnYellow = (LinearLayout) preView.findViewById(R.id.btn_yellow);
+            textName = (TextView) preView.findViewById(R.id.family_name);
             hide(btnOrange);
             hide(btnYellow);
             hide(btnGreen);
+            textName.setVisibility(View.VISIBLE);
         }
         preView = btn;
     }
@@ -366,9 +371,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
         mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
         mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
-        mTextMsg.setText("Name family :");
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add new family")
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add new family").setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -508,7 +512,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         mTextMsg = (TextView) mView.findViewById(R.id.add_member_text);
         mTextMsg.setText(getResources().getString(R.string.add_member_text));
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add new device")
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add new device").setCancelable(false)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {

@@ -39,7 +39,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
-    <string name="text_no_group">There are no available family. Please add new by click "Add" button </string>
+    <string name="text_no_group">There are no available family. Please click add button at the bottom of screen </string>
     <string name="text_no_member">There are no device in this family. Please add new device by click "Add" button </string>
     <string name="text_no_profile">There are no scheduler be config for %1$s. Please add new one by click "Add" button.</string>
     <string name="title_section1">Section 1</string>

@@ -96,6 +96,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private EditText mEditScheduleName;
     private LinearLayout statusBarTime, emptyTimeView;
     private String dayBlock;
+    private String titleDayBlock;
     private Button mBtnAddTime;
     private CustomListView listTimer;
     private TimePicker timePickerFrom, timePickerTo;
@@ -168,7 +169,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     @Override
     protected void onResume() {
-
+        //updateStatusTime(MainUtils.parentProfile.getListTimer());
         super.onResume();
         groupRequestController.updateListDevice();
         displayMember();
@@ -178,9 +179,11 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     @Override
     protected void onPause() {
         super.onPause();
+
         formatStringDayBlock(dayBlock);
         if (MainUtils.parentProfile != null) {
             MainUtils.parentProfile.setDay_profile(dayBlock);
+            MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
             keepData.updateProfileItem(MainUtils.parentProfile);
         }
         unregisterReceiver(getDatabaseReceiver);
@@ -235,22 +238,51 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     }
 
+    public void createNewSchedule(){
+        mView = getLayoutInflater().inflate(R.layout.scheduler_edit, null);
+        ParentProfileItem childItem = new ParentProfileItem();
+        childItem.setDay_profile("");
+        childItem.setId_profile(mDataHelper.addProfileItemParent(childItem,MainUtils.memberItem.getId_member()));
+        MainUtils.memberItem.getListProfile().add(childItem);
+        MainUtils.parentProfile = childItem;
+        displayScreen(); // setup Button, image,...
+        loadDayButton();
+
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Create new schedule")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        keepData.updateProfileItem(MainUtils.parentProfile); // update
+                        formatStringDayBlock(dayBlock);
+                        MainUtils.parentProfile.setDay_profile(dayBlock);
+                        MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
+                        displayDetailTime();
+                    }
+                }).setNegativeButton("CANCEL", new DatePickerDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create();
+        mAlertDialog.show();
+    }
+
     public void editSchedule(){
         mView = getLayoutInflater().inflate(R.layout.scheduler_edit, null);
         displayScreen(); // setup Button, image,...
         loadDayButton(); // status of day button
-        displayDetailTime();
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Create new scheduler")
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Edit this schedule")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MainUtils.parentProfile.setName_profile(mEditScheduleName.getText().toString()); // set name
+                        //MainUtils.parentProfile.setName_profile(mEditScheduleName.getText().toString()); // set name
                         // profile
                         keepData.updateProfileItem(MainUtils.parentProfile); // update
-                        //formatStringDayBlock(dayBlock);
-                        //loadDayButton(); // status of day button
-                        //displayDetailTime();
+                        formatStringDayBlock(dayBlock);
+                        MainUtils.parentProfile.setDay_profile(dayBlock);
+                        MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
+                        displayDetailTime();
                         //updateStatusTime(MainUtils.parentProfile.getListTimer());
                     }
                 }).setNegativeButton("CANCEL", new DatePickerDialog.OnClickListener() {
@@ -273,10 +305,10 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         btnSunday = (Button) mView.findViewById(R.id.details_day_sunday);
         statusBarTime = (LinearLayout) mView.findViewById(R.id.statusBarTime);
         emptyTimeView = (LinearLayout) mView.findViewById(R.id.empyTimeView);
-        mEditScheduleName = (EditText) mView.findViewById(R.id.editScheduleName);
-        if (MainUtils.parentProfile != null){
-            mEditScheduleName.setText(MainUtils.parentProfile.getName_profile());
-        }
+        //mEditScheduleName = (EditText) mView.findViewById(R.id.editScheduleName);
+//        if (MainUtils.parentProfile != null){
+//            mEditScheduleName.setText(MainUtils.parentProfile.getName_profile());
+//        }
         addItemStatusTime();
 
         btnMonday.setOnClickListener(this);
@@ -286,14 +318,16 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         btnFriday.setOnClickListener(this);
         btnSaturday.setOnClickListener(this);
         btnSunday.setOnClickListener(this);
-
+        if (MainUtils.parentProfile == null) return;
         //getActionBar().setTitle(MainUtils.parentProfile.getName_profile() + " schedule detail");
         dayBlock = MainUtils.parentProfile.getDay_profile();
+        titleDayBlock = MainUtils.parentProfile.getName_profile();
 
         mBtnAddTime = (Button) mView.findViewById(R.id.details_time_add);
         listTimer = (CustomListView) findViewById(R.id.time_listview);
         mBtnAddTime.setOnClickListener(this);
     }
+
 
     public void addItemStatusTime() {
         listStatus = new ArrayList<TextView>();
@@ -360,6 +394,58 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             btnSunday.setBackgroundResource(R.drawable.circle_white);
             btnSunday.setTextColor(Color.BLACK);
         }
+    }
+
+    public String setTitleDayBlock(String day) { // sort day block
+        titleDayBlock = "";
+        if (day == null){
+            return "";
+        }
+        if (day.contains("Sun"))
+            titleDayBlock = "Sun";
+        if (day.contains("Mon")) {
+            if (titleDayBlock == "") {
+                titleDayBlock = "Mon";
+            } else {
+                titleDayBlock += "-Mon";
+            }
+        }
+        if (day.contains("Tue")) {
+            if (titleDayBlock == "") {
+                titleDayBlock = "Tue";
+            } else {
+                titleDayBlock += "-Tue";
+            }
+        }
+        if (day.contains("Wed")) {
+            if (titleDayBlock == "") {
+                titleDayBlock = "Wed";
+            } else {
+                titleDayBlock += "-Wed";
+            }
+        }
+        if (day.contains("Thu")) {
+            if (titleDayBlock == "") {
+                titleDayBlock = "Thu";
+            } else {
+                titleDayBlock += "-Thu";
+            }
+        }
+        if (day.contains("Fri")) {
+            if (titleDayBlock == "") {
+                titleDayBlock = "Fri";
+            } else {
+                titleDayBlock += "-Fri";
+            }
+        }
+        if (day.contains("Sat")) {
+            if (titleDayBlock == "") {
+                titleDayBlock = "Sat";
+            } else {
+                titleDayBlock += "-Sat";
+            }
+        }
+        return titleDayBlock;
     }
 
     public void formatStringDayBlock(String day) { // sort day block
@@ -717,7 +803,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 break;
 
             case R.id.btn_add_schedule:
-                createNewGroup();
+                createNewSchedule();
                 break;
 
             case R.id.details_day_monday:
@@ -793,42 +879,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         }
     }
 
-    public void createNewGroup() {
-        mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
-        mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
-        mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
-        mTextMsg.setText("Name profile:");
-
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add new profile")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if (!mEditText.getText().toString().equals("")) {
-                            ParentProfileItem childItem = new ParentProfileItem();
-                            childItem.setName_profile(mEditText.getText().toString());
-                            childItem.setDay_profile("");
-                            childItem.setId_profile(mDataHelper.addProfileItemParent(childItem,MainUtils.memberItem.getId_member()));
-                            MainUtils.memberItem.getListProfile().add(childItem);
-
-                            MainUtils.parentProfile = childItem;
-//                            Intent intent = new Intent(GroupDetail.this, SchedulerConfigActivity.class);
-//                            startActivity(intent);
-                            editSchedule();
-                        } else {
-                            dialog.cancel();
-                        }
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                }).create();
-
-        mAlertDialog.show();
-    }
-
     private void showDetailsTime(final ParentTimeItem timeItem) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         // Get the layout inflater
@@ -892,6 +942,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                         }
                         //updateTimerList();
                         //timeListAdapter.updateStatusTime(listStatus);
+                        updateStatusTime(MainUtils.parentProfile.getListTimer());
                     }
                 })
                 .setNegativeButton("CANCEL",
@@ -918,9 +969,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
                                 mDataHelper.deleteProfileItemById(timeListAdapter.getItem(mPosition).getId_profile());
-                                //timeListAdapter.notifyDataSetChanged();
-                                //listTime.setAdapter(timeListAdapter);
-                                //finish();
+                                MainUtils.memberItem.getListProfile().remove(mPosition);
+                                displayDetailTime();
                             }
                         })
                 .setNegativeButton(getString(R.string.cancel_button),

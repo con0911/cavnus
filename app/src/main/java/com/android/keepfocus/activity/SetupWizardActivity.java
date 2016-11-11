@@ -55,15 +55,15 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         ActionBar actionBar = getActionBar();
         actionBar.hide();
         modeDevice = PreferenceManager.getDefaultSharedPreferences(this);
-        if (getModeDevice(mContext) == MainUtils.MODE_ADMIN) {
+        if (getModeDevice(mContext) == MainUtils.MODE_PARENT /*|| getModeDevice(mContext) == MainUtils.MODE_ADDITION_PARENT*/) {
             Intent groupManagement = new Intent(this, FamilyManagerment.class);
             startActivity(groupManagement);
             //setContentView(R.layout.activity_group_management);
             return;
         }
-        SharedPreferences.Editor editor = modeDevice.edit();
-        editor.putInt(MainUtils.MODE_DEVICE, MainUtils.MODE_DEFAULT);
-        editor.commit();
+        //SharedPreferences.Editor editor = modeDevice.edit();
+        //editor.putInt(MainUtils.MODE_DEVICE, MainUtils.MODE_DEFAULT);
+        //editor.commit();
         setContentView(R.layout.set_up_mode);
         setTitle("Cavnus");
         btnParent = (Button) findViewById(R.id.btn_parent);
@@ -93,6 +93,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 Intent joinGroupChild = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                setModeDevice(MainUtils.MODE_CHILD, mContext);
                 startActivity(joinGroupChild);
             }
         });
@@ -101,6 +102,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 Intent joinGroupAddParent = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
+                setModeDevice(MainUtils.MODE_ADDITION_PARENT, mContext);
                 startActivity(joinGroupAddParent);
             }
         });
@@ -116,7 +118,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
                 new IntentFilter(PUSH_NOTIFICATION));
         sendJsonDeviceRequest();
 
-        if (getModeDevice(mContext) == MainUtils.MODE_ADMIN) {
+        if (getModeDevice(mContext) == MainUtils.MODE_PARENT /*|| getModeDevice(mContext) == MainUtils.MODE_ADDITION_PARENT*/) {
             finish();
         }
     }
@@ -145,6 +147,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_parent:
+                //setModeDevice(MainUtils.MODE_PARENT, mContext);
                 Intent login = new Intent(SetupWizardActivity.this, LoginActivity.class);
                 startActivity(login);
                 break;
