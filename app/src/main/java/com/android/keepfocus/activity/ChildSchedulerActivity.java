@@ -89,6 +89,7 @@ public class ChildSchedulerActivity extends Activity {
         super.onResume();
         displayProfile();
         registerReceiver(myReceiver,intentFilter);
+        updateMissingNotifications();
     }
 
     @Override
@@ -97,7 +98,7 @@ public class ChildSchedulerActivity extends Activity {
         unregisterReceiver(myReceiver);
     }
 
-    public void createNewGroup() {
+/*    public void createNewGroup() {
         mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
         mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
         mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
@@ -128,7 +129,7 @@ public class ChildSchedulerActivity extends Activity {
                 }).create();
 
         mAlertDialog.show();
-    }
+    }*/
 
     private ArrayList<ChildNotificationItemMissHistory> getListMissingNotification() {
         return mDataHelper.getListNotificaionHistoryItem();
@@ -190,7 +191,7 @@ public class ChildSchedulerActivity extends Activity {
         // TODO Auto-generated method stub
         switch (item.getItemId()) {
             case R.id.add:
-                createNewGroup();//add for test
+                //createNewGroup();//add for test
                 break;
 
             case R.id.notification:

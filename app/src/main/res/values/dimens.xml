@@ -14,6 +14,7 @@
     <dimen name="checkbox_size">25dp</dimen>
     <dimen name="button_width">100dp</dimen>
     <dimen name="button_height">48dp</dimen>
+    <dimen name="content_text_spacing">8dp</dimen>
 
     <dimen name="button_margin_bottom">80dp</dimen>
 
@@ -51,6 +52,8 @@
     <dimen name="description_text_size">16dp</dimen>
     <dimen name="width_switch_bar">60dp</dimen>
 
+    <dimen name="top_bar_height">64dp</dimen>
+
     <dimen name="lock_screen_shortcut_applist_item_minheight">56dip</dimen>
     <dimen name="list_item_start_padding">0dp</dimen>
     <dimen name="list_item_end_padding">0dp</dimen>
@@ -67,4 +70,5 @@
     <dimen name="viewpager_margin">-64dp</dimen>
     <dimen name="viewpager_margin_fix">20dp</dimen>
 
+    <dimen name="no_item_text_size">16sp</dimen>
 </resources>

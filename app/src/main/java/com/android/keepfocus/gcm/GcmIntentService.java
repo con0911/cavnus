@@ -67,6 +67,9 @@ public class GcmIntentService extends IntentService {
 
             Log.e(TAG, "GCM Registration Token: " + token);
             MainUtils.getRegistationId = token;
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(MainUtils.REGISTATION_ID, token);
+            editor.commit();
 
             // sending the registration id to our server
             sendRegistrationToServer(token);

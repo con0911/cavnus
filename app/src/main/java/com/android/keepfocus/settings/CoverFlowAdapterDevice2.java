@@ -68,7 +68,7 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.layout_radial_buttons, null, false);
+            convertView = inflater.inflate(R.layout.family_adapter_layout, null, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
@@ -77,7 +77,7 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
         viewHolder.delete.setText("Block All");
         viewHolder.addmember.setText("Scheduler");
         viewHolder.detail.setText("Allow All");
-        viewHolder.name.setText(profileItem.getName_member());
+
 
         //Bitmap avatar = BitmapFactory.decodeResource(activity.getResources(), R.drawable.blocked);
         //viewHolder.gameImage.setImageBitmap(getCircleBitmap(avatar));
@@ -86,6 +86,7 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
         Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
         viewHolder.iconFamily.setImageBitmap(icon);
         convertView.setTag(String.valueOf(position));
+        viewHolder.name.setText(profileItem.getName_member());
 
         viewHolder.iconFamily.setOnClickListener(onClickListener(position));
         viewHolder.delete.setOnClickListener(onClickListener(position));

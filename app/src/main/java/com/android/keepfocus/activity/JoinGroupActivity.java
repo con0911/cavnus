@@ -45,6 +45,7 @@ import com.android.keepfocus.server.model.GroupUser;
 import com.android.keepfocus.server.model.Header;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.model.JoinGroupRequest;
+import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.gson.Gson;
 
@@ -77,6 +78,7 @@ public class JoinGroupActivity extends Activity {
     public static String CHILDREN = "child";
     private int typeJoin = 0;
     private EditText nameDevice;
+    public static boolean isJoinSuccess;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -98,11 +100,22 @@ public class JoinGroupActivity extends Activity {
         layoutChooseMode.setEnabled(false);
         mRBtnManage = (RadioButton) findViewById(R.id.rbtn_manage);
         mRBtnChild = (RadioButton) findViewById(R.id.rbtn_child);
-        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_ADDITION_PARENT){
+/*        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_ADDITION_PARENT){
+            Intent familyManagement = new Intent(JoinGroupActivity.this, FamilyManagerment.class);
+            startActivity(familyManagement);
+            return;
+        }
+        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_CHILD ){
+            Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
+            startActivity(childSchedule);
+            return;
+        }*/
+
+        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager){
             mActiveCode.setVisibility(View.GONE);
             mRBtnManage.setChecked(true);
             mRBtnChild.setChecked(false);
-        }else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_CHILD){
+        }else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children){
             mRBtnManage.setChecked(false);
             mRBtnChild.setChecked(true);
         }
@@ -157,14 +170,20 @@ public class JoinGroupActivity extends Activity {
             public void onClick(View v) {
                 //createRequestDialog();
                 if (mActiveCode.getText().toString().equals("")) {
-                    btnImageDone.setBackground(getDrawable(R.drawable.btn_join_add_border));
-                    btnImageDone.setTextColor(Color.parseColor("#000000"));
+                    //btnImageDone.setBackground(getDrawable(R.drawable.btn_join_add_border));
+                    //btnImageDone.setTextColor(Color.parseColor("#000000"));
                     //return;
                 } else {
                     btnImageDone.setBackground(getDrawable(R.drawable.btn_signup));
                     btnImageDone.setTextColor(Color.parseColor("#FFFFFF"));
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
+                    if (isJoinSuccess) {
+
+                    }else {
+                        //finish();
+                        //Log.e("vinh", "isJoinSuccess " + isJoinSuccess);
+                    }
 
                 }
             }
@@ -343,10 +362,27 @@ public class JoinGroupActivity extends Activity {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
-                    if(description_result.equals("Success")) {
+                    String status_result = message.getString("Status");
+                    if(status_result.equals("1")) {
+                        isJoinSuccess = true;
+                        SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
+                        Log.e("vinh", "isJoinSuccess" + isJoinSuccess);
                         Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
                         groupRequestController.updateSuccess();
+                        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
+                            Log.e("vinh", "isJoinSuccess Child" + isJoinSuccess);
+                            Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
+                            startActivity(childSchedule);
+                        } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager) {
+                            Log.e("vinh", "isJoinSuccess Manager" + isJoinSuccess);
+                            Intent familyManagement = new Intent(JoinGroupActivity.this, FamilyManagerment.class);
+                            startActivity(familyManagement);
+                        }
+
                     } else {
+                        SetupWizardActivity.setModeDevice(MainUtils.MODE_DEFAULT, mContext);
+                        SetupWizardActivity.setTypeJoin(Constants.JoinFail, mContext);
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

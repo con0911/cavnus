@@ -622,7 +622,6 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 
 
     public ParentGroupItem getGroupByCode(String code) {
-        ArrayList<ParentGroupItem> listGroupItem = new ArrayList<ParentGroupItem>();
         // Select All Query
         String selectQuery = "SELECT * FROM tblGroupParent";
         dbMain = this.getWritableDatabase();
@@ -631,7 +630,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 String group_code = cursor.getString(2);
-                if(group_code == code){
+                if(group_code.equals(code)){
                     int id_group = Integer.parseInt(cursor.getString(0));
                     String group_name = cursor.getString(1);
                     String create_date = cursor.getString(3);
@@ -1020,7 +1019,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String group_code = "'" + parentGroupItem.getGroup_code() + "'";
         String create_date = "'" + parentGroupItem.getCreate_date() + "'";
         int id_group_server = parentGroupItem.getId_group_server();
-        String icon_uri = "'" + parentGroupItem.getIcon_uri() + "'";
+        String icon_uri = parentGroupItem.getIcon_uri();
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblGroupParent set group_name = " + group_name

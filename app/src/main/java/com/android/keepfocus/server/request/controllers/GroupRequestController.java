@@ -60,7 +60,7 @@ public class GroupRequestController {
         joinPref = PreferenceManager.getDefaultSharedPreferences(context);
         getEmailandPass();
         //registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
-        registationId = MainUtils.getRegistationId;
+        registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
         deviceCode = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 

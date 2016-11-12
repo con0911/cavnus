@@ -8,6 +8,9 @@ public class Constants {
     public static final int Manager = 2;
     public static final int Children = 3;
 
+    public static final int JoinSuccess = 1;
+    public static final int JoinFail = 2;
+
     public static final int RequestTypeGet = 2;
     public static final int RequestTypeUpdate = 1;
     public static final int RequestTypeJoin = 3;

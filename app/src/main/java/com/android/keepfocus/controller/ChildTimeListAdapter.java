@@ -3,7 +3,6 @@ package com.android.keepfocus.controller;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
-import com.android.keepfocus.activity.GroupDetail;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;

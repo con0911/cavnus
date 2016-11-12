@@ -21,13 +21,14 @@ import android.widget.TextView;
 import com.android.keepfocus.R;
 import com.android.keepfocus.gcm.GcmIntentService;
 import com.android.keepfocus.server.request.controllers.DeviceRequestController;
+import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 
 public class SetupWizardActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "SetupWizardActivity";
     private Button btnNext;
     private SharedPreferences agreePref;
-    private static SharedPreferences modeDevice;
+    private static SharedPreferences modeDevice, typeJoin;
     private CheckBox mCheckboxTerm;
     private Button btnParent, btnChild, btnAddParent;
 
@@ -35,8 +36,6 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     public static final String PUSH_NOTIFICATION = "pushNotification";
     private final String TERMS_URL = "http://mycavnus.com/terms-and-conditions/";
     private TextView mTerms;
-
-    private boolean checkAgree;
 
     private Context mContext;
     private GcmIntentService gcmIntentService;
@@ -55,11 +54,22 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         ActionBar actionBar = getActionBar();
         actionBar.hide();
         modeDevice = PreferenceManager.getDefaultSharedPreferences(this);
-        if (getModeDevice(mContext) == MainUtils.MODE_PARENT /*|| getModeDevice(mContext) == MainUtils.MODE_ADDITION_PARENT*/) {
+        if (getModeDevice(mContext) == Constants.Admin /*|| getModeDevice(mContext) == MainUtils.MODE_ADDITION_PARENT*/) {
             Intent groupManagement = new Intent(this, FamilyManagerment.class);
             startActivity(groupManagement);
             //setContentView(R.layout.activity_group_management);
             return;
+        }
+        if (getTypeJoin(mContext) == Constants.JoinSuccess){
+            if (getModeDevice(mContext) == Constants.Manager){
+                Intent familyManagement = new Intent(this, FamilyManagerment.class);
+                startActivity(familyManagement);
+                return;
+            }else if (getModeDevice(mContext) == Constants.Children){
+                Intent childSchedule = new Intent(this, ChildSchedulerActivity.class);
+                startActivity(childSchedule);
+                return;
+            }
         }
         //SharedPreferences.Editor editor = modeDevice.edit();
         //editor.putInt(MainUtils.MODE_DEVICE, MainUtils.MODE_DEFAULT);
@@ -93,7 +103,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 Intent joinGroupChild = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
-                setModeDevice(MainUtils.MODE_CHILD, mContext);
+                setModeDevice(Constants.Children, mContext);
                 startActivity(joinGroupChild);
             }
         });
@@ -102,7 +112,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 Intent joinGroupAddParent = new Intent(SetupWizardActivity.this, JoinGroupActivity.class);
-                setModeDevice(MainUtils.MODE_ADDITION_PARENT, mContext);
+                setModeDevice(Constants.Manager, mContext);
                 startActivity(joinGroupAddParent);
             }
         });
@@ -118,7 +128,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
                 new IntentFilter(PUSH_NOTIFICATION));
         sendJsonDeviceRequest();
 
-        if (getModeDevice(mContext) == MainUtils.MODE_PARENT /*|| getModeDevice(mContext) == MainUtils.MODE_ADDITION_PARENT*/) {
+        if (getModeDevice(mContext) == Constants.Admin /*|| getModeDevice(mContext) == MainUtils.MODE_ADDITION_PARENT*/) {
             finish();
         }
     }
@@ -178,9 +188,21 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         editor.commit();
     }
 
+    public static void setTypeJoin(int type, Context context){
+        typeJoin = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = modeDevice.edit();
+        editor.putInt(MainUtils.TYPE_JOIN, type);
+        editor.commit();
+    }
+
     public static int getModeDevice(Context context) {
         modeDevice = PreferenceManager.getDefaultSharedPreferences(context);
         return modeDevice.getInt(MainUtils.MODE_DEVICE, 0);
+    }
+
+    public static int getTypeJoin(Context context){
+        typeJoin = PreferenceManager.getDefaultSharedPreferences(context);
+        return typeJoin.getInt(MainUtils.TYPE_JOIN, 0);
     }
 
 }

@@ -3,6 +3,7 @@ package com.android.keepfocus.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
+import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.settings.CoverFlowAdapterDevice;
 import com.android.keepfocus.settings.CoverFlowAdapterDevice2;
 import com.android.keepfocus.settings.CustomListView;
@@ -64,7 +66,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private AlertDialog mAlertDialog;
     private TextView mTextMsg;
     private GroupRequestController groupRequestController;
-    private GroupManagermentActivity.GetDatabaseReceiver getDatabaseReceiver;
+    private BroadcastReceiver getDatabaseReceiver;
     private IntentFilter intentFilter;
 
     private ArrayList<ParentProfileItem> listProfileItem;
@@ -102,6 +104,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private TimePicker timePickerFrom, timePickerTo;
     private Button fromBt, toBt;
     private MainDatabaseHelper keepData;
+    private SchedulerRequestController schedulerRequestController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         setTitle(MainUtils.parentGroupItem.getGroup_name());
         mDataHelper = new MainDatabaseHelper(mContext);
         groupRequestController = new GroupRequestController(this);
+        schedulerRequestController = new SchedulerRequestController(this);
 
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
 
@@ -142,7 +146,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         displayMember();
         coverFlow.setOnScrollPositionListener(onScrollListener());
         coverFlow.setOnItemSelectedListener(onItemSelectedListener());
-        getDatabaseReceiver = new GroupManagermentActivity.GetDatabaseReceiver(){
+        getDatabaseReceiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
                 displayMember();
@@ -240,11 +244,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     public void createNewSchedule(){
         mView = getLayoutInflater().inflate(R.layout.scheduler_edit, null);
-        ParentProfileItem childItem = new ParentProfileItem();
-        childItem.setDay_profile("");
-        childItem.setId_profile(mDataHelper.addProfileItemParent(childItem,MainUtils.memberItem.getId_member()));
-        MainUtils.memberItem.getListProfile().add(childItem);
-        MainUtils.parentProfile = childItem;
+        MainUtils.parentProfile = new ParentProfileItem();
+        MainUtils.parentProfile.setDay_profile("");
         displayScreen(); // setup Button, image,...
         loadDayButton();
 
@@ -252,11 +253,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        keepData.updateProfileItem(MainUtils.parentProfile); // update
                         formatStringDayBlock(dayBlock);
                         MainUtils.parentProfile.setDay_profile(dayBlock);
                         MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
                         displayDetailTime();
+                        schedulerRequestController.addNewScheduler();
+                        //keepData.updateProfileItem(MainUtils.parentProfile); // update
                     }
                 }).setNegativeButton("CANCEL", new DatePickerDialog.OnClickListener() {
                     @Override
@@ -278,11 +280,11 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                     public void onClick(DialogInterface dialog, int which) {
                         //MainUtils.parentProfile.setName_profile(mEditScheduleName.getText().toString()); // set name
                         // profile
-                        keepData.updateProfileItem(MainUtils.parentProfile); // update
                         formatStringDayBlock(dayBlock);
                         MainUtils.parentProfile.setDay_profile(dayBlock);
                         MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
                         displayDetailTime();
+                        schedulerRequestController.updateScheduler();
                         //updateStatusTime(MainUtils.parentProfile.getListTimer());
                     }
                 }).setNegativeButton("CANCEL", new DatePickerDialog.OnClickListener() {
@@ -522,7 +524,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 View currentView = coverFlow.findViewWithTag(String.valueOf(position));
                 if (currentView != null) {
                     lable[position] = true;
+                    MainUtils.memberItem = adapter.getItem(position);
                     onMainButtonClicked(currentView);
+                    showDetail(position);
                 }
 
             }
@@ -635,7 +639,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
         listBlockPropertiesArr = MainUtils.parentGroupItem.getListMember();
         if (listBlockPropertiesArr.size() == 0){
-            mTextNoGroup.setText(R.string.text_no_member);
+            mTextNoGroup.setText(R.string.text_no_group);
             adapter = new CoverFlowAdapterDevice(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listProperties.setVisibility(View.GONE);
@@ -765,11 +769,11 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         MainUtils.memberItem = adapter.getItem(position);
         //editName.setText(MainUtils.memberItem.getName_member().toString());
         if(detailLayout.getVisibility() == View.GONE) {
-            detailLayout.startAnimation(bottomUp);
+            //detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
         } else {
             detailLayout.setVisibility(View.GONE);
-            detailLayout.startAnimation(bottomUp);
+            //detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
         }
         displayDetailTime();
@@ -890,7 +894,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         timePickerTo = (TimePicker) view.findViewById(R.id.timerPickerTo);
         fromBt = (Button) view.findViewById(R.id.fromBt);
         toBt = (Button) view.findViewById(R.id.toBt);
-        // Get data TimeItem
+        // Get data TimeItems
         timePickerFrom.setCurrentHour(timeItem.getHourBegin());
         timePickerFrom.setCurrentMinute(timeItem.getMinusBegin());
         timePickerTo.setCurrentHour(timeItem.getHourEnd());

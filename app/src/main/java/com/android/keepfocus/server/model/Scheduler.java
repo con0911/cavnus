@@ -8,10 +8,10 @@ public class Scheduler {
     private int id;
     private String scheduler_name;
     private String days;
-    private boolean isActive;
+    private int isActive;
     private int groupuser_id;
 
-    public Scheduler(int id, String scheduler_name, String days, boolean isActive, int groupuser_id) {
+    public Scheduler(int id, String scheduler_name, String days, int isActive, int groupuser_id) {
         this.id = id;
         this.scheduler_name = scheduler_name;
         this.days = days;

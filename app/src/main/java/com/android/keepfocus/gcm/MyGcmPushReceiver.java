@@ -33,6 +33,10 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static String CREATE_NOTI = "create";
     public static String UPDATE_NOTI = "update";
     public static String JOIN_GROUP = "join";
+    public static String MANAGER = "manager";
+    public static String CHILDREN = "child";
+
+
 
     private MainDatabaseHelper mDataHelper;
     private String contentNotification = "";
@@ -145,11 +149,18 @@ public class MyGcmPushReceiver extends GcmListenerService {
         }
     }
 
+
+    public void createScheduler(JSONObject data) throws JSONException {
+
+    }
+
     public void setJoinGroup(JSONObject data) throws JSONException {
 
         ParentMemberItem joinDevice = new ParentMemberItem();
-        String group_code = "";//not have now
+        //String group_code = data.getString("group_code");//not have now
+        String group_code = "MKXS7E";//for test
         ParentGroupItem joinToGroup = mDataHelper.getGroupByCode(group_code);
+        Log.d(TAG,"join To Group "+joinToGroup.getGroup_name());
         MainUtils.parentGroupItem = joinToGroup;
 
         int type;
@@ -160,9 +171,9 @@ public class MyGcmPushReceiver extends GcmListenerService {
             joinDevice.setId_member_server(data.getInt("id"));
             joinDevice.setName_member(data.getString("device_name"));
             joinDevice.setType_member(type);
-            //joinDevice.setId_member(joinToGroup.getId_group());
 
-            joinToGroup.getListMember().add(joinDevice);
+            mDataHelper.addMemberItemParent(joinDevice,joinToGroup.getId_group());
+            //mDataHelper.makeDetailOneGroupItemParent(joinToGroup);
 
             contentNotification = "Device "+ data.getString("device_name")
                     + ", Model " + data.getString("device_model")
@@ -175,7 +186,6 @@ public class MyGcmPushReceiver extends GcmListenerService {
             e.printStackTrace();
         }
 
-        mDataHelper.makeDetailOneGroupItemParent(joinToGroup);
     }
 
     private void sendNotification(String message, String title) {

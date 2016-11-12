@@ -1,10 +1,5 @@
 package com.android.keepfocus.activity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,12 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -36,6 +27,9 @@ import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.settings.CustomListView;
 import com.android.keepfocus.utils.MainUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ChildSchedulerDetail extends Activity implements
@@ -258,7 +252,7 @@ public class ChildSchedulerDetail extends Activity implements
         timePickerTo = (TimePicker) view.findViewById(R.id.timerPickerTo);
         fromBt = (Button) view.findViewById(R.id.fromBt);
         toBt = (Button) view.findViewById(R.id.toBt);
-        // Get data TimeItem
+        // Get data TimeItems
         timePickerFrom.setCurrentHour(timeItem.getHourBegin());
         timePickerFrom.setCurrentMinute(timeItem.getMinusBegin());
         timePickerTo.setCurrentHour(timeItem.getHourEnd());

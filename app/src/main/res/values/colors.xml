@@ -43,4 +43,5 @@
     <color name="violet">#ff865fdc</color>
     <color name="darker_violet">#ff4d3980</color>
     <color name="black">#000</color>
+    <color name="no_item_text_color">#66252525</color>
 </resources>

@@ -65,6 +65,10 @@
 -->
     </style>
 
+    <style name="no_item_text_style">
+        <item name="android:textSize">@dimen/no_item_text_size</item>
+        <item name="android:textColor">@color/no_item_text_color</item>
+    </style>
     <style name="textView">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -73,6 +77,15 @@
 <!--        <item name="android:typeface">monospace</item>
         <item name="android:textColor">@color/title_text_color</item>-->
         <item name="android:textSize">17sp</item>
+        <item name="android:lineSpacingExtra">1.5dp</item>
+    </style>
+
+    <style name="textTitle">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">18dp</item>
         <item name="android:lineSpacingExtra">1.5dp</item>
     </style>
 

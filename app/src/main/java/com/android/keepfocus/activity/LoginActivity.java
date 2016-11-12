@@ -130,19 +130,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
             public void onClick(View view) {
                 attemptLogin();
 
-                //test
-/*                if (serviceConnector.checkLogin(mEmailView.getText().toString(),
-                        mPasswordView.getText().toString(), "abc123")){
-                    //set mode device is admin
-                    SetupWizardActivity.setModeDevice(MainUtils.MODE_ADMIN, mContext);
-                    Log.e("Login", "current mode : " + SetupWizardActivity.getModeDevice(mContext));
-                    Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                    Intent groupManagement = new Intent(LoginActivity.this, GroupManagermentActivity.class);
-                    startActivity(groupManagement);
-
-                }else {
-                    Toast.makeText(LoginActivity.this, "Your password or email is wrong", Toast.LENGTH_SHORT).show();
-                }*/
 
 
             }

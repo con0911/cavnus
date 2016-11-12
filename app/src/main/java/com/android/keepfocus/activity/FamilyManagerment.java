@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,12 +19,9 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,14 +30,13 @@ import android.widget.Toast;
 import com.android.keepfocus.R;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
+import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.settings.CoverFlowAdapter;
 import com.android.keepfocus.settings.CoverFlowAdapter2;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
@@ -62,7 +57,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     private MainDatabaseHelper mDataHelper;
     private Context mContext;
 
-    private ImageView mFABBtnCreate;
+    public static final String REGISTRATION_COMPLETE = "registrationComplete";
+    public static final String PUSH_NOTIFICATION = "pushNotification";
     private TextView mTextNoGroup;
     public ArrayList<ParentGroupItem> listFamily;
     private View mView;
@@ -72,21 +68,27 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     static Button notifCount;
     static int mNotifCount = 0;
     private GroupRequestController groupRequestController;
-    private GroupManagermentActivity.GetDatabaseReceiver getDatabaseReceiver;
     private IntentFilter intentFilter;
     private LinearLayout detailLayout;
-    private ImageButton layoutClose;
     private Animation bottomUp;
     private Animation bottomDown;
-    private EditText editName;
-    private Button doneEdit;
-    private ImageView familyIconEdit;
     private RelativeLayout layoutList;
     private ArrayList<ParentGroupItem> listDefault;
     private HorizontalListView listTwoFamily;
     private TextView textName;
+    private TextView nameFamily;
+    private TextView listDeviceName;
+    private TextView textFamilyID;
     private static int PICK_IMAGE = 1;
-    private static final int REQUEST_READ_FILE = 0;
+
+
+    private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            displayProfile();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,39 +108,28 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         setTitle("Family management");
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
-        mFABBtnCreate = (ImageView) findViewById(R.id.createButton);
         detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
-        editName = (EditText) findViewById(R.id.editFamilyName);
-        familyIconEdit = (ImageView) findViewById(R.id.editFamilyIcon);
-        familyIconEdit.setOnClickListener((View.OnClickListener) this);
-
-        doneEdit = (Button) findViewById(R.id.layoutEditDone);
-        doneEdit.setOnClickListener(this);
+        nameFamily = (TextView) findViewById(R.id.nameFamily);
+        listDeviceName = (TextView) findViewById(R.id.listDeviceName);
+        textFamilyID = (TextView) findViewById(R.id.family_id);
         detailLayout.setVisibility(View.GONE);
-        layoutClose = (ImageButton) findViewById(R.id.layoutClose);
-        layoutClose.setOnClickListener(this);
+        //layoutClose = (ImageButton) findViewById(R.id.layoutClose);
         bottomUp = AnimationUtils.loadAnimation(this,
                 R.anim.bottom_up);
         bottomDown = AnimationUtils.loadAnimation(this,
                 R.anim.bottom_down);
-        mFABBtnCreate.setOnClickListener(this);
 
         displayProfile();
         coverFlow.setOnScrollPositionListener(onScrollListener());
         coverFlow.setOnItemSelectedListener(onItemSelectedListener());
 
-        groupRequestController = new GroupRequestController(this);
-        getDatabaseReceiver = new GroupManagermentActivity.GetDatabaseReceiver(){
 
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                displayProfile();
-            }
-        };
+        groupRequestController = new GroupRequestController(this);
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
 
     }
+
 
     private FeatureCoverFlow.OnScrollPositionListener onScrollListener() {
         return new FeatureCoverFlow.OnScrollPositionListener() {
@@ -150,7 +141,19 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                     lable[position] = true;
                     onMainButtonClicked(currentView);
                     MainUtils.parentGroupItem = adapter.getItem(position);
-                    showDetail(position);
+                    nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
+                    ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
+                    if (listDevice.size() > 0) {
+                        String listDeviceText = " ";
+                        for (int i =0; i < listDevice.size(); i++){
+                            listDeviceText += listDevice.get(i).getName_member() + ", ";
+                        }
+                        listDeviceText = listDeviceText.substring(0,listDeviceText.length()-2);
+                        listDeviceName.setText(listDeviceText);
+                    } else {
+                        listDeviceName.setText(" ");
+                    }
+                    showAddMember(position);
                 }
 
             }
@@ -185,6 +188,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             layoutList.setVisibility(View.GONE);
             listTwoFamily.setVisibility(View.GONE);
             detailLayout.setVisibility(View.GONE);
+            if(detailLayout.getVisibility() == View.VISIBLE) {
+                detailLayout.setVisibility(View.GONE);
+            }
 
         }else if (listFamily.size() > 0 && listFamily.size() <= 3) {
             mTextNoGroup.setText(" ");
@@ -193,11 +199,17 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             adapter = new CoverFlowAdapter(this, listFamily);
             CoverFlowAdapter2 adapter2 = new CoverFlowAdapter2(this, listFamily);
             listTwoFamily.setAdapter(adapter2);
+            if(detailLayout.getVisibility() == View.VISIBLE) {
+                detailLayout.setVisibility(View.GONE);
+            }
         } else if (listFamily.size() > 3) {
             mTextNoGroup.setText(" ");
             listTwoFamily.setVisibility(View.GONE);
             layoutList.setVisibility(View.VISIBLE);
             adapter = new CoverFlowAdapter(this, listFamily);
+            if(detailLayout.getVisibility() == View.VISIBLE) {
+                detailLayout.setVisibility(View.GONE);
+            }
         }
         coverFlow.setAdapter(adapter);
         lable = new boolean[adapter.getCount()];
@@ -277,37 +289,16 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.createButton:
-                createNewGroup();
-                break;
 
-            case R.id.layoutClose:
-                if(detailLayout.getVisibility() == View.VISIBLE) {
-                    hideKeyboard();
-                    detailLayout.startAnimation(bottomDown);
-                    //detailLayout.setVisibility(View.GONE);
-                }
 
-            case R.id.layoutEditDone:
-                String name = editName.getText().toString();
-                MainUtils.parentGroupItem.setGroup_name(name);
-                mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
-                displayProfile();
-                if(detailLayout.getVisibility() == View.VISIBLE) {
-                    hideKeyboard();
-                    detailLayout.startAnimation(bottomDown);
-                    //detailLayout.setVisibility(View.GONE);
-                }
-
-                break;
-            case R.id.editFamilyIcon:
+            /*case R.id.editFamilyIcon:
                 Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
-                /*Intent intent = new Intent();
-                intent.setType("image*//*");
+                *//*Intent intent = new Intent();
+                intent.setType("image*//**//*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);*/
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);*//*
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, PICK_IMAGE);
+                startActivityForResult(i, PICK_IMAGE);*/
 
             default:
                 break;
@@ -342,29 +333,21 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         }
     }
 
-    private void hideKeyboard(){
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editName.getWindowToken(), 0);
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        displayProfile();
+        //displayProfile();
         registerReceiver(getDatabaseReceiver,intentFilter);
         //groupRequestController.getGroupInServer();
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        super.onBackPressed();
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(getDatabaseReceiver);
+
     }
 
     public void createNewGroup() {
@@ -400,55 +383,37 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         mAlertDialog.show();
     }
 
-    public void createDefaultFamily(){
-        ParentGroupItem parentItem = new ParentGroupItem();
-        parentItem.setGroup_name("Default");
-        parentItem.setId_group(12345);
-        MainUtils.parentGroupItem = parentItem;
-        mDataHelper.addGroupItemParent(parentItem);
+
+    public void changeIcon(int position) {
+        MainUtils.parentGroupItem = adapter.getItem(position);
+        Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent();
+        intent.setType("image*//**//*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+        Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, PICK_IMAGE);
     }
 
-    public void showListMember(int position) {
+
+    public void showDetail(int position) {
         MainUtils.parentGroupItem = adapter.getItem(position);
         Intent intent = new Intent(this, DeviceMemberManagerment.class);
         startActivity(intent);
     }
-    public void showDetail(int position) {
+
+    public void showAddMember(int position) {
         MainUtils.parentGroupItem = adapter.getItem(position);
-        editName.setText(MainUtils.parentGroupItem.getGroup_name().toString());
-        //Intent intent = new Intent(this, GroupDetail.class);
-        //startActivity(intent);
+
+
         if(detailLayout.getVisibility() == View.GONE) {
-            detailLayout.startAnimation(bottomUp);
-            detailLayout.setVisibility(View.VISIBLE);
-        } else {
-            detailLayout.setVisibility(View.GONE);
             detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
         }
 
-        Uri selectedImage = Uri.parse(MainUtils.parentGroupItem.getIcon_uri());
-        InputStream is = null;
-        try {
-            is = mContext.getContentResolver().openInputStream(selectedImage);
-        }catch (Exception e){
-            Log.d("TAG", "Exception " + e);
-        }
-        if (is!=null) {
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver() , selectedImage);
-                familyIconEdit.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.images);
-                familyIconEdit.setImageBitmap(icon);
-            }
-        } else {
-            Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.images);
-            familyIconEdit.setImageBitmap(icon);
-        }
+        textFamilyID.setText(MainUtils.parentGroupItem.getGroup_code());
     }
+
 
     public void onItemLongClick(int position) {
         deleteProfile(position);
@@ -477,11 +442,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         mDeleteDialog.show();
     }
 
-    public static class GetDatabaseReceiver extends BroadcastReceiver {//must be static
-        @Override
-        public void onReceive(Context context, Intent intent) {
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -494,31 +454,21 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
         switch (item.getItemId()) {
-            case R.id.action_settings :
-                groupRequestController.getGroupInServer();
+            case R.id.action_add :
+                createNewGroup();
                 break;
-            case R.id.menu_settings :
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+            case R.id.action_update :
+                groupRequestController.getGroupInServer();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void addNewMember(int position) {
-        mView = getLayoutInflater().inflate(R.layout.add_member_layout, null);
-        TextView mIDText = (TextView) mView.findViewById(R.id.add_member_ID);
-        mIDText.setText("ID Family : " + listFamily.get(position).getGroup_code());
-        mTextMsg = (TextView) mView.findViewById(R.id.add_member_text);
-        mTextMsg.setText(getResources().getString(R.string.add_member_text));
-
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add new device").setCancelable(false)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                }).create();
-        mAlertDialog.show();
+        if(detailLayout.getVisibility() == View.GONE) {
+            detailLayout.startAnimation(bottomUp);
+            detailLayout.setVisibility(View.VISIBLE);
+        }
+        textFamilyID.setText(listFamily.get(position).getGroup_code());
     }
 }

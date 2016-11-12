@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:background="@drawable/layout_border"
+        android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/layoutClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/icon_close" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.android.keepfocus.settings.CircleImageView
+                android:id="@+id/editFamilyIcon"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@drawable/images"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:text="Family Name: "/>
+            <EditText
+                android:id="@+id/editFamilyName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:background="@color/main_action_bar_title_color"
+                android:singleLine="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/layoutEditDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:text="Done"/>
+
+    </LinearLayout>
+</LinearLayout>

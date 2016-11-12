@@ -132,7 +132,7 @@ public class CoverFlowAdapter extends BaseAdapter {
                 FamilyManagerment familyManagerment = (FamilyManagerment)activity;
                 switch (v.getId()){
                     case R.id.img_center:
-                        familyManagerment.showListMember(position);
+                        familyManagerment.changeIcon(position);
                         break;
                     case R.id.txt_green:
                         View parent1 = (View) v.getParent();

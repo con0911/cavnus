@@ -446,7 +446,7 @@ public class SchedulerConfigActivity extends Activity implements
         timePickerTo = (TimePicker) view.findViewById(R.id.timerPickerTo);
         fromBt = (Button) view.findViewById(R.id.fromBt);
         toBt = (Button) view.findViewById(R.id.toBt);
-        // Get data TimeItem
+        // Get data TimeItems
         timePickerFrom.setCurrentHour(timeItem.getHourBegin());
         timePickerFrom.setCurrentMinute(timeItem.getMinusBegin());
         timePickerTo.setCurrentHour(timeItem.getHourEnd());
