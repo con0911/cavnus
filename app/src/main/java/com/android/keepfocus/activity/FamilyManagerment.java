@@ -308,8 +308,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("contt","onActivityResult= "+ requestCode +"-"+ resultCode +"-"+ data);
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("contt","onActivityResult= " + data);
         if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data!=null) {
             Uri selectedImage = data.getData();
             boolean success = true;
@@ -317,6 +317,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             Bitmap bitmap = null;
             try
             {
+                success = true;
                 bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver() , selectedImage);
             }
             catch (Exception e)
@@ -329,6 +330,10 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             }
             //familyIconEdit.setImageBitmap(bitmap);
             displayProfile();
+            int position = data.getIntExtra("position",0);
+            if(MainUtils.parentGroupItem!=null){
+                coverFlow.scrollToPosition(position);
+            }
             //familyIconEdit.setImageURI(selectedImage);
         }
     }
@@ -389,6 +394,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent();
         intent.setType("image*//**//*");
+        intent.putExtra("position",position);
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
         Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

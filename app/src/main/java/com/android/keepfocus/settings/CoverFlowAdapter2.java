@@ -84,7 +84,8 @@ public class CoverFlowAdapter2 extends BaseAdapter {
         viewHolder.name.setText(profileItem.getGroup_name());
 
 
-        Uri selectedImage = Uri.parse(profileItem.getIcon_uri());
+        Uri selectedImage = Uri.parse(profileItem.getIcon_uri().toString());
+        Log.d("contt","Uri= " + selectedImage);
         InputStream is = null;
         try {
             is = activity.getContentResolver().openInputStream(selectedImage);
@@ -92,6 +93,7 @@ public class CoverFlowAdapter2 extends BaseAdapter {
             Log.d("TAG", "Exception " + e);
         }
         if (is!=null) {
+            Log.d("TAG", "Uri " + selectedImage + "is " + is);
             Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage);

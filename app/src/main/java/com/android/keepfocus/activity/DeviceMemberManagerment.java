@@ -151,6 +151,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             public void onReceive(Context context, Intent intent) {
                 displayMember();
                 setTitle(MainUtils.parentGroupItem.getGroup_name());
+                displayDetailTime();
             }
         };
 
@@ -175,7 +176,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     protected void onResume() {
         //updateStatusTime(MainUtils.parentProfile.getListTimer());
         super.onResume();
-        groupRequestController.updateListDevice();
+        //groupRequestController.updateListDevice();
         displayMember();
         registerReceiver(getDatabaseReceiver, intentFilter);
     }

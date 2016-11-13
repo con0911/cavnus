@@ -108,6 +108,11 @@ public class LoginRequestController {
                 }
             } else {
                 Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                LoginActivity loginActivity = (LoginActivity) mContext;
+                loginActivity.finish();
+                Intent login = new Intent(mContext, LoginActivity.class);
+                mContext.startActivity(login);
+                //return;
             }
             //mDialog.dismiss();
 

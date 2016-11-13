@@ -5,7 +5,7 @@
     android:background="#3B5998"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:weightSum="7"
+    android:weightSum="15"
     tools:context="com.android.keepfocus.activity.LoginActivity">
 
     <ImageView

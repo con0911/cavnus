@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:layout_weight="3"
+        android:layout_weight="4.2"
         android:background="@drawable/cavnus_bg"
  />
 
@@ -23,7 +23,7 @@
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="30dp"
         android:orientation="vertical">
 
 
@@ -70,7 +70,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/layout_setup_mode"
-        android:layout_marginBottom="60dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="70dp"
         android:autoLink="web"
         android:gravity="center"
         android:linksClickable="true"

@@ -2,6 +2,7 @@ package com.android.keepfocus.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +50,9 @@ public class ChildSchedulerActivity extends Activity {
     private ChildProfileReceiver myReceiver;
     private IntentFilter intentFilter;
 
+    private MainDatabaseHelper keepData;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +60,7 @@ public class ChildSchedulerActivity extends Activity {
         setTitle("Your schedule");
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
         mContext = this;
+        //keepData = new MainDatabaseHelper(this);
         listProperties = (ListView) findViewById(R.id.listP);
         headerView = (LinearLayout) getLayoutInflater().inflate(R.layout.header_view_profile, null);
         listProperties.addHeaderView(headerView);
@@ -85,10 +90,15 @@ public class ChildSchedulerActivity extends Activity {
     }
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         displayProfile();
-        registerReceiver(myReceiver,intentFilter);
+        registerReceiver(myReceiver, intentFilter);
         updateMissingNotifications();
     }
 
@@ -158,7 +168,7 @@ public class ChildSchedulerActivity extends Activity {
 
     }
 
-    public void onItemClick(int position) {
+    public void goToSchedule(int position) {
         MainUtils.childKeepFocusItem = mProfileAdapter.getItem(position);
         Intent intent = new Intent(ChildSchedulerActivity.this, ChildSchedulerDetail.class);
         startActivity(intent);

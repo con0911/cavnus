@@ -11,10 +11,11 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.android.keepfocus.R;
+import com.android.keepfocus.activity.ChildSchedulerActivity;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.activity.JoinGroupActivity;
+import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
-import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.request.controllers.NotificationController;
 import com.android.keepfocus.utils.MainUtils;
@@ -35,6 +36,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static String JOIN_GROUP = "join";
     public static String MANAGER = "manager";
     public static String CHILDREN = "child";
+    private ChildKeepFocusItem childProfile;
 
 
 
@@ -57,10 +59,15 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public void onMessageReceived(String from, Bundle bundle) {
         String message = bundle.getString("message");
         String title = bundle.getString("tickerText");
+        if(title.equals("")) {
+            title = bundle.getString("title");
+        }
+        //String title2 = bundle.getString("title");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "bundle: " + bundle);
         Log.d(TAG, "Message: " + message);
         mDataHelper = new MainDatabaseHelper(getApplicationContext());
+
 
         handleNotification(title, message);
 
@@ -135,7 +142,9 @@ public class MyGcmPushReceiver extends GcmListenerService {
             if(titleText.equals(DELETE_NOTI)){
                 //Delete
             } else if (titleText.equals(CREATE_NOTI)){
+                Log.d(TAG, "create: " + jsonObj);
                 //Create
+                createNewScheduler();
             } else if (titleText.equals(UPDATE_NOTI)){
                 //Update
             } else if (titleText.equals(JOIN_GROUP)){
@@ -150,18 +159,40 @@ public class MyGcmPushReceiver extends GcmListenerService {
     }
 
 
-    public void createScheduler(JSONObject data) throws JSONException {
 
+    public void createNewScheduler(){
+            childProfile = new ChildKeepFocusItem();
+            childProfile.setNameFocus("Mon");
+            childProfile.setActive(false);
+            if (mDataHelper.getAllKeepFocusFromDb().size() == 0) {
+                childProfile = new ChildKeepFocusItem();
+                mDataHelper.addNewFocusItem(childProfile);
+            } else {
+                childProfile = mDataHelper.getAllKeepFocusFromDb().get(0);
+            }
+            mDataHelper.updateFocusItem(childProfile);
+            Intent intent = new Intent();
+            intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+            getApplicationContext().sendBroadcast(intent);
+            sendNotificationCreate("", "New scheduler create");
     }
 
     public void setJoinGroup(JSONObject data) throws JSONException {
 
         ParentMemberItem joinDevice = new ParentMemberItem();
         //String group_code = data.getString("group_code");//not have now
+
         String group_code = "MKXS7E";//for test
-        ParentGroupItem joinToGroup = mDataHelper.getGroupByCode(group_code);
-        Log.d(TAG,"join To Group "+joinToGroup.getGroup_name());
-        MainUtils.parentGroupItem = joinToGroup;
+        //MainUtils.parentGroupItem = mDataHelper.getGroupByCode(group_code);
+
+        //for test
+
+        if (MainUtils.parentGroupItem == null) {
+            MainUtils.parentGroupItem = mDataHelper.getAllGroupItemParent().get(0);//add to first
+        }
+        //ParentGroupItem joinToGroup = new ParentGroupItem();
+        Log.d(TAG,"join To Group "+MainUtils.parentGroupItem.getGroup_name());
+        //MainUtils.parentGroupItem = joinToGroup;
 
         int type;
         if(data.getString("device_mode").equals(JoinGroupActivity.MANAGER)) {
@@ -172,8 +203,9 @@ public class MyGcmPushReceiver extends GcmListenerService {
             joinDevice.setName_member(data.getString("device_name"));
             joinDevice.setType_member(type);
 
-            mDataHelper.addMemberItemParent(joinDevice,joinToGroup.getId_group());
-            //mDataHelper.makeDetailOneGroupItemParent(joinToGroup);
+            mDataHelper.addMemberItemParent(joinDevice,MainUtils.parentGroupItem.getId_group());
+            MainUtils.parentGroupItem.getListMember().add(joinDevice);
+            mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
 
             contentNotification = "Device "+ data.getString("device_name")
                     + ", Model " + data.getString("device_model")
@@ -202,6 +234,25 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
 
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+    private void sendNotificationCreate(String message, String title) {
+        Intent intent = new Intent(this, ChildSchedulerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.email)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);

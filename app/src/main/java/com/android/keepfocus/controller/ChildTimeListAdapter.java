@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.keepfocus.R;
@@ -16,6 +18,7 @@ import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
+import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
 
@@ -32,8 +35,10 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
     private TextView dayScheduler;
     private ImageButton btnDeleteSchedule;
     private LinearLayout statusTime;
+    private Switch isActive;
     private ArrayList<TextView> listStatus;
     private Context mContext;
+
 
 
     public ChildTimeListAdapter(Activity activity, int resource,
@@ -48,6 +53,7 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         titleTime = (TextView) convertView.findViewById(R.id.details_time_title);
         statusTime = (LinearLayout) convertView.findViewById(R.id.statusBarTime);
         dayScheduler = (TextView) convertView.findViewById(R.id.day_scheduler);
+        isActive = (Switch) convertView.findViewById(R.id.is_active);
         btnDeleteSchedule = (ImageButton) convertView.findViewById(R.id.btn_delete_schedule);
         btnDeleteSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +62,18 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
                 deviceMemberManagerment.deleteProfile(position);
             }
         });
+
+       /* isActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    isActive.setChecked(true);
+                    MainUtils.parentProfile.setActive(true);
+                }else {
+                    isActive.setChecked(false);
+                }
+            }
+        });*/
 
         final int mPosition = position;
         final ParentProfileItem item = getItem(mPosition);

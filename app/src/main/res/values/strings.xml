@@ -39,6 +39,8 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
+    <string name="permission_rationale_2">"Storage permissions are needed for providing email
+        completions."</string>
     <string name="text_no_group">No items</string>
     <string name="text_no_profile">There are no scheduler be config for %1$s. Please add new one by click "Add" button.</string>
     <string name="title_section1">Section 1</string>

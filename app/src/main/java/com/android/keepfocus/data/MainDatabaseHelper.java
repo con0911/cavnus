@@ -1019,7 +1019,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String group_code = "'" + parentGroupItem.getGroup_code() + "'";
         String create_date = "'" + parentGroupItem.getCreate_date() + "'";
         int id_group_server = parentGroupItem.getId_group_server();
-        String icon_uri = parentGroupItem.getIcon_uri();
+        String icon_uri = "'" + parentGroupItem.getIcon_uri() + "'";
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblGroupParent set group_name = " + group_name

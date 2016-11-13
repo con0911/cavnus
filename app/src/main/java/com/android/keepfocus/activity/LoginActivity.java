@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 /**
  * A login screen that offers login via email/password.
@@ -57,6 +59,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int REQUEST_READ__EXTERNAL_STORAGE = 1;
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
     public static final String PUSH_NOTIFICATION = "pushNotification";
 
@@ -89,6 +92,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     public static String passwordLogin = "";
     public static String EMAILLOGIN = "LoginEmail";
     public static String PASSWORDLOGIN = "LoginPassword";
+    public static ImageView imgCavnus;
 
 
     @Override
@@ -100,7 +104,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
 
         ActionBar actionBar = getActionBar();
         actionBar.hide();
-
+        imgCavnus = (ImageView) findViewById(R.id.img_cavnus);
         mTextRegister = (Button) findViewById(R.id.register_button);
         mTextForgetPass = (TextView) findViewById(R.id.text_forget_pass);
         // Set up the login form.
@@ -170,12 +174,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     }
 
     private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
+        if (!mayRequestContacts() || !mayRequestStorage()) {
+                return;
         }
-
         getLoaderManager().initLoader(0, null, this);
     }
+
 
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -199,6 +203,30 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
         return false;
     }
 
+    private boolean mayRequestStorage() {
+        Log.d("contt","requestmayRequestStorage");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE)) {
+            Snackbar.make(mEmailView, R.string.permission_rationale_2, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, REQUEST_READ__EXTERNAL_STORAGE);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, REQUEST_READ__EXTERNAL_STORAGE);
+        }
+        return false;
+    }
+
+
     /**
      * Callback received when a permissions request has been completed.
      */
@@ -210,8 +238,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
                 populateAutoComplete();
             }
         }
+        if (requestCode == REQUEST_READ__EXTERNAL_STORAGE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                populateAutoComplete();
+            }
+        }
+
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -298,12 +336,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             mLoginFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -313,6 +351,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    //imgCavnus.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
         } else {

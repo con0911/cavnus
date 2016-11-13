@@ -127,7 +127,7 @@ public class AdapterChildProfile extends ArrayAdapter<ChildKeepFocusItem> {
         @Override
         public void onClick(View v) {
             ChildSchedulerActivity childSchedulerActivity = (ChildSchedulerActivity)activity;
-            childSchedulerActivity.onItemClick(mPosition);
+            childSchedulerActivity.goToSchedule(mPosition);
         }
     }
 }
