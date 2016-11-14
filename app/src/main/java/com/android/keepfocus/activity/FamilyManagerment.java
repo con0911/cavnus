@@ -80,6 +80,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     private TextView listDeviceName;
     private TextView textFamilyID;
     private static int PICK_IMAGE = 1;
+    private static int positionNow = 0;
 
 
     private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver(){
@@ -313,7 +314,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data!=null) {
             Uri selectedImage = data.getData();
             boolean success = true;
-            Log.d("contt","Uri= " + selectedImage);
             Bitmap bitmap = null;
             try
             {
@@ -329,11 +329,12 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
             }
             //familyIconEdit.setImageBitmap(bitmap);
-            displayProfile();
-            int position = data.getIntExtra("position",0);
             if(MainUtils.parentGroupItem!=null){
-                coverFlow.scrollToPosition(position);
+                coverFlow.scrollToPosition(positionNow);
             }
+            displayProfile();
+
+
             //familyIconEdit.setImageURI(selectedImage);
         }
     }
@@ -392,12 +393,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     public void changeIcon(int position) {
         MainUtils.parentGroupItem = adapter.getItem(position);
         Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent();
-        intent.setType("image*//**//*");
-        intent.putExtra("position",position);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
         Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        positionNow = position;
         startActivityForResult(i, PICK_IMAGE);
     }
 
@@ -471,10 +468,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     }
 
     public void addNewMember(int position) {
-        if(detailLayout.getVisibility() == View.GONE) {
-            detailLayout.startAnimation(bottomUp);
-            detailLayout.setVisibility(View.VISIBLE);
-        }
+        detailLayout.startAnimation(bottomUp);
+        detailLayout.setVisibility(View.VISIBLE);
         textFamilyID.setText(listFamily.get(position).getGroup_code());
     }
+
 }

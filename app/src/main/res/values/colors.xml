@@ -24,6 +24,7 @@
     <color name="color_set_pin_code_button">#FFFFFF</color>
 
 
+    <color name="red_block_color">#ee5c42</color>
     <color name="colorPrimary">#00994d</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>

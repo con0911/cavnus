@@ -16,12 +16,4 @@
             android:pivotY="50%"
             android:drawable="@drawable/circle_yellow"/>
     </item>
-    <item android:state_pressed="false">
-        <rotate
-            android:fromDegrees="250"
-            android:toDegrees="359"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            android:drawable="@drawable/circle_yellow"/>
-    </item>
 </selector>

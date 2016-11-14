@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,7 +86,6 @@ public class CoverFlowAdapter extends BaseAdapter {
 
 
         Uri selectedImage = Uri.parse(profileItem.getIcon_uri().toString());
-        Log.d("contt","Uri= " + selectedImage);
         InputStream is = null;
         try {
             is = activity.getContentResolver().openInputStream(selectedImage);
@@ -93,7 +93,6 @@ public class CoverFlowAdapter extends BaseAdapter {
             Log.d("TAG", "Exception " + e);
         }
         if (is!=null) {
-            Log.d("TAG", "Uri " + selectedImage + "is " + is);
             Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage);
@@ -145,6 +144,8 @@ public class CoverFlowAdapter extends BaseAdapter {
                         View parent2 = (View) v.getParent();
                         parent2.setPressed(true);
                         familyManagerment.addNewMember(position);
+                        setDelayPress(false, parent2);
+
                         break;
                     case R.id.txt_orange:
                         View parent3 = (View) v.getParent();
@@ -165,6 +166,19 @@ public class CoverFlowAdapter extends BaseAdapter {
 
             }
         };
+    }
+
+
+    public void setDelayPress(boolean press, View v){
+        final Handler handler = new Handler();
+        final View view = v;
+        final boolean pressed = press;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.setPressed(pressed);
+            }
+        }, 150);
     }
 
 

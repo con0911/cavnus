@@ -92,6 +92,7 @@ public class ChildSchedulerActivity extends Activity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
+        finishAffinity();
     }
 
     @Override

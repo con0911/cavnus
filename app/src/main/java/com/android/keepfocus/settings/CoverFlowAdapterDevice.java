@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,7 @@ public class CoverFlowAdapterDevice extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.family_adapter_layout, null, false);
+            convertView = inflater.inflate(R.layout.device_adapter_layout, null, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
@@ -117,6 +118,7 @@ public class CoverFlowAdapterDevice extends BaseAdapter {
                         View parent2 = (View) v.getParent();
                         parent2.setPressed(true);
                         deviceMemberManagerment.showDetail(position);
+                        setDelayPress(false, parent2);
                         break;
                     case R.id.txt_orange:
                         View parent3 = (View) v.getParent();
@@ -182,6 +184,18 @@ public class CoverFlowAdapterDevice extends BaseAdapter {
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmapimg, rect, rect, paint);
         return output;
+    }
+
+    public void setDelayPress(boolean press, View v){
+        final Handler handler = new Handler();
+        final View view = v;
+        final boolean pressed = press;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.setPressed(pressed);
+            }
+        }, 150);
     }
 
 

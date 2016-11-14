@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.keepfocus.R;
@@ -42,6 +44,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     private DeviceRequestController mDeviceRequestController;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String token = "";
+    private ImageView imgCavnus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +83,21 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         btnAddParent = (Button) findViewById(R.id.btn_additional_parent);
         btnChild = (Button) findViewById(R.id.btn_child);
         mTerms = (TextView) findViewById(R.id.terms_link);
+        imgCavnus = (ImageView) findViewById(R.id.img_cavnus_setup_mode);
+
+        int display_mode = getResources().getConfiguration().orientation;
+
+        if (display_mode == Configuration.ORIENTATION_PORTRAIT) {
+            imgCavnus.setVisibility(View.VISIBLE);
+        } else {
+            imgCavnus.setVisibility(View.GONE);
+        }
         //mTerms.setTextColor(Color.BLUE);
         btnParent.setOnClickListener(this);
         //btnAddParent.setOnClickListener(this);
         //btnChild.setOnClickListener(this);
         mTerms.setOnClickListener(this);
+
 
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {

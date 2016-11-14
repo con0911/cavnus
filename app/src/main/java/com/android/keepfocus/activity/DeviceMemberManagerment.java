@@ -105,6 +105,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private Button fromBt, toBt;
     private MainDatabaseHelper keepData;
     private SchedulerRequestController schedulerRequestController;
+    private TextView nameDevice;
+    private TextView listScheduler;
+    private TextView textName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,9 +126,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         schedulerRequestController = new SchedulerRequestController(this);
 
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
+        nameDevice = (TextView) findViewById(R.id.nameFamily);
+        listScheduler = (TextView) findViewById(R.id.listDeviceName);
 
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
+        intentFilter.addAction(MainUtils.UPDATE_SCHEDULER);
 
 
         detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
@@ -149,9 +155,13 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         getDatabaseReceiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
-                displayMember();
-                setTitle(MainUtils.parentGroupItem.getGroup_name());
-                displayDetailTime();
+                final String action = intent.getAction();
+                if (MainUtils.UPDATE_FAMILY_GROUP.equals(action)) {
+                    displayMember();
+                    setTitle(MainUtils.parentGroupItem.getGroup_name());
+                } else if (MainUtils.UPDATE_SCHEDULER.equals(action)) {
+                    displayDetailTime();
+                }
             }
         };
 
@@ -177,8 +187,18 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         //updateStatusTime(MainUtils.parentProfile.getListTimer());
         super.onResume();
         //groupRequestController.updateListDevice();
-        displayMember();
+        //displayMember();
         registerReceiver(getDatabaseReceiver, intentFilter);
+    }
+
+    public void schedulerChecked(boolean isChecked, int position) {
+        MainUtils.parentProfile = timeListAdapter.getItem(position);
+        if (isChecked){
+            MainUtils.parentProfile.setActive(true);
+        }else {
+            MainUtils.parentProfile.setActive(false);
+        }
+        schedulerRequestController.updateScheduler();
     }
 
     @Override
@@ -528,6 +548,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                     MainUtils.memberItem = adapter.getItem(position);
                     onMainButtonClicked(currentView);
                     showDetail(position);
+                    nameDevice.setText(MainUtils.memberItem.getName_member());
+
                 }
 
             }
@@ -549,21 +571,25 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         btnGreen = (LinearLayout) btn.findViewById(R.id.btn_green);
         btnOrange = (LinearLayout) btn.findViewById(R.id.btn_orange);
         btnYellow = (LinearLayout) btn.findViewById(R.id.btn_yellow);
+        textName = (TextView) btn.findViewById(R.id.family_name);
 
         if (btnGreen.getVisibility() != View.VISIBLE && btnOrange.getVisibility() != View.VISIBLE && btnYellow.getVisibility() != View.VISIBLE) {
             show(btnYellow, 1, 0);
             show(btnGreen, 2, 0);
             show(btnOrange, 3, 0);
             btn.playSoundEffect(SoundEffectConstants.CLICK);
+            textName.setVisibility(View.GONE);
         }
 
         if (preView != null && preView != btn) {
             btnGreen = (LinearLayout) preView.findViewById(R.id.btn_green);
             btnOrange = (LinearLayout) preView.findViewById(R.id.btn_orange);
             btnYellow = (LinearLayout) preView.findViewById(R.id.btn_yellow);
+            textName = (TextView) preView.findViewById(R.id.family_name);
             hide(btnOrange);
             hide(btnYellow);
             hide(btnGreen);
+            textName.setVisibility(View.VISIBLE);
         }
         preView = btn;
     }
@@ -973,9 +999,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                             @Override
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
-                                mDataHelper.deleteProfileItemById(timeListAdapter.getItem(mPosition).getId_profile());
-                                MainUtils.memberItem.getListProfile().remove(mPosition);
-                                displayDetailTime();
+                                MainUtils.parentProfile = timeListAdapter.getItem(mPosition);
+                                schedulerRequestController.deleteScheduler();
                             }
                         })
                 .setNegativeButton(getString(R.string.cancel_button),

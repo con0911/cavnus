@@ -37,4 +37,5 @@ public class MainUtils {
 
     public static String UPDATE_CHILD_SCHEDULER = "com.android.keepfocus.UPDATE_CHILD_SCHEDULER";
     public static String UPDATE_FAMILY_GROUP = "com.android.keepfocus.UPDATE_FAMILY_GROUP";
+    public static String UPDATE_SCHEDULER = "com.android.keepfocus.UPDATE_SCHEDULER";
 }

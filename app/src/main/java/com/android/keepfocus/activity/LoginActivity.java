@@ -13,7 +13,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -105,6 +108,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
         ActionBar actionBar = getActionBar();
         actionBar.hide();
         imgCavnus = (ImageView) findViewById(R.id.img_cavnus);
+
+        int display_mode = getResources().getConfiguration().orientation;
+
+        if (display_mode == Configuration.ORIENTATION_PORTRAIT) {
+            imgCavnus.setVisibility(View.VISIBLE);
+        } else {
+            imgCavnus.setVisibility(View.GONE);
+        }
         mTextRegister = (Button) findViewById(R.id.register_button);
         mTextForgetPass = (TextView) findViewById(R.id.text_forget_pass);
         // Set up the login form.
@@ -142,6 +153,32 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+/*        mLoginFormView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                Rect r = new Rect();
+                mLoginFormView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = mLoginFormView.getRootView().getHeight();
+
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+
+                Log.d("vinh", "keypadHeight = " + keypadHeight);
+
+                if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                    // keyboard is opened
+                    //imgCavnus.setVisibility(View.GONE);
+                    //imgCavnus.setBackground(getDrawable(R.drawable.icon_app));
+                }
+                else {
+                    // keyboard is closed
+                    imgCavnus.setVisibility(View.VISIBLE);
+                }
+            }
+        });*/
+
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -156,6 +193,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
         intent.putExtra("key", "register");
         startService(intent);
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

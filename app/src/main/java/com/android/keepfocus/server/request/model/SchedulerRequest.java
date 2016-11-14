@@ -24,4 +24,10 @@ public class SchedulerRequest {
         Type = type;
         Action = action;
     }
+    public SchedulerRequest(com.android.keepfocus.server.model.Scheduler scheduler, com.android.keepfocus.server.model.Device device, int type, int action) {
+        Scheduler = scheduler;
+        Device = device;
+        Type = type;
+        Action = action;
+    }
 }

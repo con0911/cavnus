@@ -63,6 +63,11 @@ public class SchedulerRequestController {
         updateAsyn.execute();
     }
 
+    public void deleteScheduler() {
+        AddSchedulerAsynTask updateAsyn = new AddSchedulerAsynTask(Constants.ActionTypeDelete);
+        updateAsyn.execute();
+    }
+
     private int isActive(boolean active){
         if(active) return 1;
         else return 2;
@@ -99,6 +104,21 @@ public class SchedulerRequestController {
         return jsonRequest;
     }
 
+    public String deleteScheduler(ParentProfileItem profileItem){
+
+        Scheduler schedulerItem = new Scheduler(profileItem.getId_profile_server(), profileItem.getName_profile(),
+                profileItem.getDay_profile(), isActive(profileItem.isActive()), 0);
+        ParentMemberItem device = MainUtils.memberItem;
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","","child");
+        ArrayList<TimeItems> timeItem = getListTime(profileItem);
+        schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate);
+
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(schedulerRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
 
     private class AddSchedulerAsynTask extends AsyncTask<ParentProfileItem, Void, String> {
         ProgressDialog mDialog;
@@ -110,6 +130,8 @@ public class SchedulerRequestController {
                 request = createScheduler(MainUtils.parentProfile);
             } else if (type == Constants.ActionTypeUpdate){
                 request = updateScheduler(MainUtils.parentProfile);
+            } else if (type == Constants.ActionTypeDelete) {
+                request = deleteScheduler(MainUtils.parentProfile);
             }
         }
         @Override
@@ -142,6 +164,9 @@ public class SchedulerRequestController {
                             mDataHelper.updateProfileItem(MainUtils.parentProfile);
                         } else if (typeRequest == Constants.ActionTypeUpdate){ // update
                             mDataHelper.updateProfileItem(MainUtils.parentProfile);
+                        } else if (typeRequest == Constants.ActionTypeDelete) {
+                            mDataHelper.deleteProfileItemById(MainUtils.parentProfile.getId_profile());
+                            MainUtils.memberItem.getListProfile().remove(MainUtils.parentProfile);
                         }
 
                         updateSuccess();
@@ -170,7 +195,7 @@ public class SchedulerRequestController {
 
     public void updateSuccess(){
         Intent intent = new Intent();
-        intent.setAction(MainUtils.UPDATE_FAMILY_GROUP);
+        intent.setAction(MainUtils.UPDATE_SCHEDULER);
         mContext.sendBroadcast(intent);
     }
 

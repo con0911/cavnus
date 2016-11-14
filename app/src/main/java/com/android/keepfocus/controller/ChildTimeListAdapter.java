@@ -18,7 +18,6 @@ import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
-import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
 
@@ -63,17 +62,6 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
             }
         });
 
-       /* isActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    isActive.setChecked(true);
-                    MainUtils.parentProfile.setActive(true);
-                }else {
-                    isActive.setChecked(false);
-                }
-            }
-        });*/
 
         final int mPosition = position;
         final ParentProfileItem item = getItem(mPosition);
@@ -85,6 +73,14 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         } else {
             dayScheduler.setVisibility(View.GONE);
         }
+        isActive.setChecked(item.isActive());
+        isActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment)activity;
+                deviceMemberManagerment.schedulerChecked(isChecked, mPosition);
+            }
+        });
 
         addItemStatusTime();
         updateStatusTime(item.getListTimer());
