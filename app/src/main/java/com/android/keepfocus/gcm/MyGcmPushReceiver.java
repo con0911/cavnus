@@ -15,14 +15,21 @@ import com.android.keepfocus.activity.ChildSchedulerActivity;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
+import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.request.controllers.NotificationController;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -169,14 +176,30 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
     public void createNewScheduler(String message) throws JSONException {
         JSONObject data = new JSONObject(message);
+        JSONObject scheduler = data.getJSONObject("Scheduler");
         childProfile = new ChildKeepFocusItem();
-        childProfile.setNameFocus(data.getString("scheduler_name"));
-        childProfile.setActive(isActive(data.getInt("isActive")));
-        childProfile.setDayFocus(data.getString("days"));
-        childProfile.setKeepFocusId(data.getInt("id"));
+        childProfile.setNameFocus(scheduler.getString("scheduler_name"));
+        childProfile.setActive(isActive(scheduler.getInt("isActive")));
+        childProfile.setDayFocus(scheduler.getString("days"));
+        childProfile.setKeepFocusId(scheduler.getInt("id"));
 
+        JSONArray timeItem = data.getJSONArray("TimeItems");
 
-        childProfile = new ChildKeepFocusItem();
+        ArrayList<ChildTimeItem> arrayList = new ArrayList(timeItem.length());
+        for(int i=0;i < timeItem.length();i++){
+            ChildTimeItem item1 = new ChildTimeItem();
+            item1.setKeepFocusId(timeItem.getJSONObject(i).getInt("scheduler_id"));
+            item1.setHourBegin(timeItem.getJSONObject(i).getInt("start_hours"));
+            item1.setHourEnd(timeItem.getJSONObject(i).getInt("end_hours"));
+            item1.setMinusBegin(timeItem.getJSONObject(i).getInt("start_minutes"));
+            item1.setMinusEnd(timeItem.getJSONObject(i).getInt("end_minutes"));
+            item1.setTimeId(timeItem.getJSONObject(i).getInt("id"));
+            arrayList.add(item1);
+        }
+
+        childProfile.setListTimeFocus(arrayList);
+
+        //childProfile = new ChildKeepFocusItem();
         mDataHelper.addNewFocusItem(childProfile);
         //mDataHelper.updateFocusItem(childProfile);
         Intent intent = new Intent();
@@ -185,8 +208,12 @@ public class MyGcmPushReceiver extends GcmListenerService {
         sendNotificationCreate("", "New scheduler create");
     }
 
+
+
     public void updateScheduler(String message) throws JSONException {
         JSONObject data = new JSONObject(message);
+
+        ArrayList<ChildKeepFocusItem> chilList = mDataHelper.getAllKeepFocusFromDb();
         childProfile = mDataHelper.getAllKeepFocusFromDb().get(0);
         childProfile.setNameFocus(data.getString("scheduler_name"));
         childProfile.setActive(isActive(data.getInt("isActive")));
