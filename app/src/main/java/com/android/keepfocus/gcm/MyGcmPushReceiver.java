@@ -177,13 +177,15 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public void createNewScheduler(String message) throws JSONException {
         JSONObject data = new JSONObject(message);
         JSONObject scheduler = data.getJSONObject("Scheduler");
+        JSONArray timeItem = data.getJSONArray("TimeItems");
+        Log.d(TAG,"timeItem "+timeItem);
         childProfile = new ChildKeepFocusItem();
         childProfile.setNameFocus(scheduler.getString("scheduler_name"));
         childProfile.setActive(isActive(scheduler.getInt("isActive")));
         childProfile.setDayFocus(scheduler.getString("days"));
         childProfile.setKeepFocusId(scheduler.getInt("id"));
 
-        JSONArray timeItem = data.getJSONArray("TimeItems");
+
 
         ArrayList<ChildTimeItem> arrayList = new ArrayList(timeItem.length());
         for(int i=0;i < timeItem.length();i++){
@@ -212,22 +214,45 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
     public void updateScheduler(String message) throws JSONException {
         JSONObject data = new JSONObject(message);
+        JSONObject scheduler = data.getJSONObject("Scheduler");
+        JSONArray timeItem = data.getJSONArray("TimeItems");
+        Log.d(TAG,"timeItem "+timeItem);
 
         ArrayList<ChildKeepFocusItem> chilList = mDataHelper.getAllKeepFocusFromDb();
-        childProfile = mDataHelper.getAllKeepFocusFromDb().get(0);
-        childProfile.setNameFocus(data.getString("scheduler_name"));
-        childProfile.setActive(isActive(data.getInt("isActive")));
-        childProfile.setDayFocus(data.getString("days"));
-        childProfile.setKeepFocusId(data.getInt("id"));
+        for(int i=0;i < chilList.size();i++){
+            if(scheduler.getInt("id") == chilList.get(i).getKeepFocusId()){
+                MainUtils.childKeepFocusItem = chilList.get(i);
+            }
+        }
+        MainUtils.childKeepFocusItem.setNameFocus(data.getString("scheduler_name"));
+        MainUtils.childKeepFocusItem.setActive(isActive(data.getInt("isActive")));
+        MainUtils.childKeepFocusItem.setDayFocus(data.getString("days"));
+        //MainUtils.childKeepFocusItem.setKeepFocusId(data.getInt("id"));
 
-
-        childProfile = new ChildKeepFocusItem();
-        mDataHelper.addNewFocusItem(childProfile);
-        //mDataHelper.updateFocusItem(childProfile);
+        mDataHelper.updateFocusItem(MainUtils.childKeepFocusItem);
         Intent intent = new Intent();
         intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
         getApplicationContext().sendBroadcast(intent);
         sendNotificationCreate("", "New scheduler create");
+    }
+
+
+    public void deletScheduler(String message) throws JSONException {
+        JSONObject data = new JSONObject(message);
+        JSONObject scheduler = data.getJSONObject("Scheduler");
+
+        ArrayList<ChildKeepFocusItem> chilList = mDataHelper.getAllKeepFocusFromDb();
+        for(int i=0;i < chilList.size();i++){
+            if(scheduler.getInt("id") == chilList.get(i).getKeepFocusId()){
+                MainUtils.childKeepFocusItem = chilList.get(i);
+            }
+        }
+        mDataHelper.deleteFocusItemById(MainUtils.childKeepFocusItem.getKeepFocusId());
+        Intent intent = new Intent();
+        intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+        getApplicationContext().sendBroadcast(intent);
+        sendNotificationCreate("", "New scheduler create");
+
     }
 
 
