@@ -419,14 +419,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
      * time of moment notifications fire output: Boolean value true if block
      * else false
      */
-    public boolean isAppOrNotifiBlock(String packageName, String day, int hour,
+    public boolean isAppOrNotifiBlock(/*String packageName,*/ String day, int hour,
                                       int min, int flagBlock) {
         dbMain = this.getWritableDatabase();
-        int appId = getAppItemIdByPackageName(packageName);
-        if (appId == -1) {
-            return false;
-        }
-        ArrayList<ChildKeepFocusItem> list_Child_KeepFocusItem = getListFocusItemByAppItemId(appId);
+//        int appId = getAppItemIdByPackageName(packageName);
+//        if (appId == -1) {
+//            return false;
+//        }
+        ArrayList<ChildKeepFocusItem> list_Child_KeepFocusItem = getAllKeepFocusFromDb();
         ArrayList<ChildTimeItem> list_Child_TimeItem;
         for (ChildKeepFocusItem a_Child_KeepFocusItem : list_Child_KeepFocusItem) {
             if (a_Child_KeepFocusItem.isActive()) {

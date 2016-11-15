@@ -10,6 +10,8 @@ import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -76,7 +78,7 @@ public class ServiceBlockApp extends Service {
                     Log.e(TAG, "Check " + currentPackageApp);
                     Calendar c = Calendar.getInstance();
                     Date rightNow = c.getTime();
-                    if (dbHelper.isAppOrNotifiBlock(currentPackageApp,
+                    if (dbHelper.isAppOrNotifiBlock(
                             MainUtils.DAY_OF_WEEK[rightNow.getDay()],
                             rightNow.getHours(), rightNow.getMinutes(),
                             MainUtils.LAUNCHER_APP_BLOCK)) {
@@ -102,12 +104,39 @@ public class ServiceBlockApp extends Service {
     }
 
     private boolean isHaveToCheck() {
+        //check is system app
+        if (isSystemApp(currentPackageApp)) {
+            return false;
+        }
         if (!oldPackageApp.equals(currentPackageApp)
                 && !currentPackageApp.equals(MainUtils.PACKET_APP)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    private boolean isSystemApp(String packageName) {
+        if (packageName.equals("com.android.settings")) {
+            return true;
+        }
+        PackageManager mPackageManager = (PackageManager) mContext.getPackageManager();
+        try {
+            ApplicationInfo ai = mPackageManager.getApplicationInfo(
+                    packageName, 0);
+            // First check if it is preloaded.
+            // If yes then check if it is System app or not.
+            if (ai != null
+                    && (ai.flags & (ApplicationInfo.FLAG_SYSTEM )) != 1) {
+                // Check if signature matches
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void getCurrentPackageOldVersion() {
