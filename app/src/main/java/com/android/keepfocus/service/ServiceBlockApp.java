@@ -10,6 +10,7 @@ import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
@@ -78,7 +79,7 @@ public class ServiceBlockApp extends Service {
                     Log.e(TAG, "Check " + currentPackageApp);
                     Calendar c = Calendar.getInstance();
                     Date rightNow = c.getTime();
-                    if (dbHelper.isAppOrNotifiBlock(
+                    if (isBlockAllNow() || dbHelper.isAppOrNotifiBlock(
                             MainUtils.DAY_OF_WEEK[rightNow.getDay()],
                             rightNow.getHours(), rightNow.getMinutes(),
                             MainUtils.LAUNCHER_APP_BLOCK)) {
@@ -117,10 +118,14 @@ public class ServiceBlockApp extends Service {
         }
     }
 
+    private boolean isBlockAllNow() {
+        SharedPreferences prefs = this.getSharedPreferences(
+                MainUtils.PACKET_APP, Context.MODE_PRIVATE);
+        boolean isBlock = prefs.getBoolean(MainUtils.IS_BLOCK_ALL,false);
+        return isBlock;
+    }
+
     private boolean isSystemApp(String packageName) {
-        if (packageName.equals("com.android.settings")) {
-            return true;
-        }
         PackageManager mPackageManager = (PackageManager) mContext.getPackageManager();
         try {
             ApplicationInfo ai = mPackageManager.getApplicationInfo(

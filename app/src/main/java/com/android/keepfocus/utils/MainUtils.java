@@ -33,6 +33,7 @@ public class MainUtils {
     public static final String EXTRA_MESSAGE = "extra_message";
     public static final String EXTRA_PACKAGE = "extra_package";
     public static final String EXTRA_TITLE = "android.title";
+    public static final String IS_BLOCK_ALL = "is_block_all";
     public static final String EXTRA_NOTI_CONTENT = "android.text";
 
     public static String UPDATE_CHILD_SCHEDULER = "com.android.keepfocus.UPDATE_CHILD_SCHEDULER";
