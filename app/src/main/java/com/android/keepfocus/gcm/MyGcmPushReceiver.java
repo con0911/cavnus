@@ -37,6 +37,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static String MANAGER = "manager";
     public static String CHILDREN = "child";
     private ChildKeepFocusItem childProfile;
+    private String family_id;
 
 
 
@@ -59,6 +60,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public void onMessageReceived(String from, Bundle bundle) {
         String message = bundle.getString("message");
         String title = bundle.getString("tickerText");
+        family_id = bundle.getString("Family_ID");
+
         if(title.equals("")) {
             title = bundle.getString("title");
         }
@@ -144,7 +147,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             } else if (titleText.equals(CREATE_NOTI)){
                 Log.d(TAG, "create: " + jsonObj);
                 //Create
-                createNewScheduler();
+                createNewScheduler(message);
             } else if (titleText.equals(UPDATE_NOTI)){
                 //Update
             } else if (titleText.equals(JOIN_GROUP)){
@@ -158,24 +161,49 @@ public class MyGcmPushReceiver extends GcmListenerService {
         }
     }
 
-
-
-    public void createNewScheduler(){
-            childProfile = new ChildKeepFocusItem();
-            childProfile.setNameFocus("Mon");
-            childProfile.setActive(false);
-            if (mDataHelper.getAllKeepFocusFromDb().size() == 0) {
-                childProfile = new ChildKeepFocusItem();
-                mDataHelper.addNewFocusItem(childProfile);
-            } else {
-                childProfile = mDataHelper.getAllKeepFocusFromDb().get(0);
-            }
-            mDataHelper.updateFocusItem(childProfile);
-            Intent intent = new Intent();
-            intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
-            getApplicationContext().sendBroadcast(intent);
-            sendNotificationCreate("", "New scheduler create");
+    private boolean isActive(int state){
+        if(state == 1) return true;
+        else return false;
     }
+
+
+    public void createNewScheduler(String message) throws JSONException {
+        JSONObject data = new JSONObject(message);
+        childProfile = new ChildKeepFocusItem();
+        childProfile.setNameFocus(data.getString("scheduler_name"));
+        childProfile.setActive(isActive(data.getInt("isActive")));
+        childProfile.setDayFocus(data.getString("days"));
+        childProfile.setKeepFocusId(data.getInt("id"));
+
+
+        childProfile = new ChildKeepFocusItem();
+        mDataHelper.addNewFocusItem(childProfile);
+        //mDataHelper.updateFocusItem(childProfile);
+        Intent intent = new Intent();
+        intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+        getApplicationContext().sendBroadcast(intent);
+        sendNotificationCreate("", "New scheduler create");
+    }
+
+    public void updateScheduler(String message) throws JSONException {
+        JSONObject data = new JSONObject(message);
+        childProfile = mDataHelper.getAllKeepFocusFromDb().get(0);
+        childProfile.setNameFocus(data.getString("scheduler_name"));
+        childProfile.setActive(isActive(data.getInt("isActive")));
+        childProfile.setDayFocus(data.getString("days"));
+        childProfile.setKeepFocusId(data.getInt("id"));
+
+
+        childProfile = new ChildKeepFocusItem();
+        mDataHelper.addNewFocusItem(childProfile);
+        //mDataHelper.updateFocusItem(childProfile);
+        Intent intent = new Intent();
+        intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+        getApplicationContext().sendBroadcast(intent);
+        sendNotificationCreate("", "New scheduler create");
+    }
+
+
 
     public void setJoinGroup(JSONObject data) throws JSONException {
 
@@ -183,6 +211,10 @@ public class MyGcmPushReceiver extends GcmListenerService {
         //String group_code = data.getString("group_code");//not have now
 
         String group_code = "MKXS7E";//for test
+        if(family_id !=null) {
+            MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
+
+        }
         //MainUtils.parentGroupItem = mDataHelper.getGroupByCode(group_code);
 
         //for test
