@@ -52,7 +52,7 @@ public class KeepFocusMainService extends NotificationListenerService {
 		Calendar c = Calendar.getInstance();
 		Date rightNow = c.getTime();
 		Log.d(TAG, "onNotificationPosted");
-		if (mKeepFocusDataHelper.isAppOrNotifiBlock(sbn.getPackageName(),
+		if (mKeepFocusDataHelper.isAppOrNotifiBlock(
 				MainUtils.DAY_OF_WEEK[rightNow.getDay()], rightNow.getHours(),
 				rightNow.getMinutes(), MainUtils.NOTIFICATION_BLOCK)) {
 				try {

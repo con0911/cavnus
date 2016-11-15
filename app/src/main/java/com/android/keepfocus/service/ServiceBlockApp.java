@@ -106,6 +106,7 @@ public class ServiceBlockApp extends Service {
     private boolean isHaveToCheck() {
         //check is system app
         if (isSystemApp(currentPackageApp)) {
+            Log.e(TAG, "isSystemApp true " + currentPackageApp);
             return false;
         }
         if (!oldPackageApp.equals(currentPackageApp)
@@ -129,9 +130,9 @@ public class ServiceBlockApp extends Service {
             if (ai != null
                     && (ai.flags & (ApplicationInfo.FLAG_SYSTEM )) != 1) {
                 // Check if signature matches
-                return true;
-            } else {
                 return false;
+            } else {
+                return true;
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();

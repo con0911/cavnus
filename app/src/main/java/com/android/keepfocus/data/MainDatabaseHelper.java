@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.android.keepfocus.utils.MainUtils;
 
@@ -428,7 +429,9 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 //        }
         ArrayList<ChildKeepFocusItem> list_Child_KeepFocusItem = getAllKeepFocusFromDb();
         ArrayList<ChildTimeItem> list_Child_TimeItem;
+        Log.e("thong.nv","list_Child_KeepFocusItem size" + list_Child_KeepFocusItem.size());
         for (ChildKeepFocusItem a_Child_KeepFocusItem : list_Child_KeepFocusItem) {
+            Log.e("thong.nv","a_Child_KeepFocusItem" + a_Child_KeepFocusItem);
             if (a_Child_KeepFocusItem.isActive()) {
                 if (flagBlock == MainUtils.NOTIFICATION_BLOCK) {
                     if (!a_Child_KeepFocusItem.getDayFocus().contains(day)) {
@@ -443,9 +446,11 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                             return true;
                     }
                 } else if (flagBlock == MainUtils.LAUNCHER_APP_BLOCK) {
+                    Log.e("thong.nv","flagBlock == MainUtils.LAUNCHER_APP_BLOCK");
                     if (!a_Child_KeepFocusItem.getDayFocus().contains(day)) {
                         continue;
                     }
+                    Log.e("thong.nv","flagBlock == MainUtils.LAUNCHER_APP_BLOCK 2");
                     list_Child_TimeItem = a_Child_KeepFocusItem.getListTimeFocus();
                     if (list_Child_TimeItem.size() == 0) {
                         return true;
@@ -455,6 +460,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                             return true;
                         }
                     }
+                    Log.e("thong.nv","false");
                 }
             }
         }
