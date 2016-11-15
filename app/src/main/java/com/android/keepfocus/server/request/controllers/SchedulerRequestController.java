@@ -226,6 +226,7 @@ public class SchedulerRequestController {
             return streamToString;
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d(TAG,"err "+e);
             return null;
         }
     }

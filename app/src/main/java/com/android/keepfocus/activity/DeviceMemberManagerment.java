@@ -430,42 +430,42 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             if (titleDayBlock == "") {
                 titleDayBlock = "Mon";
             } else {
-                titleDayBlock += "-Mon";
+                titleDayBlock += "Mon";
             }
         }
         if (day.contains("Tue")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Tue";
             } else {
-                titleDayBlock += "-Tue";
+                titleDayBlock += "Tue";
             }
         }
         if (day.contains("Wed")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Wed";
             } else {
-                titleDayBlock += "-Wed";
+                titleDayBlock += "Wed";
             }
         }
         if (day.contains("Thu")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Thu";
             } else {
-                titleDayBlock += "-Thu";
+                titleDayBlock += "Thu";
             }
         }
         if (day.contains("Fri")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Fri";
             } else {
-                titleDayBlock += "-Fri";
+                titleDayBlock += "Fri";
             }
         }
         if (day.contains("Sat")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Sat";
             } else {
-                titleDayBlock += "-Sat";
+                titleDayBlock += "Sat";
             }
         }
         return titleDayBlock;
@@ -482,42 +482,42 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             if (dayBlock == "") {
                 dayBlock = "Mon";
             } else {
-                dayBlock += ", Mon";
+                dayBlock += ",Mon";
             }
         }
         if (day.contains("Tue")) {
             if (dayBlock == "") {
                 dayBlock = "Tue";
             } else {
-                dayBlock += ", Tue";
+                dayBlock += ",Tue";
             }
         }
         if (day.contains("Wed")) {
             if (dayBlock == "") {
                 dayBlock = "Wed";
             } else {
-                dayBlock += ", Wed";
+                dayBlock += ",Wed";
             }
         }
         if (day.contains("Thu")) {
             if (dayBlock == "") {
                 dayBlock = "Thu";
             } else {
-                dayBlock += ", Thu";
+                dayBlock += ",Thu";
             }
         }
         if (day.contains("Fri")) {
             if (dayBlock == "") {
                 dayBlock = "Fri";
             } else {
-                dayBlock += ", Fri";
+                dayBlock += ",Fri";
             }
         }
         if (day.contains("Sat")) {
             if (dayBlock == "") {
                 dayBlock = "Sat";
             } else {
-                dayBlock += ", Sat";
+                dayBlock += ",Sat";
             }
         }
     }

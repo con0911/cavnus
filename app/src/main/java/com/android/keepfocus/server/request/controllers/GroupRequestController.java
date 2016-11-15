@@ -392,11 +392,12 @@ public class GroupRequestController {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
-                    if(description_result.equals("Success")) {
+                    int status = message.getInt("Status");
+                    if(status == 1) {
                         mDataHelper.deleteGroupItemById(MainUtils.parentGroupItem.getId_group());
                         updateSuccess();
                     } else {
-                        Toast.makeText(mContext, "Error in server", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
