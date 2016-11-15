@@ -15,14 +15,21 @@ import com.android.keepfocus.activity.ChildSchedulerActivity;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
+import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.request.controllers.NotificationController;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -37,6 +44,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static String MANAGER = "manager";
     public static String CHILDREN = "child";
     private ChildKeepFocusItem childProfile;
+    private String family_id;
 
 
 
@@ -59,6 +67,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public void onMessageReceived(String from, Bundle bundle) {
         String message = bundle.getString("message");
         String title = bundle.getString("tickerText");
+        family_id = bundle.getString("Family_ID");
+
         if(title.equals("")) {
             title = bundle.getString("title");
         }
@@ -144,7 +154,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             } else if (titleText.equals(CREATE_NOTI)){
                 Log.d(TAG, "create: " + jsonObj);
                 //Create
-                createNewScheduler();
+                createNewScheduler(message);
             } else if (titleText.equals(UPDATE_NOTI)){
                 //Update
             } else if (titleText.equals(JOIN_GROUP)){
@@ -158,24 +168,69 @@ public class MyGcmPushReceiver extends GcmListenerService {
         }
     }
 
-
-
-    public void createNewScheduler(){
-            childProfile = new ChildKeepFocusItem();
-            childProfile.setNameFocus("Mon");
-            childProfile.setActive(false);
-            if (mDataHelper.getAllKeepFocusFromDb().size() == 0) {
-                childProfile = new ChildKeepFocusItem();
-                mDataHelper.addNewFocusItem(childProfile);
-            } else {
-                childProfile = mDataHelper.getAllKeepFocusFromDb().get(0);
-            }
-            mDataHelper.updateFocusItem(childProfile);
-            Intent intent = new Intent();
-            intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
-            getApplicationContext().sendBroadcast(intent);
-            sendNotificationCreate("", "New scheduler create");
+    private boolean isActive(int state){
+        if(state == 1) return true;
+        else return false;
     }
+
+
+    public void createNewScheduler(String message) throws JSONException {
+        JSONObject data = new JSONObject(message);
+        JSONObject scheduler = data.getJSONObject("Scheduler");
+        childProfile = new ChildKeepFocusItem();
+        childProfile.setNameFocus(scheduler.getString("scheduler_name"));
+        childProfile.setActive(isActive(scheduler.getInt("isActive")));
+        childProfile.setDayFocus(scheduler.getString("days"));
+        childProfile.setKeepFocusId(scheduler.getInt("id"));
+
+        JSONArray timeItem = data.getJSONArray("TimeItems");
+
+        ArrayList<ChildTimeItem> arrayList = new ArrayList(timeItem.length());
+        for(int i=0;i < timeItem.length();i++){
+            ChildTimeItem item1 = new ChildTimeItem();
+            item1.setKeepFocusId(timeItem.getJSONObject(i).getInt("scheduler_id"));
+            item1.setHourBegin(timeItem.getJSONObject(i).getInt("start_hours"));
+            item1.setHourEnd(timeItem.getJSONObject(i).getInt("end_hours"));
+            item1.setMinusBegin(timeItem.getJSONObject(i).getInt("start_minutes"));
+            item1.setMinusEnd(timeItem.getJSONObject(i).getInt("end_minutes"));
+            item1.setTimeId(timeItem.getJSONObject(i).getInt("id"));
+            arrayList.add(item1);
+        }
+
+        childProfile.setListTimeFocus(arrayList);
+
+        //childProfile = new ChildKeepFocusItem();
+        mDataHelper.addNewFocusItem(childProfile);
+        //mDataHelper.updateFocusItem(childProfile);
+        Intent intent = new Intent();
+        intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+        getApplicationContext().sendBroadcast(intent);
+        sendNotificationCreate("", "New scheduler create");
+    }
+
+
+
+    public void updateScheduler(String message) throws JSONException {
+        JSONObject data = new JSONObject(message);
+
+        ArrayList<ChildKeepFocusItem> chilList = mDataHelper.getAllKeepFocusFromDb();
+        childProfile = mDataHelper.getAllKeepFocusFromDb().get(0);
+        childProfile.setNameFocus(data.getString("scheduler_name"));
+        childProfile.setActive(isActive(data.getInt("isActive")));
+        childProfile.setDayFocus(data.getString("days"));
+        childProfile.setKeepFocusId(data.getInt("id"));
+
+
+        childProfile = new ChildKeepFocusItem();
+        mDataHelper.addNewFocusItem(childProfile);
+        //mDataHelper.updateFocusItem(childProfile);
+        Intent intent = new Intent();
+        intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+        getApplicationContext().sendBroadcast(intent);
+        sendNotificationCreate("", "New scheduler create");
+    }
+
+
 
     public void setJoinGroup(JSONObject data) throws JSONException {
 
@@ -183,6 +238,10 @@ public class MyGcmPushReceiver extends GcmListenerService {
         //String group_code = data.getString("group_code");//not have now
 
         String group_code = "MKXS7E";//for test
+        if(family_id !=null) {
+            MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
+
+        }
         //MainUtils.parentGroupItem = mDataHelper.getGroupByCode(group_code);
 
         //for test
