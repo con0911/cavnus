@@ -35,12 +35,13 @@
 
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="horizontal_button_margin">10dp</dimen>
+    <dimen name="horizontal_button_margin">8dp</dimen>
     <dimen name="padding_icon_block">4dp</dimen>
     <dimen name="vertical_button_margin">16dp</dimen>
     <dimen name="height_button_add">36dp</dimen>
     <dimen name="width_button_add">50dp</dimen>
     <dimen name="height_button_days">35dp</dimen>
+    <dimen name="weight_button_days">35dp</dimen>
     <dimen name="width_button_days">20dp</dimen>
     <dimen name="height_button_remove_app">27dp</dimen>
     <dimen name="width_button_remove_app">35dp</dimen>

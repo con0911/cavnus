@@ -35,6 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.keepfocus.R;
+import com.android.keepfocus.data.ChildAppItem;
+import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.gcm.GcmIntentService;
@@ -79,6 +81,7 @@ public class JoinGroupActivity extends Activity {
     private int typeJoin = 0;
     private EditText nameDevice;
     public static boolean isJoinSuccess;
+    private ChildKeepFocusItem childKeepFocusItem;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -169,22 +172,9 @@ public class JoinGroupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //createRequestDialog();
-                if (mActiveCode.getText().toString().equals("")) {
-                    //btnImageDone.setBackground(getDrawable(R.drawable.btn_join_add_border));
-                    //btnImageDone.setTextColor(Color.parseColor("#000000"));
-                    //return;
-                } else {
-                    btnImageDone.setBackground(getDrawable(R.drawable.btn_signup));
-                    btnImageDone.setTextColor(Color.parseColor("#FFFFFF"));
+                if (!mActiveCode.getText().toString().equals("")) {
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
-                    if (isJoinSuccess) {
-
-                    }else {
-                        //finish();
-                        //Log.e("vinh", "isJoinSuccess " + isJoinSuccess);
-                    }
-
                 }
             }
         });
@@ -371,6 +361,7 @@ public class JoinGroupActivity extends Activity {
                         groupRequestController.updateSuccess();
                         if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
                             Log.e("vinh", "isJoinSuccess Child" + isJoinSuccess);
+                            SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
                             Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
                             startActivity(childSchedule);
                         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager) {

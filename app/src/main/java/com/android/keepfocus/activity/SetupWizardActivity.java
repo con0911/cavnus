@@ -30,7 +30,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     private static final String TAG = "SetupWizardActivity";
     private Button btnNext;
     private SharedPreferences agreePref;
-    private static SharedPreferences modeDevice, typeJoin;
+    private static SharedPreferences modeDevice, typeJoin, nameDevice;
     private CheckBox mCheckboxTerm;
     private Button btnParent, btnChild, btnAddParent;
 
@@ -208,6 +208,13 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         editor.commit();
     }
 
+    public static void setNameDevice(String name, Context context){
+        nameDevice = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = nameDevice.edit();
+        editor.putString(MainUtils.NAME_DEVICE, name);
+        editor.commit();
+    }
+
     public static int getModeDevice(Context context) {
         modeDevice = PreferenceManager.getDefaultSharedPreferences(context);
         return modeDevice.getInt(MainUtils.MODE_DEVICE, 0);
@@ -217,5 +224,11 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         typeJoin = PreferenceManager.getDefaultSharedPreferences(context);
         return typeJoin.getInt(MainUtils.TYPE_JOIN, 0);
     }
+
+    public static String getNameDevice(Context context){
+        nameDevice = PreferenceManager.getDefaultSharedPreferences(context);
+        return nameDevice.getString(MainUtils.NAME_DEVICE, "");
+    }
+
 
 }

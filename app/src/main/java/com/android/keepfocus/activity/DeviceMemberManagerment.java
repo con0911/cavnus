@@ -277,7 +277,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                         formatStringDayBlock(dayBlock);
                         MainUtils.parentProfile.setDay_profile(dayBlock);
                         MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
-                        displayDetailTime();
+                        //displayDetailTime();
                         schedulerRequestController.addNewScheduler();
                         //keepData.updateProfileItem(MainUtils.parentProfile); // update
                     }
@@ -430,42 +430,42 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             if (titleDayBlock == "") {
                 titleDayBlock = "Mon";
             } else {
-                titleDayBlock += "Mon";
+                titleDayBlock += "-Mon";
             }
         }
         if (day.contains("Tue")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Tue";
             } else {
-                titleDayBlock += "Tue";
+                titleDayBlock += "-Tue";
             }
         }
         if (day.contains("Wed")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Wed";
             } else {
-                titleDayBlock += "Wed";
+                titleDayBlock += "-Wed";
             }
         }
         if (day.contains("Thu")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Thu";
             } else {
-                titleDayBlock += "Thu";
+                titleDayBlock += "-Thu";
             }
         }
         if (day.contains("Fri")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Fri";
             } else {
-                titleDayBlock += "Fri";
+                titleDayBlock += "-Fri";
             }
         }
         if (day.contains("Sat")) {
             if (titleDayBlock == "") {
                 titleDayBlock = "Sat";
             } else {
-                titleDayBlock += "Sat";
+                titleDayBlock += "-Sat";
             }
         }
         return titleDayBlock;
@@ -964,10 +964,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                         timeItem.setHourEnd(timePickerTo.getCurrentHour());
                         timeItem.setMinusEnd(timePickerTo.getCurrentMinute());
                         if (timeItem.getId_timer_parent() == -1) {
+                            //MainUtils.parentProfile.setListTimer(null);
                             keepData.addTimeItemParent(timeItem,
                                     MainUtils.parentProfile.getId_profile());
                             MainUtils.parentProfile.getListTimer()
                                     .add(timeItem);
+
                         } else {
                             keepData.updateTimeParentItem(timeItem);
                         }

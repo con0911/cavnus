@@ -7,6 +7,8 @@ public class ChildKeepFocusItem {
     private String dayFocus;
     private String nameFocus;
     private boolean isActive;
+
+    private int id_profile_server;
     private ArrayList<ChildTimeItem> listTimeFocus;
     private ArrayList<ChildAppItem> listAppFocus;
 
@@ -15,8 +17,17 @@ public class ChildKeepFocusItem {
         this.dayFocus = "";
         this.nameFocus = "Unknow";
         this.isActive = true;
+        this.id_profile_server = -1;
         this.listAppFocus = new ArrayList<ChildAppItem>();
         this.listTimeFocus = new ArrayList<ChildTimeItem>();
+    }
+
+    public int getId_profile_server() {
+        return id_profile_server;
+    }
+
+    public void setId_profile_server(int id_profile_server) {
+        this.id_profile_server = id_profile_server;
     }
 
     public int getKeepFocusId() {

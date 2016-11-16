@@ -96,7 +96,7 @@ public class SchedulerRequestController {
         ParentMemberItem device = MainUtils.memberItem;
         Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","","child");
         ArrayList<TimeItems> timeItem = getListTime(profileItem);
-        schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate);
+        schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeUpdate);
 
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(schedulerRequest);
@@ -111,7 +111,7 @@ public class SchedulerRequestController {
         ParentMemberItem device = MainUtils.memberItem;
         Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","","child");
         ArrayList<TimeItems> timeItem = getListTime(profileItem);
-        schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate);
+        schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeDelete);
 
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(schedulerRequest);
@@ -159,6 +159,9 @@ public class SchedulerRequestController {
                     //JSONObject data = jsonObj.getJSONObject("Data");
                     if(status == 1) {
                         if (typeRequest == Constants.ActionTypeCreate){//create
+                            JSONObject data = jsonObj.getJSONObject("Data");
+                            JSONObject scheduler = data.getJSONObject("Scheduler");
+                            MainUtils.parentProfile.setId_profile_server(scheduler.getInt("id"));
                             MainUtils.parentProfile.setId_profile(mDataHelper.addProfileItemParent(MainUtils.parentProfile,MainUtils.memberItem.getId_member()));
                             MainUtils.memberItem.getListProfile().add(MainUtils.parentProfile);
                             mDataHelper.updateProfileItem(MainUtils.parentProfile);

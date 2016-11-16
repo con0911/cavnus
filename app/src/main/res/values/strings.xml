@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cavnus</string>
+    <string name="app_name">Set Limitz</string>
     <string name="add_member_text">Open member device and enter this FamilyID to add member to this family.</string>
     <string name="group_id">Group ID</string>
     <string name="add_member">Add member</string>

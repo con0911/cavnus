@@ -45,63 +45,57 @@
                 android:id="@+id/details_each_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@id/details_day_title"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:orientation="horizontal" >
 
                 <Button
                     android:id="@+id/details_day_sunday"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/weight_button_days"
                     android:layout_height="@dimen/height_button_days"
-                    android:layout_weight="1"
                     android:text="S" />
 
                 <Button
                     android:id="@+id/details_day_monday"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/weight_button_days"
                     android:layout_height="@dimen/height_button_days"
                     android:layout_marginLeft="@dimen/horizontal_button_margin"
-                    android:layout_weight="1"
                     android:text="M" />
 
                 <Button
                     android:id="@+id/details_day_tuesday"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/weight_button_days"
                     android:layout_height="@dimen/height_button_days"
                     android:layout_marginLeft="@dimen/horizontal_button_margin"
-                    android:layout_weight="1"
                     android:text="T" />
 
                 <Button
                     android:id="@+id/details_day_wednesday"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/weight_button_days"
                     android:layout_height="@dimen/height_button_days"
                     android:layout_marginLeft="@dimen/horizontal_button_margin"
-                    android:layout_weight="1"
                     android:text="W" />
 
                 <Button
                     android:id="@+id/details_day_thursday"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/weight_button_days"
                     android:layout_height="@dimen/height_button_days"
                     android:layout_marginLeft="@dimen/horizontal_button_margin"
-                    android:layout_weight="1"
                     android:text="T" />
 
                 <Button
                     android:id="@+id/details_day_friday"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/weight_button_days"
                     android:layout_height="@dimen/height_button_days"
                     android:layout_marginLeft="@dimen/horizontal_button_margin"
-                    android:layout_weight="1"
                     android:text="F" />
 
                 <Button
                     android:id="@+id/details_day_saturday"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/weight_button_days"
                     android:layout_height="@dimen/height_button_days"
                     android:layout_marginLeft="@dimen/horizontal_button_margin"
-                    android:layout_weight="1"
                     android:text="S" />
             </LinearLayout>
         </RelativeLayout>

@@ -112,8 +112,6 @@ public class CoverFlowAdapter2 extends BaseAdapter {
         //viewHolder.iconFamily.setImageResource(R.drawable.blocked);
 
 
-        Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
-        viewHolder.iconFamily.setImageBitmap(icon);
         convertView.setTag(String.valueOf(position));
 
         viewHolder.iconFamily.setOnClickListener(onClickListener(position));

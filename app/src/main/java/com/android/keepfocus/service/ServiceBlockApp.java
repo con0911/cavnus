@@ -110,6 +110,10 @@ public class ServiceBlockApp extends Service {
             Log.e(TAG, "isSystemApp true " + currentPackageApp);
             return false;
         }
+        //Return false if isAllow is true;
+        if (isAllowAllNow()) {
+            return false;
+        }
         if (!oldPackageApp.equals(currentPackageApp)
                 && !currentPackageApp.equals(MainUtils.PACKET_APP)) {
             return true;
@@ -123,6 +127,13 @@ public class ServiceBlockApp extends Service {
                 MainUtils.PACKET_APP, Context.MODE_PRIVATE);
         boolean isBlock = prefs.getBoolean(MainUtils.IS_BLOCK_ALL,false);
         return isBlock;
+    }
+
+    private boolean isAllowAllNow() {
+        SharedPreferences prefs = this.getSharedPreferences(
+                MainUtils.PACKET_APP, Context.MODE_PRIVATE);
+        boolean isAllow = prefs.getBoolean(MainUtils.IS_ALLOW_ALL,false);
+        return isAllow;
     }
 
     private boolean isSystemApp(String packageName) {

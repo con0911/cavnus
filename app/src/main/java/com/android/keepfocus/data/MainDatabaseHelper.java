@@ -53,7 +53,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_KEEPFOCUS = "CREATE TABLE " + TABLE_KEEPFOCUS + "("
                 + "keep_focus_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " day_focus text not null," + " name_focus text not null,"
-                + " is_active integer" + ")";
+                + " is_active integer," + " id_profile_server integer" + ")";
         db.execSQL(CREATE_TABLE_KEEPFOCUS);
         // tblAppItem
         String CREATE_TABLE_APPITEM = "CREATE TABLE " + TABLE_APPITEM + "("
@@ -178,6 +178,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 String day_focus = cursor.getString(1);
                 String name_focus = cursor.getString(2);
                 int is_active = cursor.getInt(3);
+                int id_profile_focus_server = cursor.getInt(4);
                 // make keep focus item
                 ChildKeepFocusItem focusItem = new ChildKeepFocusItem();
                 focusItem.setKeepFocusId(keep_focus_id);
@@ -188,6 +189,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 } else {
                     focusItem.setActive(true);
                 }
+                focusItem.setId_profile_server(id_profile_focus_server);
                 // Get ChildTimeItem for focusItem
                 focusItem.setListTimeFocus(getListTimeById(focusItem
                         .getKeepFocusId()));
@@ -276,6 +278,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         } else {
             values.put("is_active", 0);
         }
+        values.put("id_profile_server", keepFocus.getId_profile_server());
         int keep_focus_id = (int) dbMain.insert("tblKeepFocus", null, values);
         keepFocus.setKeepFocusId(keep_focus_id);
         dbMain.close();
@@ -391,10 +394,12 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String day_focus = "'" + childKeepFocusItem.getDayFocus() + "'";
         String name_focus = "'" + childKeepFocusItem.getNameFocus() + "'";
         int is_active = childKeepFocusItem.isActive() ? 1 : 0;
+        int id_profile_server = childKeepFocusItem.getId_profile_server();
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblKeepFocus set day_focus = " + day_focus
                 + ", name_focus = " + name_focus + ", is_active = " + is_active
+                + ", id_profile_server = " + id_profile_server
                 + " where keep_focus_id = " + keep_focus_id;
         dbMain.execSQL(update);
         dbMain.close();
@@ -497,6 +502,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 String dayFocus = cursor.getString(1);
                 String nameFocus = cursor.getString(2);
                 boolean isActive = cursor.getInt(3) == 1 ? true : false;
+                int idProfileServer = cursor.getInt(4);
                 ArrayList<ChildTimeItem> listTimeFocus = getListTimeById(keepFocusId);
                 ChildKeepFocusItem a_Child_KeepFocusItem = new ChildKeepFocusItem();
                 a_Child_KeepFocusItem.setKeepFocusId(keepFocusId);
@@ -504,6 +510,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 a_Child_KeepFocusItem.setNameFocus(nameFocus);
                 a_Child_KeepFocusItem.setActive(isActive);
                 a_Child_KeepFocusItem.setListTimeFocus(listTimeFocus);
+                a_Child_KeepFocusItem.setId_profile_server(idProfileServer);
                 childKeepFocusItemList.add(a_Child_KeepFocusItem);
             } while (cursor.moveToNext());
         }

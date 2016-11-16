@@ -95,6 +95,7 @@ public class CoverFlowAdapter extends BaseAdapter {
         if (is!=null) {
             Bitmap bitmap = null;
             try {
+
                 bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage);
                 viewHolder.iconFamily.setImageBitmap(bitmap);
             } catch (IOException e) {

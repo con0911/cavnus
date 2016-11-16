@@ -15,9 +15,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.keepfocus.R;
-import com.android.keepfocus.activity.DeviceMemberManagerment;
+import com.android.keepfocus.data.ChildKeepFocusItem;
+import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
-import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 /**
  * Created by sev_user on 10/14/2016.
  */
-public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
+public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
     MainDatabaseHelper kFDHelper = new MainDatabaseHelper(
             getContext());
     private Activity activity;
@@ -41,8 +41,8 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
 
 
 
-    public ChildTimeListAdapter(Activity activity, int resource,
-                           int textViewResourceId, ArrayList<ParentProfileItem> objects) {
+    public ChildKeepFocusAdapter(Activity activity, int resource,
+                                 int textViewResourceId, ArrayList<ChildKeepFocusItem> objects) {
         super(activity, resource, textViewResourceId, objects);
         inflater = ( LayoutInflater )activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.activity = activity;
@@ -55,37 +55,31 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         dayScheduler = (TextView) convertView.findViewById(R.id.day_scheduler);
         isActive = (Switch) convertView.findViewById(R.id.is_active);
         btnDeleteSchedule = (ImageButton) convertView.findViewById(R.id.btn_delete_schedule);
-        btnDeleteSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment)activity;
-                deviceMemberManagerment.deleteProfile(position);
-            }
-        });
+        btnDeleteSchedule.setVisibility(View.GONE);
 
 
         final int mPosition = position;
-        final ParentProfileItem item = getItem(mPosition);
-        titleTime.setText(item.getName_profile());
-        String day = item.getDay_profile();
+        final ChildKeepFocusItem item = getItem(mPosition);
+        titleTime.setText(item.getNameFocus());
+        String day = item.getDayFocus();
         if(!day.equals("")) {
-            dayScheduler.setText(item.getDay_profile());
+            dayScheduler.setText(item.getDayFocus());
             dayScheduler.setVisibility(View.VISIBLE);
         } else {
             dayScheduler.setVisibility(View.GONE);
         }
         isActive.setChecked(item.isActive());
+        isActive.setEnabled(false);
         isActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment)activity;
-                deviceMemberManagerment.schedulerChecked(isChecked, mPosition);
+                kFDHelper.updateFocusItem(item);//issue scroll view lost checkbox
             }
         });
 
         addItemStatusTime();
-        Log.d("contt","time "+item.getListTimer());
-        updateStatusTime(item.getListTimer());
+        Log.d("contt","time "+item.getListTimeFocus());
+        updateStatusTime(item.getListTimeFocus());
         //DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment)activity;
         //deviceMemberManagerment.updateStatusTime(item.getListTimer());
 
@@ -102,15 +96,6 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         }
         @Override
         public void onClick(View v) {
-            DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment)activity;
-            deviceMemberManagerment.goToScheduler(mPosition);
-
-            switch (v.getId()){
-                case R.id.btn_delete_schedule :
-                    deviceMemberManagerment.deleteProfile(mPosition);
-                    break;
-            }
-
         }
     }
 
@@ -128,7 +113,7 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
             //
         }
     }
-    public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
+    public void updateStatusTime(ArrayList<ChildTimeItem> listTime) {
         boolean chooseList[] = new boolean[145];
         // init
         for (int i = 0; i < 144; i++) {
@@ -142,7 +127,7 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
             return;
         }
         for (int i = 0; i < listTime.size(); i++) {
-            ParentTimeItem timeItem = listTime.get(i);
+            ChildTimeItem timeItem = listTime.get(i);
             if (timeItem.getTypeTime() == ParentTimeItem.INTIME_TYPE) {
                 for (int j = timeItem.getHourBegin() * 60
                         + timeItem.getMinusBegin(); j <= timeItem.getHourEnd()

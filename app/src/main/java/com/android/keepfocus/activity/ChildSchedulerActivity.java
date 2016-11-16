@@ -2,9 +2,7 @@ package com.android.keepfocus.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -20,7 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.keepfocus.R;
-import com.android.keepfocus.controller.AdapterChildProfile;
+import com.android.keepfocus.controller.ChildKeepFocusAdapter;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildNotificationItemMissHistory;
 import com.android.keepfocus.data.MainDatabaseHelper;
@@ -42,7 +40,7 @@ public class ChildSchedulerActivity extends Activity {
     private EditText mEditText;
     private AlertDialog mAlertDialog;
     private TextView mTextMsg;
-    private AdapterChildProfile mProfileAdapter;
+    private ChildKeepFocusAdapter mProfileAdapter;
 
     static int mNotifCount = 0;
     static Button notifCount;
@@ -57,9 +55,9 @@ public class ChildSchedulerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_group_management);
-        setTitle("Your schedule");
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
         mContext = this;
+        setTitle(SetupWizardActivity.getNameDevice(mContext));
         //keepData = new MainDatabaseHelper(this);
         listProperties = (ListView) findViewById(R.id.listP);
         headerView = (LinearLayout) getLayoutInflater().inflate(R.layout.header_view_profile, null);
@@ -86,7 +84,7 @@ public class ChildSchedulerActivity extends Activity {
 
     @Override
     public void setTitle(CharSequence title) {
-        super.setTitle(title);
+        super.setTitle(title +"'s schedule");
     }
 
     @Override
@@ -158,7 +156,7 @@ public class ChildSchedulerActivity extends Activity {
 
     public void displayProfile() {
         listBlockPropertiesArr = mDataHelper.getAllKeepFocusFromDb();
-        mProfileAdapter = new AdapterChildProfile(this, R.layout.tab_group,
+        mProfileAdapter = new ChildKeepFocusAdapter(this, R.layout.tab_group,
                 0, listBlockPropertiesArr);
         listProperties.setAdapter(mProfileAdapter);
         if (listBlockPropertiesArr.size() == 0) {

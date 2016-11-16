@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/color_background_screen"
     android:orientation="vertical" >
 
  <LinearLayout
@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="20dp"
         android:contentDescription="@null"
-        android:src="@drawable/ic_launch" />
+        android:src="@drawable/icon_app" />
 
     <TextView
         android:id="@+id/nameAppBlock"
@@ -54,7 +54,6 @@
             android:layout_height="@dimen/button_height"
             android:layout_marginLeft="@dimen/horizontal_button_margin"
             android:layout_gravity="left|bottom"
-            android:background="@drawable/btn_border"
             android:gravity="center_vertical"
             android:text="BACK >" />
     </LinearLayout>
