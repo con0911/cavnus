@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Set Limitz</string>
+    <string name="app_name">SetLimitz</string>
     <string name="add_member_text">Open member device and enter this FamilyID to add member to this family.</string>
     <string name="group_id">Group ID</string>
     <string name="add_member">Add member</string>
@@ -127,9 +127,9 @@
     <string name="description_color_lock"></string>
 
     <string name="title_usage_access">Application access</string>
-    <string name="popup_usage_access">You must enable application usage access for S Keep Focus in order to block application</string>
+    <string name="popup_usage_access">You must enable application usage access for SetLimitz in order to block application</string>
     <string name="title_notification_access">Notifications access</string>
-    <string name="popup_notification_access">You must enable notification access for S Keep Focus in order to block notifications</string>
+    <string name="popup_notification_access">You must enable notification access for SetLimitz in order to block notifications</string>
     <string name="popup_notification_access_not_support">This feature requires android OS version 4.3 or later, please upgrade your OS version</string>
 
     <!--  List missing notification history -->
@@ -138,7 +138,7 @@
     <string name="notify_missing_notification_content">Tap here to show all missing Notifications</string>
     <string name="missing_notification_title">All of missing Notifications</string>
     <string name="clear">Clear</string>
-    <string name="block_app_description">app was blocked !!!</string>
+    <string name="block_app_description">was blocked. Please use this app later.</string>
     <string name="close_button">Home</string>
 
     <string name="request_admin_text">You have to enable device administrators to use this application</string>

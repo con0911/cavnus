@@ -184,6 +184,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     public void displayProfile() {
         listFamily = mDataHelper.getAllGroupItemParent();
         if (listFamily.size() == 0){
+            if (nameFamily != null) {
+                nameFamily.setVisibility(View.GONE);
+            }
             mTextNoGroup.setText(R.string.text_no_group);
             adapter = new CoverFlowAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
@@ -204,6 +207,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 detailLayout.setVisibility(View.GONE);
             }
         } else if (listFamily.size() > 3) {
+            if (nameFamily != null) {
+                nameFamily.setVisibility(View.VISIBLE);
+            }
             mTextNoGroup.setText(" ");
             listTwoFamily.setVisibility(View.GONE);
             layoutList.setVisibility(View.VISIBLE);
@@ -344,8 +350,14 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     protected void onResume() {
         super.onResume();
         //displayProfile();
-        registerReceiver(getDatabaseReceiver,intentFilter);
+        registerReceiver(getDatabaseReceiver, intentFilter);
         //groupRequestController.getGroupInServer();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        finishAffinity();
     }
 
 

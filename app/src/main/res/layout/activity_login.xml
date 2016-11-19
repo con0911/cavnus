@@ -120,7 +120,7 @@
                 android:gravity="center"
                 android:layout_below="@+id/layout_password"
                 android:text="@string/action_sign_in"
-                android:textColor="#9daccb"
+                android:textColor="#fafafa"
                 android:textSize="15sp" />
 
             <TextView
@@ -153,7 +153,7 @@
                     android:layout_marginBottom="@dimen/button_margin_bottom"
                     android:background="@drawable/btn_signup"
                     android:gravity="center"
-                    android:text="CREATE NEW CAVNUS ACCOUNT"
+                    android:text="CREATE A NEW SETLIMITZ ACCOUNT"
                     android:textColor="#fafafa"
                     android:textSize="15sp" />
 

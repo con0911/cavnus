@@ -1,18 +1,21 @@
 package com.android.keepfocus.activity;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,17 +28,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.keepfocus.R;
-import com.android.keepfocus.data.ChildAppItem;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
@@ -44,7 +46,6 @@ import com.android.keepfocus.receive.DevicePolicyReceiver;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
 import com.android.keepfocus.server.model.GroupUser;
-import com.android.keepfocus.server.model.Header;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.model.JoinGroupRequest;
 import com.android.keepfocus.utils.Constants;
@@ -53,6 +54,10 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 public class JoinGroupActivity extends Activity {
     private static final String TAG = "JoinGroupActivity";
@@ -82,6 +87,14 @@ public class JoinGroupActivity extends Activity {
     private EditText nameDevice;
     public static boolean isJoinSuccess;
     private ChildKeepFocusItem childKeepFocusItem;
+
+    private Switch launchSwitch, notiSwitch;
+    private boolean isTurnUsageAccess = false;
+    private boolean isTurnNotificationAccess = false;
+    private final int SHOW_DIALOG_USAGE_ACCESS_ID = 1;
+    private final int SHOW_DIALOG_NOTIFICATION_ACCESS_ID = 2;
+    private static String mPopupContentMgs="";
+    private AlertDialog mEnableNotiDialog;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -172,10 +185,21 @@ public class JoinGroupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //createRequestDialog();
-                if (!mActiveCode.getText().toString().equals("")) {
+                String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
+                if(registationId.equals("")){
+                    Intent intent = new Intent(mContext, GcmIntentService.class);//send intent to get token
+                    intent.putExtra("key", "register");
+                    startService(intent);
+                    Toast.makeText(JoinGroupActivity.this,"Please check the internet!",Toast.LENGTH_LONG).show();
+                } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children
+                        && !mActiveCode.getText().toString().equals("")) {
+                    JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
+                    joinAsyn.execute();
+                } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
                 }
+
             }
         });
 
@@ -191,6 +215,14 @@ public class JoinGroupActivity extends Activity {
                         showAdminDialog(SHOW_DIALOG_REQUEST_ADMIN_PERMISSION);
                     } else {
                         //mDPM.lockNow();
+                    }
+                }
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    if (!isTurnUsageAccess && !isOnUsageAccess()) {
+                        showDialogGotoAccess(SHOW_DIALOG_USAGE_ACCESS_ID);
+                    }
+                    if(!isTurnNotificationAccess && !isOnNotificationAccessPermission()) {
+                        showDialogGotoAccess(SHOW_DIALOG_NOTIFICATION_ACCESS_ID);
                     }
                 }
             }
@@ -249,6 +281,119 @@ public class JoinGroupActivity extends Activity {
                 break;
         }
     }
+
+    private void turnOnUsageAccess() {
+        Intent usageAccessIntent = new Intent(
+                Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        startActivity(usageAccessIntent);
+    }
+
+    private void showDialogGotoAccess(int dialogId) {
+        View view = getLayoutInflater().inflate(R.layout.delete_profile_popup,
+                null);
+        TextView mTextMsg = (TextView) view.findViewById(R.id.delete_text);
+        switch (dialogId) {
+            case SHOW_DIALOG_USAGE_ACCESS_ID:
+                mTextMsg.setText(R.string.popup_usage_access);
+                AlertDialog mDeleteDialog = new AlertDialog.Builder(this)
+                        .setView(view)
+                        .setTitle(getString(R.string.title_usage_access))
+                        .setPositiveButton(getString(R.string.ok_button),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        isTurnUsageAccess = true;
+                                        turnOnUsageAccess();
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.cancel_button),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        dialog.cancel();
+                                    }
+                                }).create();
+                mDeleteDialog.show();
+                break;
+            case SHOW_DIALOG_NOTIFICATION_ACCESS_ID:
+                mTextMsg.setText(mPopupContentMgs);
+                mEnableNotiDialog = new AlertDialog.Builder(this)
+                        .setView(view)
+                        .setTitle(getString(R.string.title_notification_access))
+                        .setPositiveButton(getString(R.string.ok_button),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        isTurnNotificationAccess = true;
+                                        turnOnNotificationAccess();
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.cancel_button),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        dialog.cancel();
+                                    }
+                                }).create();
+                mEnableNotiDialog.show();
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    //Code part handle notifications access permission
+    private boolean isOnNotificationAccessPermission(){
+        boolean isEnable = false;
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR2){
+            mPopupContentMgs = (String) getString(R.string.popup_notification_access);
+            ContentResolver contentResolver = mContext.getContentResolver();
+            String enableNotificationListener = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
+            String packageName = mContext.getPackageName();
+            if(enableNotificationListener == null || !enableNotificationListener.contains(packageName)){
+                Log.d("ProfileEditActivity", "The Notification Permission not enable");
+                isEnable = false;
+            }else {
+                Log.d("ProfileEditActivity", "The Notification Permission enable");
+                isEnable = true;
+            }
+        } else {
+            mPopupContentMgs = (String) getString(R.string.popup_notification_access_not_support);
+            isEnable = false;
+        }
+
+        return isEnable;
+    }
+
+    @SuppressLint("NewApi")
+    private boolean isOnUsageAccess() {
+        UsageStatsManager usm = (UsageStatsManager) getSystemService("usagestats");
+        Calendar calendar = Calendar.getInstance();
+        long toTime = calendar.getTimeInMillis();
+        calendar.add(Calendar.YEAR, -1);
+        long fromTime = calendar.getTimeInMillis();
+        final List<UsageStats> queryUsageStats = usm.queryUsageStats(
+                UsageStatsManager.INTERVAL_YEARLY, fromTime, toTime);
+        boolean granted = queryUsageStats != null
+                && queryUsageStats != Collections.EMPTY_LIST;
+        return granted;
+    }
+
+    private void turnOnNotificationAccess(){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR2){
+            Intent intent = new Intent(
+                    "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            startActivity(intent);
+        } else {
+            mEnableNotiDialog.dismiss();
+        }
+    }
+
 
     public void createRequestDialog() {
         AlertDialog.Builder requestBuilder = new AlertDialog.Builder(

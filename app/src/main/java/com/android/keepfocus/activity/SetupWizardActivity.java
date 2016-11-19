@@ -36,7 +36,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
 
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
     public static final String PUSH_NOTIFICATION = "pushNotification";
-    private final String TERMS_URL = "http://mycavnus.com/terms-and-conditions/";
+    private final String TERMS_URL = "http://setlimitz.com/terms-and-conditions/";
     private TextView mTerms;
 
     private Context mContext;

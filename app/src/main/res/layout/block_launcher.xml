@@ -5,7 +5,7 @@
     android:background="@color/color_background_screen"
     android:orientation="vertical" >
 
- <LinearLayout
+ <RelativeLayout
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
      android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -13,27 +13,40 @@
      android:layout_centerInParent="true"
      android:orientation="vertical"
      >
+     <TextView
+         android:id="@+id/nameAppBlock"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:gravity="center"
+         android:layout_centerHorizontal="true"
+         android:background="@drawable/btn_join_add_border"
+         android:textColor="@color/alert_dialog_text_color"
+         android:textSize="@dimen/text_name_app_title_size"
+         />
+
     <ImageView
         android:id="@+id/imageBlock"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
+        android:layout_below="@+id/nameAppBlock"
+        android:layout_marginTop="40dp"
         android:contentDescription="@null"
         android:src="@drawable/icon_app" />
 
-    <TextView
-        android:id="@+id/nameAppBlock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-       android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_below="@+id/imageBlock"
-        android:textColor="@color/alert_dialog_text_color"
-        android:textSize="@dimen/text_name_app_title_size" />
+     <ImageView
+         android:layout_width="45dp"
+         android:layout_height="45dp"
+         android:layout_toRightOf="@+id/imageBlock"
+         android:layout_below="@+id/nameAppBlock"
+         android:layout_marginLeft="5dp"
+         android:layout_marginTop="20dp"
+         android:background="@drawable/sleep_icon"
+         />
 
- </LinearLayout>
+ </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,9 +65,10 @@
             style="@style/button_text_style"
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
-            android:layout_marginLeft="@dimen/horizontal_button_margin"
-            android:layout_gravity="left|bottom"
-            android:gravity="center_vertical"
+            android:layout_marginRight="@dimen/horizontal_button_margin"
+            android:background="@color/color_background_button"
+            android:layout_gravity="right|bottom"
+            android:gravity="center"
             android:text="BACK >" />
     </LinearLayout>
 

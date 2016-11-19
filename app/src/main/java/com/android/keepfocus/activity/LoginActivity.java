@@ -84,8 +84,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     private View mProgressView;
     private View mLoginFormView;
     private RelativeLayout mLayoutLogin;
-    private final String urlRegister = "http://mycavnus.com/my-account/";
-    private final String urlFogetPass = "http://mycavnus.com/my-account/lost-password/";
+    private final String urlRegister = "http://setlimitz.com/product/setlimitz-activation";
+    private final String urlFogetPass = "http://setlimitz.com/my-account/lost-password/";
     private Context mContext;
     private GcmIntentService gcmIntentService;
     private LoginRequestController mLoginRequestController;
