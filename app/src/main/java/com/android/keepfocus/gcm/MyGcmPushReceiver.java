@@ -64,12 +64,12 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public void onMessageReceived(String from, Bundle bundle) {
         String message = bundle.getString("message");
         String title = bundle.getString("tickerText");
-        family_id = bundle.getString("Family_ID");
 
         if(title.equals("")) {
             title = bundle.getString("title");
         }
         //String title2 = bundle.getString("title");
+        Log.d(TAG,"title : " + title);
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "bundle: " + bundle);
         Log.d(TAG, "Message: " + message);
@@ -288,10 +288,13 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
     public void setJoinGroup(JSONObject data) throws JSONException {
 
+        Log.d(TAG,"JsonObject data : " + data);
+        JSONObject messages = data.getJSONObject("message");
         ParentMemberItem joinDevice = new ParentMemberItem();
-        //String group_code = data.getString("group_code");//not have now
+        family_id = data.getString("FamilyID");
+        //String group_code = data.getString("FamilyID");//not have now
 
-        String group_code = "MKXS7E";//for test
+        //String group_code = "MKXS7E";//for test
         if(family_id !=null) {
             MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
 
@@ -308,22 +311,26 @@ public class MyGcmPushReceiver extends GcmListenerService {
         //MainUtils.parentGroupItem = joinToGroup;
 
         int type;
-        if(data.getString("device_mode").equals(JoinGroupActivity.MANAGER)) {
+        if(messages.getString("device_mode").trim().equals(JoinGroupActivity.MANAGER)) {
+            Log.d(TAG,"type manager " + messages.getString("device_mode").trim());
             type = 1;
-        } else type = 0;
+        } else{
+            Log.d(TAG,"type child " + messages.getString("device_mode").trim());
+            type = 0;
+        }
         try {
-            joinDevice.setId_member_server(data.getInt("id"));
-            joinDevice.setName_member(data.getString("device_name"));
+            joinDevice.setId_member_server(messages.getInt("id"));
+            joinDevice.setName_member(messages.getString("device_name"));
             joinDevice.setType_member(type);
 
             mDataHelper.addMemberItemParent(joinDevice,MainUtils.parentGroupItem.getId_group());
             MainUtils.parentGroupItem.getListMember().add(joinDevice);
             mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
 
-            contentNotification = "Device "+ data.getString("device_name")
-                    + ", Model " + data.getString("device_model")
-                    + ", Mode " + data.getString("device_mode")
-                    + ", Type " + data.getString("device_type");
+            contentNotification = "Device "+ messages.getString("device_name")
+                    + ", Model " + messages.getString("device_model")
+                    + ", Mode " + messages.getString("device_mode")
+                    + ", Type " + messages.getString("device_type");
 
             sendNotification(contentNotification, "A device join your family");
 
