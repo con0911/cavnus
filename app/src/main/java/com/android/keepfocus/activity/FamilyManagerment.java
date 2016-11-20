@@ -383,7 +383,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                             //parentItem.setGroup_name(mEditText.getText().toString());
                             //mDataHelper.addGroupItemParent(parentItem);
                             displayProfile();
-                            MainUtils.parentGroupItem = new ParentGroupItem();
+                            MainUtils.parentGroupItem = new ParentGroupItem(mContext);
                             MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
                             //MainUtils.parentGroupItem.setGroup_code("registationId");
                             groupRequestController.testAddGroupInServer();
