@@ -86,6 +86,7 @@ public class CoverFlowAdapter extends BaseAdapter {
 
 
         Uri selectedImage = Uri.parse(profileItem.getIcon_uri().toString());
+        //viewHolder.iconFamily.setImageURI(selectedImage);
         InputStream is = null;
         try {
             is = activity.getContentResolver().openInputStream(selectedImage);
@@ -95,9 +96,9 @@ public class CoverFlowAdapter extends BaseAdapter {
         if (is!=null) {
             Bitmap bitmap = null;
             try {
-                bitmap = Bitmap.createScaledBitmap(MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage),
-                        convertView.getWidth(),convertView.getHeight(), false);
-                //bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage);
+                /*bitmap = Bitmap.createScaledBitmap(MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage),
+                        convertView.getWidth(),convertView.getHeight(), false);*/
+                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage);
                 viewHolder.iconFamily.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
