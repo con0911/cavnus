@@ -1,5 +1,12 @@
 package com.android.keepfocus.data;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.res.Resources;
+import android.net.Uri;
+
+import com.android.keepfocus.R;
+
 import java.util.ArrayList;
 
 /**
@@ -24,6 +31,22 @@ public class ParentGroupItem {
         this.id_group_server = -1;
         this.icon_uri = "";
         listMember = new ArrayList<ParentMemberItem>();
+    }
+
+    public ParentGroupItem(Context context) {
+        this.id_group = -1;
+        this.group_name = "";
+        this.group_code = "";
+        this.create_date = "";
+        this.id_group_server = -1;
+        this.icon_uri = getDefaultUriImage(context);
+        listMember = new ArrayList<ParentMemberItem>();
+    }
+
+    private String getDefaultUriImage(Context context) {
+        Resources resources = context.getResources();
+        Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getResources().getResourcePackageName(R.drawable.person) + '/' + context.getResources().getResourceTypeName(R.drawable.person) + '/' + context.getResources().getResourceEntryName(R.drawable.person));
+        return imageUri.toString();
     }
 
 
