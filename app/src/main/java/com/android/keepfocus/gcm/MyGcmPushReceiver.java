@@ -34,12 +34,13 @@ import java.util.ArrayList;
  */
 public class MyGcmPushReceiver extends GcmListenerService {
 
-    public static String DELETE_NOTI = "del";
-    public static String CREATE_NOTI = "create";
-    public static String UPDATE_NOTI = "update";
-    public static String JOIN_GROUP = "join";
-    public static String MANAGER = "manager";
-    public static String CHILDREN = "child";
+    public static final String DELETE_NOTI = "del";
+    public static final String CREATE_NOTI = "create";
+    public static final String UPDATE_NOTI = "update";
+    public static final String JOIN_GROUP = "join";
+    public static final String MANAGER = "manager";
+    public static final String CHILDREN = "child";
+    public static final String REPLACE_DEVICE = "replace";
     private ChildKeepFocusItem childProfile;
     private String family_id;
 
@@ -146,7 +147,38 @@ public class MyGcmPushReceiver extends GcmListenerService {
         try {
             jsonObj = new JSONObject(message);
 
-            if(titleText.equals(DELETE_NOTI)){
+            switch (titleText){
+                case DELETE_NOTI:
+                    //Delete
+                    Log.e("vinh", "delete");
+                    deletScheduler(message);
+                    break;
+                case CREATE_NOTI:
+                    //Create
+                    Log.e("vinh", "create");
+                    createNewScheduler(message);
+                    break;
+                case UPDATE_NOTI:
+                    //Update
+                    Log.e("vinh", "update");
+                    updateScheduler(message);
+                    break;
+                case JOIN_GROUP:
+                    //Join
+                    Log.e("vinh", "join");
+                    setJoinGroup(jsonObj);
+                    break;
+                case REPLACE_DEVICE:
+                    //Replace
+                    //handle noficiation replace here
+                    Log.e("vinh", "replace");
+                    setReplaceDevice(jsonObj);
+                    break;
+                default:
+                    Log.d(TAG,"title not match : " + titleText);
+            }
+
+            /*if(titleText.equals(DELETE_NOTI)){
                 //Delete
                 deletScheduler(message);
             } else if (titleText.equals(CREATE_NOTI)){
@@ -161,7 +193,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 setJoinGroup(jsonObj);
             } else {
                 //Another
-            }
+            }*/
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -288,7 +320,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
     public void setJoinGroup(JSONObject data) throws JSONException {
 
-        Log.d(TAG,"JsonObject data : " + data);
+        Log.d(TAG,"JsonObject join data : " + data);
         JSONObject messages = data.getJSONObject("message");
         ParentMemberItem joinDevice = new ParentMemberItem();
         family_id = data.getString("FamilyID");
@@ -337,6 +369,23 @@ public class MyGcmPushReceiver extends GcmListenerService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void setReplaceDevice(JSONObject data) throws JSONException{
+        Log.d("vinh","JsonObject replace data : " + data);
+        JSONObject messages = data.getJSONObject("message");
+        ParentMemberItem replaceDevice = new ParentMemberItem();
+        family_id = data.getString("FamilyID");
+        if(family_id !=null) {
+            MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
+        }
+        replaceDevice.setName_member(messages.getString("device_name"));
+        mDataHelper.updateMemberItem(replaceDevice);
+        //mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
+
+        contentNotification = "Device " +messages.getString("device_name");
+        sendNotification(contentNotification, "A device has been replaced in your family");
 
     }
 

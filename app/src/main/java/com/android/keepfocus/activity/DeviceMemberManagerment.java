@@ -123,6 +123,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         setTitle(MainUtils.parentGroupItem.getGroup_name());
         mDataHelper = new MainDatabaseHelper(mContext);
         groupRequestController = new GroupRequestController(this);
+        groupRequestController.updateListDevice();
         schedulerRequestController = new SchedulerRequestController(this);
 
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
@@ -186,8 +187,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     protected void onResume() {
         //updateStatusTime(MainUtils.parentProfile.getListTimer());
         super.onResume();
-        //groupRequestController.updateListDevice();
-        //displayMember();
+        displayMember();
         registerReceiver(getDatabaseReceiver, intentFilter);
     }
 

@@ -93,8 +93,8 @@ public class JoinGroupActivity extends Activity {
     private boolean isTurnNotificationAccess = false;
     private final int SHOW_DIALOG_USAGE_ACCESS_ID = 1;
     private final int SHOW_DIALOG_NOTIFICATION_ACCESS_ID = 2;
-    private static String mPopupContentMgs="";
-    private AlertDialog mEnableNotiDialog;
+    private static String mPopupContentMgs = "";
+    private AlertDialog mEnableNotiDialog, mEnableDataAccessDialog;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -127,11 +127,11 @@ public class JoinGroupActivity extends Activity {
             return;
         }*/
 
-        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager){
+        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager) {
             mActiveCode.setVisibility(View.GONE);
             mRBtnManage.setChecked(true);
             mRBtnChild.setChecked(false);
-        }else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children){
+        } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
             mRBtnManage.setChecked(false);
             mRBtnChild.setChecked(true);
         }
@@ -168,7 +168,7 @@ public class JoinGroupActivity extends Activity {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
                     token = intent.getStringExtra("token");
-                    Log.d(TAG,"REGISTATION_ID = "+token);
+                    Log.d(TAG, "REGISTATION_ID = " + token);
                     SharedPreferences.Editor editor = joinPref.edit();
                     editor.putString(MainUtils.REGISTATION_ID, token);
                     editor.commit();
@@ -186,16 +186,16 @@ public class JoinGroupActivity extends Activity {
             public void onClick(View v) {
                 //createRequestDialog();
                 String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
-                if(registationId.equals("")){
+                if (registationId.equals("")) {
                     Intent intent = new Intent(mContext, GcmIntentService.class);//send intent to get token
                     intent.putExtra("key", "register");
                     startService(intent);
-                    Toast.makeText(JoinGroupActivity.this,"Please check the internet!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(JoinGroupActivity.this, "Please check the internet!", Toast.LENGTH_LONG).show();
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children
                         && !mActiveCode.getText().toString().equals("")) {
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
-                } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
+                } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager) {
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
                 }
@@ -221,7 +221,7 @@ public class JoinGroupActivity extends Activity {
                     if (!isTurnUsageAccess && !isOnUsageAccess()) {
                         showDialogGotoAccess(SHOW_DIALOG_USAGE_ACCESS_ID);
                     }
-                    if(!isTurnNotificationAccess && !isOnNotificationAccessPermission()) {
+                    if (!isTurnNotificationAccess && !isOnNotificationAccessPermission()) {
                         showDialogGotoAccess(SHOW_DIALOG_NOTIFICATION_ACCESS_ID);
                     }
                 }
@@ -282,6 +282,34 @@ public class JoinGroupActivity extends Activity {
         }
     }
 
+    private void showReplaceDeviceDialog() {
+        View view = getLayoutInflater().inflate(R.layout.replace_child_device_popup, null);
+        TextView txtMsg = (TextView) view.findViewById(R.id.replace_text);
+        txtMsg.setText(R.string.replace_device_text);
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .setTitle(getString(R.string.title_replace_device))
+                .setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ReplaceDeviceAsynTask replaceAsyn = new ReplaceDeviceAsynTask();
+                        replaceAsyn.execute();
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+
+                    }
+                }).create();
+        alertDialog.show();
+
+
+    }
+
     private void turnOnUsageAccess() {
         Intent usageAccessIntent = new Intent(
                 Settings.ACTION_USAGE_ACCESS_SETTINGS);
@@ -295,7 +323,7 @@ public class JoinGroupActivity extends Activity {
         switch (dialogId) {
             case SHOW_DIALOG_USAGE_ACCESS_ID:
                 mTextMsg.setText(R.string.popup_usage_access);
-                AlertDialog mDeleteDialog = new AlertDialog.Builder(this)
+                mEnableDataAccessDialog = new AlertDialog.Builder(this)
                         .setView(view)
                         .setTitle(getString(R.string.title_usage_access))
                         .setPositiveButton(getString(R.string.ok_button),
@@ -315,7 +343,7 @@ public class JoinGroupActivity extends Activity {
                                         dialog.cancel();
                                     }
                                 }).create();
-                mDeleteDialog.show();
+                mEnableDataAccessDialog.show();
                 break;
             case SHOW_DIALOG_NOTIFICATION_ACCESS_ID:
                 mTextMsg.setText(mPopupContentMgs);
@@ -348,17 +376,17 @@ public class JoinGroupActivity extends Activity {
     }
 
     //Code part handle notifications access permission
-    private boolean isOnNotificationAccessPermission(){
+    private boolean isOnNotificationAccessPermission() {
         boolean isEnable = false;
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR2){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             mPopupContentMgs = (String) getString(R.string.popup_notification_access);
             ContentResolver contentResolver = mContext.getContentResolver();
             String enableNotificationListener = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
             String packageName = mContext.getPackageName();
-            if(enableNotificationListener == null || !enableNotificationListener.contains(packageName)){
+            if (enableNotificationListener == null || !enableNotificationListener.contains(packageName)) {
                 Log.d("ProfileEditActivity", "The Notification Permission not enable");
                 isEnable = false;
-            }else {
+            } else {
                 Log.d("ProfileEditActivity", "The Notification Permission enable");
                 isEnable = true;
             }
@@ -384,8 +412,8 @@ public class JoinGroupActivity extends Activity {
         return granted;
     }
 
-    private void turnOnNotificationAccess(){
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR2){
+    private void turnOnNotificationAccess() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             Intent intent = new Intent(
                     "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
@@ -407,7 +435,7 @@ public class JoinGroupActivity extends Activity {
         listMemberType = new String[2];
         listMemberType[0] = "Manager";
         listMemberType[1] = "Children";
-        ArrayAdapter adapterType = new ArrayAdapter(this, android.R.layout.simple_spinner_item,listMemberType);
+        ArrayAdapter adapterType = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listMemberType);
         spinnerType.setAdapter(adapterType);
 
         final LinearLayout linceseLayout = (LinearLayout) view.findViewById(R.id.linceseLayout);
@@ -415,9 +443,9 @@ public class JoinGroupActivity extends Activity {
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position==0) {
+                if (position == 0) {
                     linceseLayout.setVisibility(View.GONE);
-                } else if (position==1) {
+                } else if (position == 1) {
                     linceseLayout.setVisibility(View.VISIBLE);
                 }
             }
@@ -430,16 +458,16 @@ public class JoinGroupActivity extends Activity {
         requestBuilder.setView(view);
         requestBuilder.setMessage("Request Join Family");
         requestBuilder.setCancelable(true);
-        requestBuilder.setPositiveButton("Accept",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        requestBuilder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+        requestBuilder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        requestBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
         AlertDialog requestDialog = requestBuilder.create();
         requestDialog.show();
 
@@ -458,17 +486,17 @@ public class JoinGroupActivity extends Activity {
         }
     }
 
-    private String checkType(){
+    private String checkType() {
         if (typeJoin == 0) return CHILDREN;
         else return MANAGER;
     }
 
-    public String joinGroup(){
+    public String joinGroup() {
         String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
         //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
-        Device deviceItem = new Device(0,nameDevice.getText().toString(),"ss","android",registationId,"",checkType());
-        GroupUser groupUser = new GroupUser(0,0,0,mActiveCode.getText().toString());
+        Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "", checkType());
+        GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getText().toString());
         JoinGroupRequest joinGroupRequest = new JoinGroupRequest(3, groupItem, deviceItem, groupUser);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
@@ -476,46 +504,66 @@ public class JoinGroupActivity extends Activity {
         return jsonRequest;
     }
 
+    public String replaceDevice() {
+        String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
+        //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
+        Group groupItem = new Group("", joinFamilyIDText.getText().toString());
+        Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "", checkType());
+        GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getText().toString());
+        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(4, groupItem, deviceItem, groupUser);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(joinGroupRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+
     private class JoinGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         ProgressDialog mDialog;
+
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
             link = groupRequestController.BASE_URL + joinGroup();
-            Log.d(TAG,"link: "+link);
+            Log.d(TAG, "link: " + link);
             result = groupRequestController.connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
+
         @Override
         protected void onPostExecute(String result) {
             String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
+            Log.d(TAG, "onPostExecute" + result);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
                     String status_result = message.getString("Status");
-                    if(status_result.equals("1")) {
-                        isJoinSuccess = true;
-                        SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
-                        Log.e("vinh", "isJoinSuccess" + isJoinSuccess);
-                        Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
-                        groupRequestController.updateSuccess();
+                    if (status_result.equals("1")) {
                         if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
-                            Log.e("vinh", "isJoinSuccess Child" + isJoinSuccess);
-                            SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
-                            Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
-                            startActivity(childSchedule);
+                            if (description_result.equals("Existed")) {
+                                showReplaceDeviceDialog();
+                            } else {
+                                isJoinSuccess = true;
+                                SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
+                                Log.e("vinh", "isJoinSuccess" + isJoinSuccess);
+                                groupRequestController.updateSuccess();
+                                Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
+                                SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
+                                Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
+                                startActivity(childSchedule);
+                            }
                         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager) {
                             Log.e("vinh", "isJoinSuccess Manager" + isJoinSuccess);
                             Intent familyManagement = new Intent(JoinGroupActivity.this, FamilyManagerment.class);
                             startActivity(familyManagement);
                         }
 
-                    } else {
+                    } else if (status_result.equals("2")) {
+                        Toast.makeText(mContext, "The activation code is wrong, please enter correctly Activation code", Toast.LENGTH_SHORT).show();
                         SetupWizardActivity.setModeDevice(MainUtils.MODE_DEFAULT, mContext);
                         SetupWizardActivity.setTypeJoin(Constants.JoinFail, mContext);
 
@@ -526,6 +574,7 @@ public class JoinGroupActivity extends Activity {
             }
             mDialog.dismiss();
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -536,4 +585,57 @@ public class JoinGroupActivity extends Activity {
             mDialog.show();
         }
     }
+
+    private class ReplaceDeviceAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
+        ProgressDialog mDialog;
+
+        @Override
+        protected String doInBackground(ParentGroupItem... params) {
+            String result = "";
+            String link;
+            link = groupRequestController.BASE_URL + replaceDevice();
+            Log.d(TAG, "link: " + link);
+            result = groupRequestController.connectToServer(link);
+            //result = serverUtils.postData(BASE_URL,getListGroup());
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG, "onPostExecute" + result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    String status_result = message.getString("Status");
+                    if (status_result.equals("1")) {
+                        Toast.makeText(mContext, "Replace device successfully", Toast.LENGTH_SHORT).show();
+                        groupRequestController.updateSuccess();
+                        SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
+                        Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
+                        startActivity(childSchedule);
+                    } else {
+                        Toast.makeText(mContext, "Replace device failure", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            mDialog.dismiss();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(JoinGroupActivity.this);
+            mDialog.setCancelable(false);
+            mDialog.setInverseBackgroundForced(false);
+            mDialog.setMessage("Request to server...");
+            mDialog.show();
+        }
+    }
+
+
 }

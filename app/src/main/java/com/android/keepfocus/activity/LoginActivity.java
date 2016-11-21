@@ -290,7 +290,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
+        Intent setupWizard = new Intent(LoginActivity.this, SetupWizardActivity.class);
+        startActivity(setupWizard);
     }
 
     /**
