@@ -95,7 +95,8 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_MEMBER = "CREATE TABLE " + TABLE_MEMBER + "("
                 + "id_member INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " name_member text not null," + " type_member INTEGER,"
-                + " image_member text not null,"+ " id_member_server INTEGER" + ")";
+                + " image_member text not null," + " id_member_server INTEGER "
+                + " is_blockall INTEGER," + " is_alowall INTEGER" + ")";
         db.execSQL(CREATE_TABLE_MEMBER);
         // tblGroupMemberParent
         String CREATE_TABLE_GROUP_MEMBER_PARENT = "CREATE TABLE " + TABLE_GROUP_MEMBER_PARENT + "("
@@ -696,11 +697,15 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             int type_member = cursor.getInt(2);
             String image_member = cursor.getString(3);
             int id_member_server = cursor.getInt(4);
+            int is_blockall = cursor.getInt(5);
+            int is_alowall = cursor.getInt(6);
             memberItem.setId_member(id_member);
             memberItem.setName_member(name_member);
             memberItem.setType_member(type_member);
             memberItem.setImage_member(image_member);
             memberItem.setId_member_server(id_member_server);
+            memberItem.setIs_blockall(is_blockall);
+            memberItem.setIs_alowall(is_alowall);
             return memberItem;
         }
         return null;
@@ -870,6 +875,8 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             values3.put("type_member", parentMemberItem.getType_member());
             values3.put("image_member", parentMemberItem.getImage_member());
             values3.put("id_member_server",parentMemberItem.getId_member_server());
+            values3.put("is_blockall", parentMemberItem.getIs_blockall());
+            values3.put("is_alowall",parentMemberItem.getIs_alowall());
             id_member = (int) dbMain.insert("tblMemberParent", null, values3);
             parentMemberItem.setId_member(id_member);
         }
@@ -1050,11 +1057,15 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         int type_member = parentMemberItem.getType_member();
         String image_member = "'" + parentMemberItem.getImage_member() + "'";
         int id_member_server = parentMemberItem.getId_member_server();
+        int is_blockall =  parentMemberItem.getIs_blockall();
+        int is_alowall = parentMemberItem.getIs_alowall();
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblMemberParent set name_member = " + name_member
                 + ", type_member = " + type_member + ", image_member = " + image_member
                 + ", id_member_server = " + id_member_server
+                + ", is_blockall = " + is_blockall
+                + ", is_alowall = " + is_alowall
                 + " where id_member = " + id_member;
         dbMain.execSQL(update);
         dbMain.close();

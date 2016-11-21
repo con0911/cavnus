@@ -11,6 +11,8 @@ public class ParentMemberItem {
     private int type_member;
     private String image_member;
     private int id_member_server;
+    private int is_blockall;
+    private int is_alowall;
     private ArrayList<ParentProfileItem> listProfile;
 
     public ParentMemberItem() {
@@ -19,6 +21,8 @@ public class ParentMemberItem {
         this.type_member = 1;
         this.image_member = "";
         this.id_member_server = -1;
+        this.is_alowall = 0;
+        this.is_blockall = 0;
         this.listProfile = new ArrayList<ParentProfileItem>();
     }
 
@@ -68,5 +72,21 @@ public class ParentMemberItem {
 
     public void setId_member_server(int id_member_server) {
         this.id_member_server = id_member_server;
+    }
+
+    public int getIs_alowall() {
+        return is_alowall;
+    }
+
+    public void setIs_alowall(int is_alowall) {
+        this.is_alowall = is_alowall;
+    }
+
+    public int getIs_blockall() {
+        return is_blockall;
+    }
+
+    public void setIs_blockall(int is_blockall) {
+        this.is_blockall = is_blockall;
     }
 }
