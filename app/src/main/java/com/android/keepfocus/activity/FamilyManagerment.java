@@ -378,17 +378,31 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        if (!mEditText.getText().toString().equals("")) {
+                        String name = mEditText.getText().toString();
+                        mEditText.setError(null);
+                        View focusView = null;
+                        if (!name.equals("")) {
                             //ParentGroupItem parentItem = new ParentGroupItem();
                             //parentItem.setGroup_name(mEditText.getText().toString());
                             //mDataHelper.addGroupItemParent(parentItem);
-                            displayProfile();
-                            MainUtils.parentGroupItem = new ParentGroupItem(mContext);
-                            MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
-                            //MainUtils.parentGroupItem.setGroup_code("registationId");
-                            groupRequestController.testAddGroupInServer();
+                            if (isNameInValid(name)){
+                                mEditText.setError("This name is invalid because of containing space");
+                                Toast.makeText(FamilyManagerment.this, "This Family name is invalid because of containing space!", Toast.LENGTH_LONG).show();
+                                focusView = mEditText;
+                                focusView.requestFocus();
+                            }else {
+                                displayProfile();
+                                MainUtils.parentGroupItem = new ParentGroupItem(mContext);
+                                MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
+                                //MainUtils.parentGroupItem.setGroup_code("registationId");
+                                groupRequestController.testAddGroupInServer();
+                            }
                         } else {
-                            dialog.cancel();
+                            //dialog.cancel();
+                            mEditText.setError("This name is empty");
+                            Toast.makeText(FamilyManagerment.this, "This Family name is empty.Can not create!", Toast.LENGTH_LONG).show();
+                            focusView = mEditText;
+                            focusView.requestFocus();
                         }
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -399,6 +413,10 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 }).create();
 
         mAlertDialog.show();
+    }
+
+    private boolean isNameInValid(String name){
+        return name.contains(" ");
     }
 
 

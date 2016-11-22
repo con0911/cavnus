@@ -199,10 +199,6 @@ public class ChildSchedulerActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
         switch (item.getItemId()) {
-            case R.id.add:
-                //createNewGroup();//add for test
-                break;
-
             case R.id.notification:
                 //show notification
                 break;

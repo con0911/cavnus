@@ -67,9 +67,9 @@
             android:layout_height="@dimen/button_height"
             android:layout_marginRight="@dimen/horizontal_button_margin"
             android:background="@color/color_background_button"
-            android:layout_gravity="right|bottom"
+            android:layout_gravity="center|bottom"
             android:gravity="center"
-            android:text="BACK >" />
+            android:text="HOME" />
     </LinearLayout>
 
 </RelativeLayout>

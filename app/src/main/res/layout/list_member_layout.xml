@@ -27,6 +27,7 @@
                 android:id="@+id/nameFamily"
                 android:layout_width="wrap_content"
                 style="@style/textTitle"
+                android:textStyle="bold"
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/listDeviceName"
