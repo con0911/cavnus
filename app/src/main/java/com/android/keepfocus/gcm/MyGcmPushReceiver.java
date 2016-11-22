@@ -152,8 +152,6 @@ public class MyGcmPushReceiver extends GcmListenerService {
         String titleText = title;
         JSONObject jsonObj = null;
         try {
-            jsonObj = new JSONObject(message);
-
             switch (titleText){
                 case DELETE_NOTI:
                     //Delete
@@ -173,12 +171,14 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 case JOIN_GROUP:
                     //Join
                     Log.e("vinh", "join");
+                    jsonObj = new JSONObject(message);
                     setJoinGroup(jsonObj);
                     break;
                 case REPLACE_DEVICE:
                     //Replace
                     //handle noficiation replace here
                     Log.e("vinh", "replace");
+                    jsonObj = new JSONObject(message);
                     setReplaceDevice(jsonObj);
                     break;
                 case BLOCKALL:
