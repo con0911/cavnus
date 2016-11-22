@@ -231,6 +231,8 @@ public class JoinGroupActivity extends Activity {
         }
 
         isTurnOnAdmin = true;
+        isTurnNotificationAccess = true;
+        isTurnUsageAccess = true;
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(REGISTRATION_COMPLETE));
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
@@ -289,6 +291,7 @@ public class JoinGroupActivity extends Activity {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setView(view)
                 .setTitle(getString(R.string.title_replace_device))
+                .setCancelable(false)
                 .setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
 
                     @Override
@@ -326,6 +329,7 @@ public class JoinGroupActivity extends Activity {
                 mEnableDataAccessDialog = new AlertDialog.Builder(this)
                         .setView(view)
                         .setTitle(getString(R.string.title_usage_access))
+                        .setCancelable(false)
                         .setPositiveButton(getString(R.string.ok_button),
                                 new DialogInterface.OnClickListener() {
                                     @Override
@@ -335,14 +339,14 @@ public class JoinGroupActivity extends Activity {
                                         turnOnUsageAccess();
                                     }
                                 })
-                        .setNegativeButton(getString(R.string.cancel_button),
+                        /*.setNegativeButton(getString(R.string.cancel_button),
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         dialog.cancel();
                                     }
-                                }).create();
+                                })*/.create();
                 mEnableDataAccessDialog.show();
                 break;
             case SHOW_DIALOG_NOTIFICATION_ACCESS_ID:
@@ -350,6 +354,7 @@ public class JoinGroupActivity extends Activity {
                 mEnableNotiDialog = new AlertDialog.Builder(this)
                         .setView(view)
                         .setTitle(getString(R.string.title_notification_access))
+                        .setCancelable(false)
                         .setPositiveButton(getString(R.string.ok_button),
                                 new DialogInterface.OnClickListener() {
                                     @Override
@@ -359,14 +364,14 @@ public class JoinGroupActivity extends Activity {
                                         turnOnNotificationAccess();
                                     }
                                 })
-                        .setNegativeButton(getString(R.string.cancel_button),
+                        /*.setNegativeButton(getString(R.string.cancel_button),
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         dialog.cancel();
                                     }
-                                }).create();
+                                })*/.create();
                 mEnableNotiDialog.show();
                 break;
             default:

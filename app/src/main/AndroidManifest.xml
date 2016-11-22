@@ -38,9 +38,6 @@
         android:theme="@style/AppTheme.NoActionBar">
 
         <activity
-            android:name=".activity.ShowQRCodeScreen"
-            android:theme="@style/CustomizeActionbarAppTheme" />
-        <activity
             android:name=".activity.JoinGroupActivity"
             android:theme="@style/CustomizeActionbarAppTheme" />
         <!--setup wizard-->
@@ -72,10 +69,6 @@
         <activity
             android:name=".activity.LoginActivity"
              />
-
-        <activity android:name=".activity.MainActivity">
-
-        </activity>
 
         <activity android:name=".activity.InstalledAppActivity"
             android:parentActivityName=".activity.SchedulerConfigActivity"

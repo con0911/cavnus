@@ -16,6 +16,7 @@ import com.android.keepfocus.data.ParentTimeItem;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Scheduler;
 import com.android.keepfocus.server.model.TimeItems;
+import com.android.keepfocus.server.request.model.DeviceRequest;
 import com.android.keepfocus.server.request.model.SchedulerRequest;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
@@ -40,6 +41,7 @@ public class SchedulerRequestController {
     private static final int NET_READ_TIMEOUT_MILLIS = 10000;
     private static final int NET_CONNECT_TIMEOUT_MILLIS = 10000;
     private SchedulerRequest schedulerRequest;
+    private DeviceRequest deviceRequest;
     private String TAG = "SchedulerRequestController";
     private Context mContext;
     private MainDatabaseHelper mDataHelper;
@@ -253,5 +255,288 @@ public class SchedulerRequestController {
             }
         }
         return sb.toString();
+    }
+
+    public void testBlockAllRequest(ParentMemberItem memberItem) {
+        MainUtils.memberItemForBlockAll = memberItem;
+        BlockAllAsynTask blockAsyn = new BlockAllAsynTask();
+        blockAsyn.execute();
+    }
+
+    public void testUnBlockAllRequest(ParentMemberItem memberItem) {
+        MainUtils.memberItemForBlockAll = memberItem;
+        UnBlockAllAsynTask unBlockAsyn = new UnBlockAllAsynTask();
+        unBlockAsyn.execute();
+    }
+
+    public void testAllowAllRequest(ParentMemberItem memberItem) {
+        MainUtils.memberItemForBlockAll = memberItem;
+        AllowAllAsynTask allowAllAsyn = new AllowAllAsynTask();
+        allowAllAsyn.execute();
+    }
+
+    public void testUnAllowAllRequest(ParentMemberItem memberItem) {
+        MainUtils.memberItemForBlockAll = memberItem;
+        UnAllowAllAsynTask unAllowAsyn = new UnAllowAllAsynTask();
+        unAllowAsyn.execute();
+    }
+
+    public String creatBlockAllRequest(ParentMemberItem memberItem) {
+        ParentMemberItem device = memberItem;
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        deviceRequest = new DeviceRequest(1, 9, deviceItem);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(deviceRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    public String creatUnBlockAllRequest(ParentMemberItem memberItem) {
+        ParentMemberItem device = memberItem;
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        deviceRequest = new DeviceRequest(1, 11, deviceItem);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(deviceRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    public String creatAllowAllRequest(ParentMemberItem memberItem) {
+        ParentMemberItem device = memberItem;
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        deviceRequest = new DeviceRequest(1, 10, deviceItem);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(deviceRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    public String creatUnAllowAllRequest(ParentMemberItem memberItem) {
+        ParentMemberItem device = memberItem;
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        deviceRequest = new DeviceRequest(1, 12, deviceItem);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(deviceRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    //=====================Block code for BlockAll Device api==================================
+
+    private class BlockAllAsynTask extends AsyncTask<ParentMemberItem, Void, String> {
+        ProgressDialog mDialog;
+        @Override
+        protected String doInBackground(ParentMemberItem... params) {
+            String result = "";
+            String link;
+            link = BASE_URL + creatBlockAllRequest(MainUtils.memberItemForBlockAll);
+            Log.d(TAG,"link: "+link);
+            result = connectToServer(link);
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG,"onPostExecute"+result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    int status = message.getInt("Status");
+                    if(status == 1) {
+                        //Handle Success
+                        updateSuccess(MainUtils.BLOCK_ALL);
+                        MainUtils.memberItemForBlockAll.setIs_blockall(1);
+                        mDataHelper.updateMemberItem(MainUtils.memberItemForBlockAll);
+                    } else {
+                        Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+            }
+            mDialog.dismiss();
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setCancelable(false);
+            mDialog.setInverseBackgroundForced(false);
+            mDialog.setMessage("Request to server...");
+            mDialog.show();
+        }
+    }
+
+    //=====================Block code for BlockAll Device api==================================
+
+    //=====================Block code for UnBlockAll Device api==================================
+
+    private class UnBlockAllAsynTask extends AsyncTask<ParentMemberItem, Void, String> {
+        ProgressDialog mDialog;
+        @Override
+        protected String doInBackground(ParentMemberItem... params) {
+            String result = "";
+            String link;
+            link = BASE_URL + creatUnBlockAllRequest(MainUtils.memberItemForBlockAll);
+            Log.d(TAG,"link: "+link);
+            result = connectToServer(link);
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG,"onPostExecute"+result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    int status = message.getInt("Status");
+                    if(status == 1) {
+                        //Handle Success
+                        updateSuccess(MainUtils.UNBLOCK_ALL);
+                        MainUtils.memberItemForBlockAll.setIs_blockall(0);
+                        mDataHelper.updateMemberItem(MainUtils.memberItemForBlockAll);
+                    } else {
+                        Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+            }
+            mDialog.dismiss();
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setCancelable(false);
+            mDialog.setInverseBackgroundForced(false);
+            mDialog.setMessage("Request to server...");
+            mDialog.show();
+        }
+    }
+
+    //=====================Block code for UnBlockAll Device api==================================
+
+    //=====================Block code for AllowAll Device api==================================
+
+    private class AllowAllAsynTask extends AsyncTask<ParentMemberItem, Void, String> {
+        ProgressDialog mDialog;
+        @Override
+        protected String doInBackground(ParentMemberItem... params) {
+            String result = "";
+            String link;
+            link = BASE_URL + creatAllowAllRequest(MainUtils.memberItemForBlockAll);
+            Log.d(TAG,"link: "+link);
+            result = connectToServer(link);
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG,"onPostExecute"+result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    int status = message.getInt("Status");
+                    if(status == 1) {
+                        //Handle Success
+                        updateSuccess(MainUtils.ALLOW_ALL);
+                        MainUtils.memberItemForBlockAll.setIs_alowall(1);
+                        mDataHelper.updateMemberItem(MainUtils.memberItemForBlockAll);
+                    } else {
+                        Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+            }
+            mDialog.dismiss();
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setCancelable(false);
+            mDialog.setInverseBackgroundForced(false);
+            mDialog.setMessage("Request to server...");
+            mDialog.show();
+        }
+    }
+
+    //=====================Block code for AllowAll Device api==================================
+
+    //=====================Block code for UnAllowAll Device api==================================
+
+    private class UnAllowAllAsynTask extends AsyncTask<ParentMemberItem, Void, String> {
+        ProgressDialog mDialog;
+        @Override
+        protected String doInBackground(ParentMemberItem... params) {
+            String result = "";
+            String link;
+            link = BASE_URL + creatUnAllowAllRequest(MainUtils.memberItemForBlockAll);
+            Log.d(TAG,"link: "+link);
+            result = connectToServer(link);
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG,"onPostExecute"+result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    int status = message.getInt("Status");
+                    if(status == 1) {
+                        //Handle Success
+                        updateSuccess(MainUtils.UNALLOW_ALL);
+                        MainUtils.memberItemForBlockAll.setIs_alowall(0);
+                        mDataHelper.updateMemberItem(MainUtils.memberItemForBlockAll);
+                    } else {
+                        Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+            }
+            mDialog.dismiss();
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setCancelable(false);
+            mDialog.setInverseBackgroundForced(false);
+            mDialog.setMessage("Request to server...");
+            mDialog.show();
+        }
+    }
+
+    //=====================Block code for UnAllowAll Device api==================================
+
+    public void updateSuccess(String str){
+        Intent intent = new Intent();
+        intent.setAction(str);
+        mContext.sendBroadcast(intent);
+        Log.e("thong.nv","sendBroadcast" + intent);
     }
 }

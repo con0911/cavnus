@@ -95,7 +95,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_MEMBER = "CREATE TABLE " + TABLE_MEMBER + "("
                 + "id_member INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " name_member text not null," + " type_member INTEGER,"
-                + " image_member text not null," + " id_member_server INTEGER "
+                + " image_member text not null," + " id_member_server INTEGER,"
                 + " is_blockall INTEGER," + " is_alowall INTEGER" + ")";
         db.execSQL(CREATE_TABLE_MEMBER);
         // tblGroupMemberParent
@@ -665,7 +665,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         return groupItem;
     }
 
-    private ArrayList<ParentMemberItem> getListMember(int idGroup) {
+    public ArrayList<ParentMemberItem> getListMember(int idGroup) {
         ArrayList<ParentMemberItem> listMember = new ArrayList<ParentMemberItem>();
         if (dbMain == null) {
             dbMain = this.getWritableDatabase();

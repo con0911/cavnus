@@ -34,15 +34,10 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     private CheckBox mCheckboxTerm;
     private Button btnParent, btnChild, btnAddParent;
 
-    public static final String REGISTRATION_COMPLETE = "registrationComplete";
-    public static final String PUSH_NOTIFICATION = "pushNotification";
     private final String TERMS_URL = "http://setlimitz.com/terms-and-conditions/";
     private TextView mTerms;
 
     private Context mContext;
-    private GcmIntentService gcmIntentService;
-    private DeviceRequestController mDeviceRequestController;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String token = "";
     private ImageView imgCavnus;
 
@@ -52,7 +47,6 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         super.onCreate(savedInstanceState);
-        // set mode device is default
         mContext = this;
         ActionBar actionBar = getActionBar();
         actionBar.hide();
@@ -60,7 +54,6 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         if (getModeDevice(mContext) == Constants.Admin /*|| getModeDevice(mContext) == MainUtils.MODE_ADDITION_PARENT*/) {
             Intent groupManagement = new Intent(this, FamilyManagerment.class);
             startActivity(groupManagement);
-            //setContentView(R.layout.activity_group_management);
             return;
         }
         if (getTypeJoin(mContext) == Constants.JoinSuccess){
@@ -74,9 +67,6 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
                 return;
             }
         }
-        //SharedPreferences.Editor editor = modeDevice.edit();
-        //editor.putInt(MainUtils.MODE_DEVICE, MainUtils.MODE_DEFAULT);
-        //editor.commit();
         setContentView(R.layout.set_up_mode);
         setTitle("Cavnus");
         btnParent = (Button) findViewById(R.id.btn_parent);
@@ -92,25 +82,8 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         } else {
             imgCavnus.setVisibility(View.GONE);
         }
-        //mTerms.setTextColor(Color.BLUE);
         btnParent.setOnClickListener(this);
-        //btnAddParent.setOnClickListener(this);
-        //btnChild.setOnClickListener(this);
         mTerms.setOnClickListener(this);
-
-
-
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
-                    token = intent.getStringExtra("token");
-                }
-            }
-        };
-        Intent intent = new Intent(this, GcmIntentService.class);
-        intent.putExtra("key", "register");
-        //startService(intent);
 
         btnChild.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,38 +108,12 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(REGISTRATION_COMPLETE));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(PUSH_NOTIFICATION));
-        sendJsonDeviceRequest();
-
         if (getModeDevice(mContext) == Constants.Admin /*|| getModeDevice(mContext) == MainUtils.MODE_ADDITION_PARENT*/) {
             finish();
         }
     }
 
-    public void sendJsonDeviceRequest() {
-
-        String registrationId = token;
-        String deviceCode = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-        /*Device device = new Device(deviceCode, "", "", registrationId, "");
-        DeviceRequest loginRequest = new DeviceRequest(Constants.ActionTypeCreate, device);
-        Gson gson = new Gson();
-        String deviceJsonObject = gson.toJson(loginRequest);
-        Log.e("Device", "URL : " + "http://104.156.224.47/api/device?pRequest=" + deviceJsonObject);
-        mDeviceRequestController = new DeviceRequestController(mContext);
-        boolean isSuccess = mDeviceRequestController.checkDeviceRequest(deviceJsonObject);
-        //Log.e("Login", "isSuccess : " + isSuccess);
-        if (isSuccess) {
-            Toast.makeText(SetupWizardActivity.this, "Send request device success", Toast.LENGTH_SHORT).show();
-
-        } else {
-            Toast.makeText(SetupWizardActivity.this, "Send request device false", Toast.LENGTH_SHORT).show();
-        }*/
-    }
-
-    @Override
+   @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_parent:

@@ -37,6 +37,7 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
+import com.android.keepfocus.server.request.controllers.DeviceRequestController;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.settings.CoverFlowAdapterDevice;
@@ -108,6 +109,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private TextView nameDevice;
     private TextView listScheduler;
     private TextView textName;
+    private final static String TAG = "DeviceMemberManagerment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +135,10 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
         intentFilter.addAction(MainUtils.UPDATE_SCHEDULER);
+        intentFilter.addAction(MainUtils.BLOCK_ALL);
+        intentFilter.addAction(MainUtils.UNBLOCK_ALL);
+        intentFilter.addAction(MainUtils.ALLOW_ALL);
+        intentFilter.addAction(MainUtils.UNALLOW_ALL);
 
 
         detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
@@ -162,6 +168,22 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                     setTitle(MainUtils.parentGroupItem.getGroup_name());
                 } else if (MainUtils.UPDATE_SCHEDULER.equals(action)) {
                     displayDetailTime();
+                } else if (MainUtils.BLOCK_ALL.equals(action)) {
+                    Log.d(TAG, "Success need handle BLOCK_ALL ");
+                    displayMember();
+                    //
+                } else if (MainUtils.UNBLOCK_ALL.equals(action)) {
+                    Log.d(TAG, "Success need handle UNBLOCK_ALL ");
+                    displayMember();
+                    //
+                } else if (MainUtils.ALLOW_ALL.equals(action)) {
+                    Log.d(TAG, "Success need handle ALLOW_ALL ");
+                    displayMember();
+                    //
+                } else if (MainUtils.UNALLOW_ALL.equals(action)) {
+                    Log.d(TAG, "Success need handle UNALLOW_ALL  ");
+                    displayMember();
+                    //
                 }
             }
         };
@@ -1019,6 +1041,31 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private void hideKeyboard(){
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editName.getWindowToken(), 0);
+    }
+
+    public boolean blockAll(int positionMember) {
+        schedulerRequestController.testBlockAllRequest(adapter.getItem(positionMember));
+        schedulerRequestController.testUnAllowAllRequest(adapter.getItem(positionMember));
+        return true;
+    }
+
+
+    public boolean unBlockAll(int positionMember) {
+        schedulerRequestController.testUnBlockAllRequest(adapter.getItem(positionMember));
+        return true;
+    }
+
+
+    public boolean allowAll(int positionMember) {
+        schedulerRequestController.testAllowAllRequest(adapter.getItem(positionMember));
+        schedulerRequestController.testUnBlockAllRequest(adapter.getItem(positionMember));
+        return true;
+    }
+
+
+    public boolean unAllowAll(int positionMember) {
+        schedulerRequestController.testUnAllowAllRequest(adapter.getItem(positionMember));
+        return true;
     }
 
 }

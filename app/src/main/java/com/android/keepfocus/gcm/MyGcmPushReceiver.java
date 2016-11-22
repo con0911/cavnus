@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +42,10 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static final String MANAGER = "manager";
     public static final String CHILDREN = "child";
     public static final String REPLACE_DEVICE = "replace";
+    public static final String BLOCKALL = "blockall";
+    public static final String UNBLOCKALL = "unblockall";
+    public static final String ALLOWALL = "allowall";
+    public static final String UNALLOWALL = "unallowall";
     private ChildKeepFocusItem childProfile;
     private String family_id;
 
@@ -142,6 +147,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
     }
 
     public void handleNotification(String title, String message) {
+        SharedPreferences prefs = this.getSharedPreferences(
+                MainUtils.PACKET_APP, Context.MODE_PRIVATE);
         String titleText = title;
         JSONObject jsonObj = null;
         try {
@@ -174,6 +181,33 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     Log.e("vinh", "replace");
                     setReplaceDevice(jsonObj);
                     break;
+                case BLOCKALL:
+                    Log.e("thong.nv", "BLOCKALL");
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(MainUtils.IS_BLOCK_ALL, true);
+                    editor.putBoolean(MainUtils.IS_ALLOW_ALL, false);
+                    editor.commit();
+                    break;
+                case UNBLOCKALL:
+                    Log.e("thong.nv", "UNBLOCKALL");
+                    SharedPreferences.Editor editor2 = prefs.edit();
+                    editor2.putBoolean(MainUtils.IS_BLOCK_ALL, false);
+                    editor2.commit();
+                    break;
+                case ALLOWALL:
+                    Log.e("thong.nv", "ALLOWALL");
+                    SharedPreferences.Editor editor3 = prefs.edit();
+                    editor3.putBoolean(MainUtils.IS_BLOCK_ALL, false);
+                    editor3.putBoolean(MainUtils.IS_ALLOW_ALL, true);
+                    editor3.commit();
+                    break;
+                case UNALLOWALL:
+                    Log.e("thong.nv", "UNALLOWALL");
+                    SharedPreferences.Editor editor4 = prefs.edit();
+                    editor4.putBoolean(MainUtils.IS_ALLOW_ALL, false);
+                    editor4.commit();
+                    break;
+
                 default:
                     Log.d(TAG,"title not match : " + titleText);
             }
@@ -377,6 +411,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
         JSONObject messages = data.getJSONObject("message");
         ParentMemberItem replaceDevice = new ParentMemberItem();
         family_id = data.getString("FamilyID");
+        ArrayList<ParentMemberItem> listMember = mDataHelper.getListMember(0);
+
         if(family_id !=null) {
             MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
         }

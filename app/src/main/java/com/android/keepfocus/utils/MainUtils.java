@@ -24,6 +24,7 @@ public class MainUtils {
     public static ParentGroupItem parentGroupItem;
     public static ParentProfileItem parentProfile;
     public static ParentMemberItem memberItem;
+    public static ParentMemberItem memberItemForBlockAll;
     public static ChildKeepFocusItem childKeepFocusItem;
     public static String getRegistationId = "";//get token in login screen
 
@@ -41,4 +42,8 @@ public class MainUtils {
     public static String UPDATE_CHILD_SCHEDULER = "com.android.keepfocus.UPDATE_CHILD_SCHEDULER";
     public static String UPDATE_FAMILY_GROUP = "com.android.keepfocus.UPDATE_FAMILY_GROUP";
     public static String UPDATE_SCHEDULER = "com.android.keepfocus.UPDATE_SCHEDULER";
+    public static String BLOCK_ALL = "com.android.keepfocus.BLOCK_ALL";
+    public static String UNBLOCK_ALL = "com.android.keepfocus.UNBLOCK_ALL";
+    public static String ALLOW_ALL = "com.android.keepfocus.ALLOW_ALL";
+    public static String UNALLOW_ALL = "com.android.keepfocus.UNALLOW_ALL";
 }
