@@ -160,7 +160,7 @@ public class ServiceBlockApp extends Service {
     }
 
     private boolean isInBlackList(String packageName) {
-        String[] blackList = {"Youtube","Facebook"};
+        String[] blackList = {"YouTube","Facebook"};
         String nameApp = "";
         PackageManager mPackageManager = mContext.getPackageManager();
         try {

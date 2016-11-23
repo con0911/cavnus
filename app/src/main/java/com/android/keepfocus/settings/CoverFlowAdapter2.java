@@ -80,7 +80,7 @@ public class CoverFlowAdapter2 extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.delete.setText("Delete");
-        viewHolder.addmember.setText("Add member");
+        viewHolder.addmember.setText("Add device");
         viewHolder.detail.setText("Details");
         viewHolder.name.setText(profileItem.getGroup_name());
 

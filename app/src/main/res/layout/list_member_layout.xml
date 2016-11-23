@@ -109,7 +109,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
-                android:text="Scheduler "
+                android:text="Schedules "
                 android:textColor="@color/color_text_title"
                 android:textSize="20dp"
                 android:textStyle="bold" />

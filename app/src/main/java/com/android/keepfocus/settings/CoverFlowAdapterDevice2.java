@@ -76,7 +76,7 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
         allowAll = (TextView) convertView.findViewById(R.id.txt_orange);
         name = (TextView) convertView.findViewById(R.id.family_name);
         blockall.setText("Block All");
-        addmember.setText("Scheduler");
+        addmember.setText("Schedules");
         allowAll.setText("Allow All");
 
 
@@ -88,7 +88,7 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
         Log.e("thong.nv", "profileItem is alow " + profileItem.getIs_alowall());
         if (profileItem.getIs_blockall() == 1) {
             parentBlockall.setPressed(true);
-            blockall.setText("Un Block");
+            blockall.setText("Unblock All");
             blockall.setTextColor(Color.parseColor("#2962ff"));
         } else {
             parentBlockall.setPressed(false);
@@ -97,7 +97,7 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
         }
 
         if (profileItem.getIs_alowall() == 1) {
-            allowAll.setText("Un Allow");
+            allowAll.setText("Un-allow All");
             allowAll.setTextColor(Color.parseColor("#2962ff"));
             parentAllowAll.setPressed(true);
         } else {
