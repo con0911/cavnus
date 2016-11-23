@@ -94,8 +94,6 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        android:layout_marginBottom="100dp"
         android:background="@drawable/button_white_color"
         android:orientation="vertical">
 
@@ -107,9 +105,9 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/btn_join_add_border"
+                android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
                 android:text="Scheduler "
                 android:textColor="@color/color_text_title"
@@ -121,6 +119,8 @@
                 android:layout_width="@dimen/width_button_add"
                 android:layout_height="@dimen/height_button_add"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
                 android:background="@drawable/button_add"
                 android:clickable="true"
                 android:text="@string/add_button"

@@ -16,12 +16,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,7 +77,8 @@ public class JoinGroupActivity extends Activity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String token = "";
     private SharedPreferences joinPref;
-    private EditText joinFamilyIDText, mActiveCode;
+    private EditText joinFamilyIDText, mActiveCode,nameDevice;
+    private static boolean checkValidID, checkValidActiveCode, checkValidName;
     private RelativeLayout layoutChooseMode;
     private RadioButton mRBtnManage, mRBtnChild;
     public String deviceCode;
@@ -84,7 +88,6 @@ public class JoinGroupActivity extends Activity {
     public static String MANAGER = "manager";
     public static String CHILDREN = "child";
     private int typeJoin = 0;
-    private EditText nameDevice;
     public static boolean isJoinSuccess;
     private ChildKeepFocusItem childKeepFocusItem;
 
@@ -111,6 +114,9 @@ public class JoinGroupActivity extends Activity {
         nameDevice = (EditText) findViewById(R.id.deviceName);
         btnImageDone = (Button) findViewById(R.id.doneImageBtn);
         layoutChooseMode = (RelativeLayout) findViewById(R.id.layout_choose_mode);
+        btnImageDone.setClickable(false);
+        btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
+        btnImageDone.setTextColor(Color.parseColor("#808080"));
         //layoutChooseMode.setAlpha((float) 0.9);
         layoutChooseMode.setClickable(false);
         layoutChooseMode.setEnabled(false);
@@ -162,6 +168,125 @@ public class JoinGroupActivity extends Activity {
                 }
             }
         });*/
+        joinFamilyIDText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0){
+                    //checkValidID = true;
+                    if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
+                        if (!nameDevice.getText().toString().isEmpty() && !mActiveCode.getText().toString().isEmpty()) {
+                            btnImageDone.setClickable(true);
+                            btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
+                            btnImageDone.setTextColor(Color.parseColor("#fafafa"));
+                        } else {
+                            btnImageDone.setClickable(false);
+                            btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"/*String.valueOf(getResources().getColor(R.color.gray_press))*/));
+                            btnImageDone.setTextColor(Color.parseColor("#808080"/*String.valueOf(getResources().getColor(R.color.grey))*/));
+                        }
+                    }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
+                        if (!nameDevice.getText().toString().isEmpty()) {
+                            btnImageDone.setClickable(true);
+                            btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
+                            btnImageDone.setTextColor(Color.parseColor("#fafafa"));
+                        } else {
+                            btnImageDone.setClickable(false);
+                            btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"/*String.valueOf(getResources().getColor(R.color.gray_press))*/));
+                            btnImageDone.setTextColor(Color.parseColor("#808080"/*String.valueOf(getResources().getColor(R.color.grey))*/));
+                        }
+                    }
+                }else{
+                    btnImageDone.setClickable(false);
+                    btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                    btnImageDone.setTextColor(Color.parseColor("#808080"));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        nameDevice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0){
+                    //checkValidName = true;
+                    if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
+                        if (!joinFamilyIDText.getText().toString().isEmpty() && !mActiveCode.getText().toString().isEmpty()) {
+                            btnImageDone.setClickable(true);
+                            btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
+                            btnImageDone.setTextColor(Color.parseColor("#fafafa"));
+                        } else {
+                            btnImageDone.setClickable(false);
+                            btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"/*String.valueOf(getResources().getColor(R.color.gray_press))*/));
+                            btnImageDone.setTextColor(Color.parseColor("#808080"/*String.valueOf(getResources().getColor(R.color.grey))*/));
+                        }
+                    }else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
+                        if (!joinFamilyIDText.getText().toString().isEmpty()) {
+                            btnImageDone.setClickable(true);
+                            btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
+                            btnImageDone.setTextColor(Color.parseColor("#fafafa"));
+                        } else {
+                            btnImageDone.setClickable(false);
+                            btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"/*String.valueOf(getResources().getColor(R.color.gray_press))*/));
+                            btnImageDone.setTextColor(Color.parseColor("#808080"/*String.valueOf(getResources().getColor(R.color.grey))*/));
+                        }
+                    }
+                }else {
+                    btnImageDone.setClickable(false);
+                    btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                    btnImageDone.setTextColor(Color.parseColor("#808080"));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mActiveCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0){
+                    //checkValidActiveCode = true;
+                    if (!nameDevice.getText().toString().isEmpty() && !joinFamilyIDText.getText().toString().isEmpty()){
+                        btnImageDone.setClickable(true);
+                        btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
+                        btnImageDone.setTextColor(Color.parseColor("#fafafa"));
+                    }else {
+                        btnImageDone.setClickable(false);
+                        btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                        btnImageDone.setTextColor(Color.parseColor("#808080"));
+                    }
+                }else{
+                    btnImageDone.setClickable(false);
+                    btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                    btnImageDone.setTextColor(Color.parseColor("#808080"));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         joinPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -181,6 +306,21 @@ public class JoinGroupActivity extends Activity {
         groupRequestController = new GroupRequestController(mContext);
         mDataHelper = new MainDatabaseHelper(mContext);
         deviceCode = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+/*        if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children){
+            if (joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty()
+                    || mActiveCode.getText().toString().isEmpty()){
+                btnImageDone.setClickable(false);
+                btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                btnImageDone.setTextColor(Color.parseColor("#808080"));
+            }
+        }
+        if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
+            if (joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty()){
+                btnImageDone.setClickable(false);
+                btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                btnImageDone.setTextColor(Color.parseColor("#808080"));
+            }
+        }*/
         btnImageDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,10 +332,12 @@ public class JoinGroupActivity extends Activity {
                     startService(intent);
                     Toast.makeText(JoinGroupActivity.this, "Please check the internet!", Toast.LENGTH_LONG).show();
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children
-                        && !mActiveCode.getText().toString().equals("")) {
+                        && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty()
+                            || mActiveCode.getText().toString().isEmpty())) {
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
-                } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager) {
+                } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager
+                        && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty())) {
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
                 }
@@ -428,56 +570,6 @@ public class JoinGroupActivity extends Activity {
     }
 
 
-    public void createRequestDialog() {
-        AlertDialog.Builder requestBuilder = new AlertDialog.Builder(
-                JoinGroupActivity.this);
-        requestBuilder.setCancelable(false);
-        LayoutInflater inflater = (LayoutInflater)
-                JoinGroupActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View view = inflater.inflate(R.layout.request_join_dialog, null);
-        spinnerType = (Spinner) view.findViewById(R.id.spinerType);
-        listMemberType = new String[2];
-        listMemberType[0] = "Manager";
-        listMemberType[1] = "Children";
-        ArrayAdapter adapterType = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listMemberType);
-        spinnerType.setAdapter(adapterType);
-
-        final LinearLayout linceseLayout = (LinearLayout) view.findViewById(R.id.linceseLayout);
-        linceseLayout.setVisibility(View.GONE);
-        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    linceseLayout.setVisibility(View.GONE);
-                } else if (position == 1) {
-                    linceseLayout.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        requestBuilder.setView(view);
-        requestBuilder.setMessage("Request Join Family");
-        requestBuilder.setCancelable(true);
-        requestBuilder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        requestBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog requestDialog = requestBuilder.create();
-        requestDialog.show();
-
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -568,10 +660,18 @@ public class JoinGroupActivity extends Activity {
                         }
 
                     } else if (status_result.equals("2")) {
-                        Toast.makeText(mContext, "The activation code is wrong, please enter correctly Activation code", Toast.LENGTH_SHORT).show();
-                        SetupWizardActivity.setModeDevice(MainUtils.MODE_DEFAULT, mContext);
-                        SetupWizardActivity.setTypeJoin(Constants.JoinFail, mContext);
-
+                        if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
+                            Toast.makeText(mContext, "The activation code is wrong, please enter correctly Activation code", Toast.LENGTH_SHORT).show();
+                        }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
+                            Toast.makeText(mContext, "The Family ID is wrong, please enter correctly Family ID", Toast.LENGTH_SHORT).show();
+                        }
+                        Intent intent = new Intent(mContext, GcmIntentService.class);//send intent to get token
+                        intent.putExtra("key", "register");
+                        startService(intent);
+                        //SetupWizardActivity.setModeDevice(MainUtils.MODE_DEFAULT, mContext);
+                        //SetupWizardActivity.setTypeJoin(Constants.JoinFail, mContext);
+                        //Intent joinActivity = new Intent(getApplicationContext(), JoinGroupActivity.class);
+                        //startActivity(joinActivity);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

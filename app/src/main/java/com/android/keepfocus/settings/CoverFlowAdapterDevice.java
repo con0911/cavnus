@@ -106,7 +106,7 @@ public class CoverFlowAdapterDevice extends BaseAdapter {
         //viewHolder.gameImage.setImageBitmap(getCircleBitmap(avatar));
         //viewHolder.iconFamily.setImageResource(R.drawable.blocked);
 
-        Bitmap icon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.images);
+        Bitmap icon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.person);
         iconFamily.setImageBitmap(icon);
         name.setText(profileItem.getName_member());
 

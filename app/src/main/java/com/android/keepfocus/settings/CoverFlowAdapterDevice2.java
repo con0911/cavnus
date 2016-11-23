@@ -106,7 +106,7 @@ public class CoverFlowAdapterDevice2 extends BaseAdapter {
             allowAll.setText("Allow All");
         }
 
-        Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
+        Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.person);
         iconFamily.setImageBitmap(icon);
         convertView.setTag(String.valueOf(position));
         name.setText(profileItem.getName_member());

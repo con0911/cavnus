@@ -137,7 +137,10 @@ public class ServiceBlockApp extends Service {
     }
 
     private boolean isSystemApp(String packageName) {
-        PackageManager mPackageManager = (PackageManager) mContext.getPackageManager();
+        if(isInBlackList(packageName)) {
+            return false;
+        }
+        PackageManager mPackageManager = mContext.getPackageManager();
         try {
             ApplicationInfo ai = mPackageManager.getApplicationInfo(
                     packageName, 0);
@@ -152,6 +155,27 @@ public class ServiceBlockApp extends Service {
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean isInBlackList(String packageName) {
+        String[] blackList = {"Youtube","Facebook"};
+        String nameApp = "";
+        PackageManager mPackageManager = mContext.getPackageManager();
+        try {
+            ApplicationInfo ai = mPackageManager.getApplicationInfo(
+                    packageName, 0);
+            if (ai != null) {
+                nameApp =  mPackageManager.getApplicationLabel(ai).toString();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i<blackList.length;i++) {
+            if (nameApp.equals(blackList[i])) {
+                return true;
+            }
         }
         return false;
     }

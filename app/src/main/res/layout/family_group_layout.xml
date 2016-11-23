@@ -70,7 +70,7 @@
                 android:id="@+id/editFamilyIcon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:background="@drawable/person"
+                android:background="@drawable/images"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"/>
         </LinearLayout>

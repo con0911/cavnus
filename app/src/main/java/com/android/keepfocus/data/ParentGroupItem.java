@@ -45,7 +45,7 @@ public class ParentGroupItem {
 
     private String getDefaultUriImage(Context context) {
         Resources resources = context.getResources();
-        Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getResources().getResourcePackageName(R.drawable.person) + '/' + context.getResources().getResourceTypeName(R.drawable.person) + '/' + context.getResources().getResourceEntryName(R.drawable.person));
+        Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getResources().getResourcePackageName(R.drawable.images) + '/' + context.getResources().getResourceTypeName(R.drawable.images) + '/' + context.getResources().getResourceEntryName(R.drawable.images));
         return imageUri.toString();
     }
 

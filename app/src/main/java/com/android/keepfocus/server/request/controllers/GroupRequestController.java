@@ -255,7 +255,7 @@ public class GroupRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Error in database", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "Error in database", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -313,7 +313,7 @@ public class GroupRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Error in database", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "Error in database", Toast.LENGTH_SHORT).show();
                 }
             }
         }

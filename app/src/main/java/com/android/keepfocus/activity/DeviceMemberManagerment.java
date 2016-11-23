@@ -1044,8 +1044,10 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     public boolean blockAll(int positionMember) {
+        if (adapter.getItem(positionMember).getIs_alowall() == 1) {
+            schedulerRequestController.testUnAllowAllRequest(adapter.getItem(positionMember));
+        }
         schedulerRequestController.testBlockAllRequest(adapter.getItem(positionMember));
-        schedulerRequestController.testUnAllowAllRequest(adapter.getItem(positionMember));
         return true;
     }
 
@@ -1057,8 +1059,10 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
 
     public boolean allowAll(int positionMember) {
+        if (adapter.getItem(positionMember).getIs_blockall() == 1) {
+            schedulerRequestController.testUnBlockAllRequest(adapter.getItem(positionMember));
+        }
         schedulerRequestController.testAllowAllRequest(adapter.getItem(positionMember));
-        schedulerRequestController.testUnBlockAllRequest(adapter.getItem(positionMember));
         return true;
     }
 

@@ -183,6 +183,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     break;
                 case BLOCKALL:
                     Log.e("thong.nv", "BLOCKALL");
+                    sendNotification("Block all", "You have been block all app from your parent");
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(MainUtils.IS_BLOCK_ALL, true);
                     editor.putBoolean(MainUtils.IS_ALLOW_ALL, false);
@@ -190,12 +191,14 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     break;
                 case UNBLOCKALL:
                     Log.e("thong.nv", "UNBLOCKALL");
+                    sendNotification("Unblock all", "You have been Unblock all app from your parent");
                     SharedPreferences.Editor editor2 = prefs.edit();
                     editor2.putBoolean(MainUtils.IS_BLOCK_ALL, false);
                     editor2.commit();
                     break;
                 case ALLOWALL:
                     Log.e("thong.nv", "ALLOWALL");
+                    sendNotification("Allow all", "You have been Allow all app from your parenty");
                     SharedPreferences.Editor editor3 = prefs.edit();
                     editor3.putBoolean(MainUtils.IS_BLOCK_ALL, false);
                     editor3.putBoolean(MainUtils.IS_ALLOW_ALL, true);
@@ -203,6 +206,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     break;
                 case UNALLOWALL:
                     Log.e("thong.nv", "UNALLOWALL");
+                    sendNotification("Unallow all", "You have been Unallow all app from your parent");
                     SharedPreferences.Editor editor4 = prefs.edit();
                     editor4.putBoolean(MainUtils.IS_ALLOW_ALL, false);
                     editor4.commit();
@@ -432,7 +436,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 PendingIntent.FLAG_ONE_SHOT);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.email)
+                .setSmallIcon(R.drawable.icon_app)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
@@ -452,7 +456,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 PendingIntent.FLAG_ONE_SHOT);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.email)
+                .setSmallIcon(R.drawable.icon_app)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
