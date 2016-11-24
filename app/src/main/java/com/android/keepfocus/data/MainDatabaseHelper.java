@@ -685,7 +685,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         return listMember;
     }
 
-    private ParentMemberItem getMemberItemById(int id_member) {
+    public ParentMemberItem getMemberItemById(int id_member) {
         ParentMemberItem memberItem = new ParentMemberItem();
         if (dbMain == null) {
             dbMain = this.getWritableDatabase();

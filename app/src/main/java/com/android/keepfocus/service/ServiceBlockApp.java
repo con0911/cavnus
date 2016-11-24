@@ -114,8 +114,8 @@ public class ServiceBlockApp extends Service {
         if (isAllowAllNow()) {
             return false;
         }
-        if (!oldPackageApp.equals(currentPackageApp)
-                && !currentPackageApp.equals(MainUtils.PACKET_APP)) {
+        if (/*!oldPackageApp.equals(currentPackageApp)
+                && */ !currentPackageApp.equals(MainUtils.PACKET_APP)) {
             return true;
         } else {
             return false;

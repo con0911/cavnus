@@ -285,7 +285,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
         JSONObject data = new JSONObject(message);
         JSONObject scheduler = data.getJSONObject("Scheduler");
         JSONArray timeItem = data.getJSONArray("TimeItems");
-        Log.d(TAG,"timeItem "+timeItem);
+        Log.d(TAG, "timeItem " + timeItem);
 
 
         ArrayList<ChildKeepFocusItem> chilList = mDataHelper.getAllKeepFocusFromDb();
@@ -413,20 +413,20 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public void setReplaceDevice(JSONObject data) throws JSONException{
         Log.d("vinh","JsonObject replace data : " + data);
         JSONObject messages = data.getJSONObject("message");
-        ParentMemberItem replaceDevice = new ParentMemberItem();
-        family_id = data.getString("FamilyID");
-        ArrayList<ParentMemberItem> listMember = mDataHelper.getListMember(0);
-
-        if(family_id !=null) {
-            MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
+        int memberIDServer = messages.getInt("id");
+        ArrayList<ParentMemberItem> listMemberParent = MainUtils.parentGroupItem.getListMember();
+        for (int i = 0; i < listMemberParent.size(); i ++){
+             if (listMemberParent.get(i).getId_member_server() == memberIDServer){
+                 listMemberParent.get(i).setName_member(messages.getString("device_name"));
+                 mDataHelper.updateMemberItem(listMemberParent.get(i));
+             }
         }
+        /*ParentMemberItem replaceDevice = mDataHelper.getMemberItemById();
+        Log.d("vinh","JsonObject replaceDevice : " + replaceDevice);
         replaceDevice.setName_member(messages.getString("device_name"));
-        mDataHelper.updateMemberItem(replaceDevice);
-        //mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
-
+        mDataHelper.updateMemberItem(replaceDevice);*/
         contentNotification = "Device " +messages.getString("device_name");
         sendNotification(contentNotification, "A device has been replaced in your family");
-
     }
 
     private void sendNotification(String message, String title) {
