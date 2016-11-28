@@ -330,7 +330,7 @@ public class JoinGroupActivity extends Activity {
                     Intent intent = new Intent(mContext, GcmIntentService.class);//send intent to get token
                     intent.putExtra("key", "register");
                     startService(intent);
-                    Toast.makeText(JoinGroupActivity.this, "Please check the internet!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(JoinGroupActivity.this, "Please check the internet connection!", Toast.LENGTH_LONG).show();
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children
                         && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty()
                             || mActiveCode.getText().toString().isEmpty())) {

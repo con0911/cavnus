@@ -458,42 +458,42 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         if (day.contains("Sun"))
             titleDayBlock = "Sun";
         if (day.contains("Mon")) {
-            if (titleDayBlock == "") {
+            if ("".equals(titleDayBlock)) {
                 titleDayBlock = "Mon";
             } else {
                 titleDayBlock += "-Mon";
             }
         }
         if (day.contains("Tue")) {
-            if (titleDayBlock == "") {
+            if ("".equals(titleDayBlock)) {
                 titleDayBlock = "Tue";
             } else {
                 titleDayBlock += "-Tue";
             }
         }
         if (day.contains("Wed")) {
-            if (titleDayBlock == "") {
+            if ("".equals(titleDayBlock)) {
                 titleDayBlock = "Wed";
             } else {
                 titleDayBlock += "-Wed";
             }
         }
         if (day.contains("Thu")) {
-            if (titleDayBlock == "") {
+            if ("".equals(titleDayBlock)) {
                 titleDayBlock = "Thu";
             } else {
                 titleDayBlock += "-Thu";
             }
         }
         if (day.contains("Fri")) {
-            if (titleDayBlock == "") {
+            if ("".equals(titleDayBlock)) {
                 titleDayBlock = "Fri";
             } else {
                 titleDayBlock += "-Fri";
             }
         }
         if (day.contains("Sat")) {
-            if (titleDayBlock == "") {
+            if ("".equals(titleDayBlock)) {
                 titleDayBlock = "Sat";
             } else {
                 titleDayBlock += "-Sat";
@@ -510,42 +510,42 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         if (day.contains("Sun"))
             dayBlock = "Sun";
         if (day.contains("Mon")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Mon";
             } else {
                 dayBlock += ",Mon";
             }
         }
         if (day.contains("Tue")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Tue";
             } else {
                 dayBlock += ",Tue";
             }
         }
         if (day.contains("Wed")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Wed";
             } else {
                 dayBlock += ",Wed";
             }
         }
         if (day.contains("Thu")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Thu";
             } else {
                 dayBlock += ",Thu";
             }
         }
         if (day.contains("Fri")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Fri";
             } else {
                 dayBlock += ",Fri";
             }
         }
         if (day.contains("Sat")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Sat";
             } else {
                 dayBlock += ",Sat";

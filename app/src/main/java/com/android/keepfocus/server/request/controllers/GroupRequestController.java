@@ -185,7 +185,7 @@ public class GroupRequestController {
                     Toast.makeText(mContext, "Can't create new family! Error in database", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }
@@ -360,7 +360,7 @@ public class GroupRequestController {
                     Toast.makeText(mContext, "Can't create new family! Error in database", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }
@@ -412,7 +412,7 @@ public class GroupRequestController {
                     Toast.makeText(mContext, "Can't create new family! Error in database", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }

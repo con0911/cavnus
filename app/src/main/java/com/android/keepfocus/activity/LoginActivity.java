@@ -61,6 +61,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     /**
      * Id to identity READ_CONTACTS permission request.
      */
+    private static final String TAG = "LoginActivity";
     private static final int REQUEST_READ_CONTACTS = 0;
     private static final int REQUEST_READ__EXTERNAL_STORAGE = 1;
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
@@ -185,7 +186,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
                 if (intent.getAction().equals(REGISTRATION_COMPLETE)) {
                     token = intent.getStringExtra("token");
                     MainUtils.getRegistationId = token;
-                    Log.d("Login","REGISTRATION_ID="+token);
+                    Log.d(TAG,"REGISTRATION_ID="+token);
                 }
             }
         };
@@ -246,7 +247,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     }
 
     private boolean mayRequestStorage() {
-        Log.d("contt","requestmayRequestStorage");
+        Log.d(TAG,"requestmayRequestStorage");
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
@@ -350,7 +351,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
             LoginRequest loginRequest = new LoginRequest(headerItem);
             Gson gson = new Gson();
             String headerJsonObject = gson.toJson(loginRequest);
-            Log.e("Login", "URL : "+ LoginRequestController.ACCOUNT_BASE_URL + headerJsonObject);
+            Log.e(TAG, "URL : "+ LoginRequestController.ACCOUNT_BASE_URL + headerJsonObject);
             mLoginRequestController =  new LoginRequestController(mContext);
             mLoginRequestController.checkLogin(headerJsonObject);
 

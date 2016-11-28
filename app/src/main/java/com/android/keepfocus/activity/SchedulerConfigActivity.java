@@ -188,42 +188,42 @@ public class SchedulerConfigActivity extends Activity implements
         if (day.contains("Sun"))
             dayBlock = "Sun";
         if (day.contains("Mon")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Mon";
             } else {
                 dayBlock += ", Mon";
             }
         }
         if (day.contains("Tue")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Tue";
             } else {
                 dayBlock += ", Tue";
             }
         }
         if (day.contains("Wed")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Wed";
             } else {
                 dayBlock += ", Wed";
             }
         }
         if (day.contains("Thu")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Thu";
             } else {
                 dayBlock += ", Thu";
             }
         }
         if (day.contains("Fri")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Fri";
             } else {
                 dayBlock += ", Fri";
             }
         }
         if (day.contains("Sat")) {
-            if (dayBlock == "") {
+            if ("".equals(dayBlock)) {
                 dayBlock = "Sat";
             } else {
                 dayBlock += ", Sat";
