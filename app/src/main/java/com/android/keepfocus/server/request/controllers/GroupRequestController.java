@@ -34,16 +34,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-/**
- * Created by sev_user on 9/22/2016.
- */
 public class GroupRequestController {
     public static final String BASE_URL = "http://45.32.103.87/api/group?pRequest=";
     private static final int NET_READ_TIMEOUT_MILLIS = 10000;
     private static final int NET_CONNECT_TIMEOUT_MILLIS = 10000;
     private Context mContext;
     private GroupRequest groupRequest;
-    private String TAG = "contt_Device";
+    private String TAG = "GroupRequestController";
     private MainDatabaseHelper mDataHelper;
     private ServerUtils serverUtils;
     private SharedPreferences joinPref;
@@ -64,7 +61,7 @@ public class GroupRequestController {
         deviceCode = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    public void getEmailandPass(){
+    public void getEmailandPass() {
         testEmail = joinPref.getString(LoginActivity.EMAILLOGIN, "null");
         testPass = joinPref.getString(LoginActivity.PASSWORDLOGIN, "null");
     }
@@ -95,48 +92,49 @@ public class GroupRequestController {
     }
 
 
-    public String createGroup(){
-        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);;//add data via contructor
-        Group groupItem = new Group( MainUtils.parentGroupItem.getGroup_name());
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate,groupItem);
+    public String createGroup() {
+        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
+        ;//add data via contructor
+        Group groupItem = new Group(MainUtils.parentGroupItem.getGroup_name());
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate, Constants.ActionTypeCreate, groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
     }
 
-    public String updateGroup(){
-        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);//add data via contructor
+    public String updateGroup() {
+        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);//add data via contructor
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name());
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeUpdate,groupItem);
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate, Constants.ActionTypeUpdate, groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
     }
 
-    public String deleteGroup(){
-        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);//add data via contructor
+    public String deleteGroup() {
+        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);//add data via contructor
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server());
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate,Constants.ActionTypeDelete,groupItem);
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate, Constants.ActionTypeDelete, groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         return jsonRequest;
     }
 
-    public String getListGroup(){
-        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet,Constants.ActionTypeGetList,null);
+    public String getListGroup() {
+        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetList, null);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
     }
 
-    public String getListDevice(){
-        Header headerItem = new Header(testEmail,deviceCode,registationId,testPass);
+    public String getListDevice() {
+        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server());
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet,Constants.ActionTypeGetDevice,groupItem);
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetDevice, groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -148,22 +146,24 @@ public class GroupRequestController {
 
     private class AddGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         ProgressDialog mDialog;
+
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
             link = BASE_URL + createGroup();
-            Log.d(TAG,"link: "+link);
+            Log.d(TAG, "link: " + link);
             result = connectToServer(link);
             //result = serverUtils.postData(BASE_URL,createGroup());
 
 
             return result;
         }
+
         @Override
         protected void onPostExecute(String result) {
             String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
+            Log.d(TAG, "onPostExecute" + result);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
@@ -172,7 +172,7 @@ public class GroupRequestController {
                     JSONObject data = jsonObj.getJSONObject("Data");
                     String group_code = data.getString("group_code");
                     int group_id_server = data.getInt("id");
-                    if(description_result.equals("Success")) {
+                    if (description_result.equals("Success")) {
                         MainUtils.parentGroupItem.setGroup_code(group_code);
                         MainUtils.parentGroupItem.setId_group_server(group_id_server);
                         mDataHelper.addGroupItemParent(MainUtils.parentGroupItem);
@@ -189,6 +189,7 @@ public class GroupRequestController {
             }
             mDialog.dismiss();
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -208,15 +209,16 @@ public class GroupRequestController {
             String result = "";
             String link;
             link = BASE_URL + getListGroup();
-            Log.d(TAG,"link: "+link);
+            Log.d(TAG, "link: " + link);
             result = connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
+
         @Override
         protected void onPostExecute(String result) {
             String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
+            Log.d(TAG, "onPostExecute" + result);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
@@ -225,23 +227,24 @@ public class GroupRequestController {
                     JSONArray data = jsonObj.getJSONArray("Data");
                     ArrayList<ParentGroupItem> listGroup = mDataHelper.getAllGroupItemParent();
 
-                    if(description_result.equals("Success") && data != null) {
+                    if (description_result.equals("Success") && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject groupItem = data.getJSONObject(i);
                             boolean conflict = false;
-                            if(listGroup.size()>0) {
+                            if (listGroup.size() > 0) {
                                 for (int j = 0; j < listGroup.size(); j++) {
-                                    if(groupItem.getInt("id")==listGroup.get(j).getId_group_server()) {
+                                    if (groupItem.getInt("id") == listGroup.get(j).getId_group_server()) {
                                         conflict = true;
                                         listGroup.get(j).setGroup_name(groupItem.getString("group_name"));
-                                        listGroup.get(j).setGroup_name(groupItem.getString("group_code"));
-                                        listGroup.get(j).setGroup_name(groupItem.getString("create_by"));
-                                        listGroup.get(j).setGroup_name(groupItem.getString("create_date"));
+                                        listGroup.get(j).setGroup_code(groupItem.getString("group_code"));
+                                        //listGroup.get(j).setGroup_name(groupItem.getString("create_by"));
+                                        listGroup.get(j).setCreate_date(groupItem.getString("create_date"));
+                                        listGroup.get(j).setId_group_server(groupItem.getInt("id"));
                                         mDataHelper.updateGroupItem(listGroup.get(j));
                                     }
                                 }
                             }
-                            if(!conflict) {
+                            if (!conflict) {
                                 ParentGroupItem parentGroupItem = new ParentGroupItem();
                                 parentGroupItem.setGroup_name(groupItem.getString("group_name"));
                                 parentGroupItem.setGroup_code(groupItem.getString("group_code"));
@@ -268,15 +271,16 @@ public class GroupRequestController {
             String result = "";
             String link;
             link = BASE_URL + getListDevice();
-            Log.d(TAG,"link: "+link);
+            Log.d(TAG, "link: " + link);
             result = connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
+
         @Override
         protected void onPostExecute(String result) {
             String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
+            Log.d(TAG, "onPostExecute" + result);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
@@ -285,13 +289,13 @@ public class GroupRequestController {
                     JSONArray data = jsonObj.getJSONArray("Data");
                     ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
 
-                    if(description_result.equals("Success") && data != null) {
+                    if (description_result.equals("Success") && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject deviceItem = data.getJSONObject(i);
                             boolean conflict = false;
-                            if(listDevice.size()>0) {
+                            if (listDevice.size() > 0) {
                                 for (int j = 0; j < listDevice.size(); j++) {
-                                    if(deviceItem.getInt("id")==listDevice.get(j).getId_member_server()) {
+                                    if (deviceItem.getInt("id") == listDevice.get(j).getId_member_server()) {
                                         conflict = true;
                                         listDevice.get(j).setImage_member(deviceItem.getString("device_model"));
                                         listDevice.get(j).setName_member(deviceItem.getString("device_name"));
@@ -299,7 +303,7 @@ public class GroupRequestController {
                                     }
                                 }
                             }
-                            if(!conflict) {
+                            if (!conflict) {
                                 ParentMemberItem parentMemberItem = new ParentMemberItem();
                                 parentMemberItem.setImage_member(deviceItem.getString("device_model"));
                                 parentMemberItem.setName_member(deviceItem.getString("device_name"));
@@ -322,29 +326,30 @@ public class GroupRequestController {
     //=====================Block code for update Family api==================================
 
 
-
     private class UpdateGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         ProgressDialog mDialog;
+
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
             link = BASE_URL + updateGroup();
-            Log.d(TAG,"link: "+link);
+            Log.d(TAG, "link: " + link);
             result = connectToServer(link);
             //result = serverUtils.postData(BASE_URL,updateGroup());
             return result;
         }
+
         @Override
         protected void onPostExecute(String result) {
             String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
+            Log.d(TAG, "onPostExecute" + result);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
-                    if(description_result.equals("Success")) {
+                    if (description_result.equals("Success")) {
                         mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
                         updateSuccess();
                     } else {
@@ -359,6 +364,7 @@ public class GroupRequestController {
             }
             mDialog.dismiss();
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -373,31 +379,33 @@ public class GroupRequestController {
 
     private class DeleteGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         ProgressDialog mDialog;
+
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
             link = BASE_URL + deleteGroup();
-            Log.d(TAG,"link: "+link);
+            Log.d(TAG, "link: " + link);
             result = connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
+
         @Override
         protected void onPostExecute(String result) {
             String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
+            Log.d(TAG, "onPostExecute" + result);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
                     int status = message.getInt("Status");
-                    if(status == 1) {
+                    if (status == 1) {
                         mDataHelper.deleteGroupItemById(MainUtils.parentGroupItem.getId_group());
                         updateSuccess();
                     } else {
-                        Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Error in server " + description_result, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -408,6 +416,7 @@ public class GroupRequestController {
             }
             mDialog.dismiss();
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -423,26 +432,28 @@ public class GroupRequestController {
 
     private class JoinGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         ProgressDialog mDialog;
+
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
             link = BASE_URL + deleteGroup();
-            Log.d(TAG,"link: "+link);
+            Log.d(TAG, "link: " + link);
             result = connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
+
         @Override
         protected void onPostExecute(String result) {
             String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
+            Log.d(TAG, "onPostExecute" + result);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
-                    if(description_result.equals("Success")) {
+                    if (description_result.equals("Success")) {
                         mDataHelper.deleteGroupItemById(MainUtils.parentGroupItem.getId_group());
                         updateSuccess();
                     } else {
@@ -457,6 +468,7 @@ public class GroupRequestController {
             }
             mDialog.dismiss();
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -471,14 +483,14 @@ public class GroupRequestController {
 
     //=======================================================================================
 
-    public void updateSuccess(){
+    public void updateSuccess() {
 
         Intent intent = new Intent();
         intent.setAction(MainUtils.UPDATE_FAMILY_GROUP);
         mContext.sendBroadcast(intent);
     }
 
-    public String connectToServer(String urlRequest){
+    public String connectToServer(String urlRequest) {
         try {
             URL url = new URL(urlRequest);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -497,19 +509,18 @@ public class GroupRequestController {
     }
 
 
-    private String convertStreamToString(InputStream is){
+    private String convertStreamToString(InputStream is) {
 
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line;
         try {
-            while ((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 is.close();
             } catch (IOException e) {
