@@ -349,7 +349,7 @@ public class GroupRequestController {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
-                    if (description_result.equals("Success")) {
+                    if (description_result.equals("Update success")) {
                         mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
                         updateSuccess();
                     } else {
