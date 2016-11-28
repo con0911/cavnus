@@ -8,8 +8,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,7 +40,6 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
-import com.android.keepfocus.server.request.controllers.DeviceRequestController;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.settings.CoverFlowAdapterDevice;
@@ -110,6 +112,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private TextView listScheduler;
     private TextView textName;
     private final static String TAG = "DeviceMemberManagerment";
+    private static int positionNow = 0;
+    private static int PICK_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +126,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         createDefault();//for 0 item
         listProperties = (HorizontalListView) findViewById(R.id.listMember);
         listProperties.setVisibility(View.GONE);
-        setTitle(MainUtils.parentGroupItem.getGroup_name());
+        //Fix issue FC sometime
+        if (MainUtils.parentGroupItem != null) {
+            setTitle(MainUtils.parentGroupItem.getGroup_name()+ "'s Family");
+        }else {
+            setTitle("Unknown Family");
+        }
         mDataHelper = new MainDatabaseHelper(mContext);
         groupRequestController = new GroupRequestController(this);
         groupRequestController.updateListDevice();
@@ -202,7 +211,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     @Override
     public void setTitle(CharSequence title) {
-        super.setTitle(title + "'s Family");
+        super.setTitle(title );
     }
 
     @Override
@@ -590,9 +599,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     View preView;
 
     public void onMainButtonClicked(View btn) {
-        btnGreen = (LinearLayout) btn.findViewById(R.id.btn_green);
-        btnOrange = (LinearLayout) btn.findViewById(R.id.btn_orange);
-        btnYellow = (LinearLayout) btn.findViewById(R.id.btn_yellow);
+        btnGreen = (LinearLayout) btn.findViewById(R.id.btn_left_side);
+        btnOrange = (LinearLayout) btn.findViewById(R.id.btn_right_side);
+        btnYellow = (LinearLayout) btn.findViewById(R.id.btn_center_side);
         textName = (TextView) btn.findViewById(R.id.family_name);
 
         if (btnGreen.getVisibility() != View.VISIBLE && btnOrange.getVisibility() != View.VISIBLE && btnYellow.getVisibility() != View.VISIBLE) {
@@ -604,9 +613,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         }
 
         if (preView != null && preView != btn) {
-            btnGreen = (LinearLayout) preView.findViewById(R.id.btn_green);
-            btnOrange = (LinearLayout) preView.findViewById(R.id.btn_orange);
-            btnYellow = (LinearLayout) preView.findViewById(R.id.btn_yellow);
+            btnGreen = (LinearLayout) preView.findViewById(R.id.btn_left_side);
+            btnOrange = (LinearLayout) preView.findViewById(R.id.btn_right_side);
+            btnYellow = (LinearLayout) preView.findViewById(R.id.btn_center_side);
             textName = (TextView) preView.findViewById(R.id.family_name);
             hide(btnOrange);
             hide(btnYellow);
@@ -725,6 +734,14 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         editSchedule();
     }
 
+    public void changeIcon(int position) {
+        MainUtils.memberItem = adapter.getItem(position);
+        Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        positionNow = position;
+        startActivityForResult(i, PICK_IMAGE);
+    }
+
     public void onItemClick(int position) {
         //MainUtils.memberItem = adapter.getItem(position);
         //Intent intent = new Intent(DeviceMemberManagerment.this, ParentSchedulerActivity.class);
@@ -765,54 +782,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mDeleteDialog.show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.add, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        switch (item.getItemId()) {
-            case R.id.add :
-                addNewMember();
-                break;
-            case R.id.rename :
-                renameGroup();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void renameGroup() {
-        mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
-        mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
-        mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
-        mTextMsg.setText("Name family:");
-
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Edit name : ")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if (!mEditText.getText().toString().equals("")) {
-                            MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
-                            groupRequestController.updateGroupInServer();
-                        } else {
-                            dialog.cancel();
-                        }
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                }).create();
-
-        mAlertDialog.show();
-    }
 
     public void showDetail(int position) {
         MainUtils.memberItem = adapter.getItem(position);
@@ -852,7 +821,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
                 break;
             case R.id.editFamilyName:
-                Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btn_add_schedule:
@@ -929,6 +898,36 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("vinh","onActivityResult= " + data);
+        if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data!=null) {
+            Uri selectedImage = data.getData();
+            boolean success = true;
+            Bitmap bitmap = null;
+            try
+            {
+                success = true;
+                bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver() , selectedImage);
+            }
+            catch (Exception e)
+            {
+                success = false;
+            }
+            if(success) {
+                MainUtils.memberItem.setImage_member(selectedImage.toString());
+                mDataHelper.updateMemberItem(MainUtils.memberItem);
+            }
+            //familyIconEdit.setImageBitmap(bitmap);
+            if(MainUtils.memberItem!=null){
+                coverFlow.scrollToPosition(positionNow);
+            }
+            displayMember();
+
         }
     }
 

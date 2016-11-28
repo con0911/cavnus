@@ -7,6 +7,4 @@
     <solid android:color="@color/color_background_button">
     </solid>
 
-    <corners android:radius="5dp"></corners>
-
  </shape>

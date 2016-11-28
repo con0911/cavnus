@@ -9,11 +9,17 @@
         android:text="Unknown"
         android:textColor="@color/black"
         android:gravity="center"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_gravity="top|center"
         android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp">
 
     <include layout="@layout/layout_radial_buttons" />
 
+    </LinearLayout>
 
 
 

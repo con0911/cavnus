@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -46,6 +47,7 @@ import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
  */
 public class FamilyManagerment extends Activity implements View.OnClickListener{
 
+    private static final String TAG = FamilyManagerment.class.getSimpleName();
     private FeatureCoverFlow coverFlow;
     private CoverFlowAdapter adapter;
     private boolean lable[];
@@ -81,6 +83,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     private TextView textFamilyID;
     private static int PICK_IMAGE = 1;
     private static int positionNow = 0;
+    private Typeface mTextFamilyIDFace;
 
 
     private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver(){
@@ -95,6 +98,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_family_layout);
+        initFontStyle();
         coverFlow = (FeatureCoverFlow) findViewById(R.id.coverflow);
         mContext = this;
         mDataHelper = new MainDatabaseHelper(mContext);
@@ -131,7 +135,11 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
     }
 
-
+    private void initFontStyle() {
+        Log.d(TAG, "initFontStyle");
+        mTextFamilyIDFace = Typeface.createFromAsset(getAssets(),
+                "fonts/DroidSerif-Bold.ttf");
+    }
     private FeatureCoverFlow.OnScrollPositionListener onScrollListener() {
         return new FeatureCoverFlow.OnScrollPositionListener() {
             @Override
@@ -229,9 +237,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     View preView;
 
     public void onMainButtonClicked(View btn) {
-        btnGreen = (LinearLayout) btn.findViewById(R.id.btn_green);
-        btnOrange = (LinearLayout) btn.findViewById(R.id.btn_orange);
-        btnYellow = (LinearLayout) btn.findViewById(R.id.btn_yellow);
+        btnGreen = (LinearLayout) btn.findViewById(R.id.btn_left_side);
+        btnOrange = (LinearLayout) btn.findViewById(R.id.btn_right_side);
+        btnYellow = (LinearLayout) btn.findViewById(R.id.btn_center_side);
         textName = (TextView) btn.findViewById(R.id.family_name);
 
         if (btnGreen.getVisibility() != View.VISIBLE && btnOrange.getVisibility() != View.VISIBLE && btnYellow.getVisibility() != View.VISIBLE) {
@@ -243,9 +251,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         }
 
         if (preView != null && preView != btn) {
-            btnGreen = (LinearLayout) preView.findViewById(R.id.btn_green);
-            btnOrange = (LinearLayout) preView.findViewById(R.id.btn_orange);
-            btnYellow = (LinearLayout) preView.findViewById(R.id.btn_yellow);
+            btnGreen = (LinearLayout) preView.findViewById(R.id.btn_left_side);
+            btnOrange = (LinearLayout) preView.findViewById(R.id.btn_right_side);
+            btnYellow = (LinearLayout) preView.findViewById(R.id.btn_center_side);
             textName = (TextView) preView.findViewById(R.id.family_name);
             hide(btnOrange);
             hide(btnYellow);
@@ -445,6 +453,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         }
 
         textFamilyID.setText(MainUtils.parentGroupItem.getGroup_code());
+        textFamilyID.setTypeface(mTextFamilyIDFace);
     }
 
 
@@ -490,6 +499,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             case R.id.action_add :
                 createNewGroup();
                 break;
+            case R.id.rename:
+                renameGroup();
+                break;
             case R.id.action_update :
                 groupRequestController.getGroupInServer();
                 break;
@@ -501,6 +513,34 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         detailLayout.startAnimation(bottomUp);
         detailLayout.setVisibility(View.VISIBLE);
         textFamilyID.setText(listFamily.get(position).getGroup_code());
+        textFamilyID.setTypeface(mTextFamilyIDFace);
     }
 
+    public void renameGroup() {
+        mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
+        mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
+        mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
+
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Edit name : ")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        if (!mEditText.getText().toString().equals("")) {
+                            MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
+                            groupRequestController.updateGroupInServer();
+                        } else {
+                            dialog.cancel();
+                        }
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                }).create();
+
+        mAlertDialog.show();
+    }
 }

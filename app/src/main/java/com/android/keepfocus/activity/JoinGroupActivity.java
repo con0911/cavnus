@@ -718,6 +718,7 @@ public class JoinGroupActivity extends Activity {
                     if (status_result.equals("1")) {
                         Toast.makeText(mContext, "Replace device successfully", Toast.LENGTH_SHORT).show();
                         groupRequestController.updateSuccess();
+                        SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
                         SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
                         Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
                         startActivity(childSchedule);

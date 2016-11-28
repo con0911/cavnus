@@ -136,14 +136,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".receive.KeepFocusReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
 
         <!--jsoo server-->
 

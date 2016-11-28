@@ -90,6 +90,7 @@ public class ChildSchedulerActivity extends Activity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
+        //finishAffinity();
         moveTaskToBack(true);
     }
 
@@ -160,7 +161,7 @@ public class ChildSchedulerActivity extends Activity {
                 0, listBlockPropertiesArr);
         listProperties.setAdapter(mProfileAdapter);
         if (listBlockPropertiesArr.size() == 0) {
-            mTextNoGroup.setText("No schedule available");
+            mTextNoGroup.setText("No scheduler available");
         } else {
             mTextNoGroup.setText("");
         }

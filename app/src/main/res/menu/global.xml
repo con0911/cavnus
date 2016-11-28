@@ -5,6 +5,11 @@
         android:showAsAction="ifRoom"
         android:title="Add"
         tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/rename"
+        android:title="@string/edit_name"/>
+
     <item
         android:id="@+id/action_update"
         android:title="Restore" />

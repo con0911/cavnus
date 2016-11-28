@@ -113,7 +113,13 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         }
     }
 
-   @Override
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        moveTaskToBack(true);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_parent:

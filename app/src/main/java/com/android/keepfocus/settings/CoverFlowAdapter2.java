@@ -2,10 +2,12 @@ package com.android.keepfocus.settings;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -94,9 +96,26 @@ public class CoverFlowAdapter2 extends BaseAdapter {
         }
         if (is!=null) {
             Bitmap bitmap = null;
+            Bitmap resizedBm = null;
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver() , selectedImage);
-                viewHolder.iconFamily.setImageBitmap(bitmap);
+                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
+
+                String[] orientationColumn = {MediaStore.Images.Media.ORIENTATION};
+                Cursor cur = activity.getContentResolver().query(selectedImage, orientationColumn, null, null, null);
+                int orientation = -1;
+                if (cur != null && cur.moveToFirst()) {
+                    orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0]));
+                }
+                Bitmap bmRotate = null;
+                Matrix matrix = new Matrix();
+                matrix.postRotate(orientation);
+                bmRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                //bitmap.recycle();
+                bitmap = null;
+                resizedBm = getResizedBitmap(bmRotate, 225, 225);
+                bmRotate = null;
+                viewHolder.iconFamily.setImageBitmap(resizedBm);
+                resizedBm = null;
             } catch (IOException e) {
                 e.printStackTrace();
                 Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
@@ -127,6 +146,23 @@ public class CoverFlowAdapter2 extends BaseAdapter {
         return convertView;
     }
 
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
     private View.OnClickListener onClickListener(final int position) {
         return new View.OnClickListener() {
 
@@ -137,19 +173,19 @@ public class CoverFlowAdapter2 extends BaseAdapter {
                     case R.id.img_center:
                         familyManagerment.changeIcon(position);
                         break;
-                    case R.id.txt_green:
+                    case R.id.txt_left_side:
                         View parent1 = (View) v.getParent();
                         parent1.setPressed(true);
                         familyManagerment.onItemLongClick(position);
                         break;
-                    case R.id.txt_yellow:
+                    case R.id.txt_center_side:
                         View parent2 = (View) v.getParent();
                         parent2.setPressed(true);
                         familyManagerment.addNewMember(position);
                         setDelayPress(false, parent2);
 
                         break;
-                    case R.id.txt_orange:
+                    case R.id.txt_right_side:
                         View parent3 = (View) v.getParent();
                         parent3.setPressed(true);
                         familyManagerment.showDetail(position);
@@ -183,13 +219,13 @@ public class CoverFlowAdapter2 extends BaseAdapter {
 
         public ViewHolder(View v) {
             iconFamily = (ImageView) v.findViewById(R.id.img_center);
-            delete = (TextView) v.findViewById(R.id.txt_green);
-            addmember = (TextView) v.findViewById(R.id.txt_yellow);
-            detail = (TextView) v.findViewById(R.id.txt_orange);
+            delete = (TextView) v.findViewById(R.id.txt_left_side);
+            addmember = (TextView) v.findViewById(R.id.txt_center_side);
+            detail = (TextView) v.findViewById(R.id.txt_right_side);
             name = (TextView) v.findViewById(R.id.family_name);
-            btnDelete = (LinearLayout) v.findViewById(R.id.btn_green);
-            btnAdd = (LinearLayout) v.findViewById(R.id.btn_yellow);
-            btnDetail = (LinearLayout) v.findViewById(R.id.btn_orange);
+            btnDelete = (LinearLayout) v.findViewById(R.id.btn_left_side);
+            btnAdd = (LinearLayout) v.findViewById(R.id.btn_center_side);
+            btnDetail = (LinearLayout) v.findViewById(R.id.btn_right_side);
         }
     }
 

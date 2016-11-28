@@ -3,8 +3,8 @@
     <solid android:color="@color/color_background_button"/>
     <stroke android:color="@color/grey"
         android:width="2px"/>
-    <size  android:height="55dp"
-        android:width="42dp"/>
+    <size  android:height="50dp"
+        android:width="31dp"/>
 
     <padding android:left="5dp"
         android:right="5dp"
