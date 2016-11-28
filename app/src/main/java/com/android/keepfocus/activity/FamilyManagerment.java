@@ -144,7 +144,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         return new FeatureCoverFlow.OnScrollPositionListener() {
             @Override
             public void onScrolledToPosition(int position) {
-                Log.v("MainActivity", "position: " + position);
+                Log.v(TAG, "position: " + position);
                 View currentView = coverFlow.findViewWithTag(String.valueOf(position));
                 if (currentView != null) {
                     lable[position] = true;
@@ -169,7 +169,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
             @Override
             public void onScrolling() {
-                Log.i("MainActivity", "scrolling");
+                Log.i(TAG, "scrolling");
             }
         };
     }
@@ -178,7 +178,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         return new FeatureCoverFlow.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("trungdh", "view : " + view + " pos : " + i + " id : " + l);
+                Log.d(TAG, "view : " + view + " pos : " + i + " id : " + l);
             }
 
             @Override
@@ -324,7 +324,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("contt","onActivityResult= " + data);
+        Log.d(TAG,"onActivityResult= " + data);
         if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data!=null) {
             Uri selectedImage = data.getData();
             boolean success = true;

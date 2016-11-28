@@ -84,7 +84,7 @@ public class LoginRequestController {
                     String description_result = status.getString("Description");
                     if (description_result.equals("Success")) {
                         isSuccess = true;
-                        Toast.makeText(mContext, "Login Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Login successfully", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "current mode : " + SetupWizardActivity.getModeDevice(mContext));
 
                         //save email and pass
@@ -107,7 +107,7 @@ public class LoginRequestController {
                     Toast.makeText(mContext, "Can't create new family! Error in database", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
                 LoginActivity loginActivity = (LoginActivity) mContext;
                 loginActivity.finish();
                 Intent login = new Intent(mContext, LoginActivity.class);
