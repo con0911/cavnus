@@ -155,34 +155,34 @@ public class MyGcmPushReceiver extends GcmListenerService {
             switch (titleText){
                 case DELETE_NOTI:
                     //Delete
-                    Log.e("vinh", "delete");
+                    Log.e(TAG, "delete");
                     deletScheduler(message);
                     break;
                 case CREATE_NOTI:
                     //Create
-                    Log.e("vinh", "create");
+                    Log.e(TAG, "create");
                     createNewScheduler(message);
                     break;
                 case UPDATE_NOTI:
                     //Update
-                    Log.e("vinh", "update");
+                    Log.e(TAG, "update");
                     updateScheduler(message);
                     break;
                 case JOIN_GROUP:
                     //Join
-                    Log.e("vinh", "join");
+                    Log.e(TAG, "join");
                     jsonObj = new JSONObject(message);
                     setJoinGroup(jsonObj);
                     break;
                 case REPLACE_DEVICE:
                     //Replace
                     //handle noficiation replace here
-                    Log.e("vinh", "replace");
+                    Log.e(TAG, "replace");
                     jsonObj = new JSONObject(message);
                     setReplaceDevice(jsonObj);
                     break;
                 case BLOCKALL:
-                    Log.e("thong.nv", "BLOCKALL");
+                    Log.e(TAG, "BLOCKALL");
                     sendNotificationNoPressAction("Block all", "You have been block all app from your parent");
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(MainUtils.IS_BLOCK_ALL, true);
@@ -190,14 +190,14 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     editor.commit();
                     break;
                 case UNBLOCKALL:
-                    Log.e("thong.nv", "UNBLOCKALL");
+                    Log.e(TAG, "UNBLOCKALL");
                     sendNotificationNoPressAction("Unblock all", "You have been Unblock all app from your parent");
                     SharedPreferences.Editor editor2 = prefs.edit();
                     editor2.putBoolean(MainUtils.IS_BLOCK_ALL, false);
                     editor2.commit();
                     break;
                 case ALLOWALL:
-                    Log.e("thong.nv", "ALLOWALL");
+                    Log.e(TAG, "ALLOWALL");
                     sendNotificationNoPressAction("Allow all", "You have been Allow all app from your parenty");
                     SharedPreferences.Editor editor3 = prefs.edit();
                     editor3.putBoolean(MainUtils.IS_BLOCK_ALL, false);
@@ -205,7 +205,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     editor3.commit();
                     break;
                 case UNALLOWALL:
-                    Log.e("thong.nv", "UNALLOWALL");
+                    Log.e(TAG, "UNALLOWALL");
                     sendNotificationNoPressAction("Unallow all", "You have been Unallow all app from your parent");
                     SharedPreferences.Editor editor4 = prefs.edit();
                     editor4.putBoolean(MainUtils.IS_ALLOW_ALL, false);
@@ -350,7 +350,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
         Intent intent = new Intent();
         intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
         getApplicationContext().sendBroadcast(intent);
-        sendNotificationCreate("", "A scheduler deleted");
+        sendNotificationCreate("", "A scheduler has been deleted");
 
     }
 
@@ -402,7 +402,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     + ", Mode " + messages.getString("device_mode")
                     + ", Type " + messages.getString("device_type");
 
-            sendNotification(contentNotification, "A device join your family");
+            sendNotification(contentNotification, "A device has been joined your family");
 
         } catch (JSONException e) {
             e.printStackTrace();
