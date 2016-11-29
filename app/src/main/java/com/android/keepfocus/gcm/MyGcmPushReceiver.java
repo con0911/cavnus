@@ -277,7 +277,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
         Intent intent = new Intent();
         intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
         getApplicationContext().sendBroadcast(intent);
-        sendNotificationCreate("", "New scheduler create");
+        sendNotificationCreate("", "New schedule has been created");
     }
 
 
@@ -325,7 +325,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             Intent intent = new Intent();
             intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
             getApplicationContext().sendBroadcast(intent);
-            sendNotificationCreate("", "A scheduler update");
+            sendNotificationCreate("", "SetLimitz has updated your schedule");
 
         }else {//if null, create new
             createNewScheduler(message);
@@ -351,7 +351,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
         Intent intent = new Intent();
         intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
         getApplicationContext().sendBroadcast(intent);
-        sendNotificationCreate("", "A scheduler has been deleted");
+        sendNotificationCreate("", "A schedule has been deleted");
 
     }
 
@@ -399,11 +399,11 @@ public class MyGcmPushReceiver extends GcmListenerService {
             mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
 
             contentNotification = "Device "+ messages.getString("device_name")
-                    + ", Model " + messages.getString("device_model")
+                    /*+ ", Model " + messages.getString("device_model")
                     + ", Mode " + messages.getString("device_mode")
-                    + ", Type " + messages.getString("device_type");
+                    + ", Type " + messages.getString("device_type")*/;
 
-            sendNotification(contentNotification, "A device has been joined your family");
+            sendNotification(contentNotification, "Device added to SetLimitz");
 
         } catch (JSONException e) {
             e.printStackTrace();

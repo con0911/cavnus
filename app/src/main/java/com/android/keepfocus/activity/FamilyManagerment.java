@@ -195,7 +195,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             if (nameFamily != null) {
                 nameFamily.setVisibility(View.GONE);
             }
-            mTextNoGroup.setText(R.string.text_no_group);
+            mTextNoGroup.setText(R.string.tap_add_to_begin_setup);
             adapter = new CoverFlowAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listTwoFamily.setVisibility(View.GONE);

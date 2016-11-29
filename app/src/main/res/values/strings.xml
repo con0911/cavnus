@@ -42,6 +42,7 @@
     <string name="permission_rationale_2">"Storage permissions are needed for providing email
         completions."</string>
     <string name="text_no_group">No items</string>
+    <string name="tap_add_to_begin_setup">Please tap ADD to begin setup</string>
     <string name="text_no_profile">There are no scheduler be config for %1$s. Please add new one by click "Add" button.</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
