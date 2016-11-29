@@ -9,7 +9,7 @@
                     android:width="41.7dp"
                     android:dashGap="228dp"
                     android:dashWidth="77dp"
-                    android:color="#80999999" />
+                    android:color="@color/darker_yellow" />
             </shape>
         </item>
     </layer-list>

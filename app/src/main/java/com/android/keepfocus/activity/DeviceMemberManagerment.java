@@ -40,10 +40,10 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
+import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
-import com.android.keepfocus.settings.CoverFlowAdapterDevice;
-import com.android.keepfocus.settings.CoverFlowAdapterDevice2;
+import com.android.keepfocus.settings.CircleMemberAdapter;
 import com.android.keepfocus.settings.CustomListView;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
@@ -87,8 +87,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private ArrayList<TextView> listStatus;
     private RelativeLayout layoutList;
     private ArrayList<ParentMemberItem> listDefault;
-    private FeatureCoverFlow coverFlow;
-    private CoverFlowAdapterDevice adapter;
+    private CircleMemberAdapter adapterMember;
+    private FancyCoverFlow fancyCoverFlowMember;
     private boolean lable[];
     private final static long DURATION_SHORT = 200;
     private LinearLayout btnOrange;
@@ -120,7 +120,14 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_member_layout);
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
-        coverFlow = (FeatureCoverFlow) findViewById(R.id.coverflow);
+        fancyCoverFlowMember = (FancyCoverFlow) findViewById(R.id.fancyCoverFlow);
+        fancyCoverFlowMember.setUnselectedAlpha(1.0f);
+        fancyCoverFlowMember.setUnselectedSaturation(0.0f);
+        fancyCoverFlowMember.setUnselectedScale(0.5f);
+        fancyCoverFlowMember.setSpacing(50);
+        fancyCoverFlowMember.setMaxRotation(0);
+        fancyCoverFlowMember.setScaleDownGravity(0.2f);
+        fancyCoverFlowMember.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
         mContext = this;
         keepData = new MainDatabaseHelper(this);
         createDefault();//for 0 item
@@ -166,8 +173,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
 
         displayMember();
-        coverFlow.setOnScrollPositionListener(onScrollListener());
-        coverFlow.setOnItemSelectedListener(onItemSelectedListener());
         getDatabaseReceiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -179,19 +184,19 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                     displayDetailTime();
                 } else if (MainUtils.BLOCK_ALL.equals(action)) {
                     Log.d(TAG, "Success need handle BLOCK_ALL ");
-                    displayMember();
+                    adapterMember.notifyDataSetChanged();
                     //
                 } else if (MainUtils.UNBLOCK_ALL.equals(action)) {
                     Log.d(TAG, "Success need handle UNBLOCK_ALL ");
-                    displayMember();
+                    adapterMember.notifyDataSetChanged();
                     //
                 } else if (MainUtils.ALLOW_ALL.equals(action)) {
                     Log.d(TAG, "Success need handle ALLOW_ALL ");
-                    displayMember();
+                    adapterMember.notifyDataSetChanged();
                     //
                 } else if (MainUtils.UNALLOW_ALL.equals(action)) {
                     Log.d(TAG, "Success need handle UNALLOW_ALL  ");
-                    displayMember();
+                    adapterMember.notifyDataSetChanged();
                     //
                 }
             }
@@ -199,6 +204,22 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
         btnAddSchedule = (Button) findViewById(R.id.btn_add_schedule);
         btnAddSchedule.setOnClickListener(this);
+        //
+        fancyCoverFlowMember.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                Log.d("thong.nv", " position : " + position);
+                MainUtils.memberItem = adapterMember.getItem(position);
+                       // showDetail(position);
+                nameDevice.setText(MainUtils.memberItem.getName_member());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 
@@ -554,46 +575,46 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
 
-    private FeatureCoverFlow.OnItemSelectedListener onItemSelectedListener() {
-        return new FeatureCoverFlow.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("trungdh", "view : " + view + " pos : " + i + " id : " + l);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        };
-    }
-
-    private FeatureCoverFlow.OnScrollPositionListener onScrollListener() {
-        return new FeatureCoverFlow.OnScrollPositionListener() {
-            @Override
-            public void onScrolledToPosition(int position) {
-                Log.v("MainActivity", "position: " + position);
-                View currentView = coverFlow.findViewWithTag(String.valueOf(position));
-                if (currentView != null) {
-                    lable[position] = true;
-                    MainUtils.memberItem = adapter.getItem(position);
-                    onMainButtonClicked(currentView);
-                    showDetail(position);
-                    nameDevice.setText(MainUtils.memberItem.getName_member());
-
-                }
-
-            }
-
-            @Override
-            public void onScrolling() {
-                Log.i("MainActivity", "scrolling");
-            }
-        };
-    }
+//    private FeatureCoverFlow.OnItemSelectedListener onItemSelectedListener() {
+//        return new FeatureCoverFlow.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Log.d("trungdh", "view : " + view + " pos : " + i + " id : " + l);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        };
+//    }
+//
+//    private FeatureCoverFlow.OnScrollPositionListener onScrollListener() {
+//        return new FeatureCoverFlow.OnScrollPositionListener() {
+//            @Override
+//            public void onScrolledToPosition(int position) {
+//                Log.v("MainActivity", "position: " + position);
+//                View currentView = coverFlow.findViewWithTag(String.valueOf(position));
+//                if (currentView != null) {
+//                    lable[position] = true;
+//                    MainUtils.memberItem = adapterMember.getItem(position);
+//                    onMainButtonClicked(currentView);
+//                    showDetail(position);
+//                    nameDevice.setText(MainUtils.memberItem.getName_member());
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onScrolling() {
+//                Log.i("MainActivity", "scrolling");
+//            }
+//        };
+//    }
 
     private View getItemId(int position) {
-        return adapter.getView(position, null, null);
+        return adapterMember.getView(position, null, null);
     }
 
     View preView;
@@ -698,27 +719,19 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         listBlockPropertiesArr = MainUtils.parentGroupItem.getListMember();
         if (listBlockPropertiesArr.size() == 0){
             mTextNoGroup.setText(R.string.text_no_group);
-            adapter = new CoverFlowAdapterDevice(this, listDefault);
+            adapterMember = new CircleMemberAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listProperties.setVisibility(View.GONE);
-        }else if (listBlockPropertiesArr.size() > 0 && listBlockPropertiesArr.size() <= 3) {
-            mTextNoGroup.setText(" ");
-            layoutList.setVisibility(View.GONE);
-            listProperties.setVisibility(View.VISIBLE);
-            adapter = new CoverFlowAdapterDevice(this, listBlockPropertiesArr);
-            CoverFlowAdapterDevice2 adapter2 = new CoverFlowAdapterDevice2(this, listBlockPropertiesArr);
-            listProperties.setAdapter(adapter2);
-        } else if (listBlockPropertiesArr.size() > 3) {
+        } else  {
             mTextNoGroup.setText(" ");
             listProperties.setVisibility(View.GONE);
             layoutList.setVisibility(View.VISIBLE);
-            adapter = new CoverFlowAdapterDevice(this, listBlockPropertiesArr);
+            adapterMember = new CircleMemberAdapter(this, listBlockPropertiesArr);
         }
-        coverFlow.setAdapter(adapter);
-        lable = new boolean[adapter.getCount()];
+        fancyCoverFlowMember.setAdapter(adapterMember);
+        lable = new boolean[adapterMember.getCount()];
 
     }
-
 
     public void displayDetailTime(){
         mDataHelper.makeDetailOneMemberItemParent(MainUtils.memberItem);
@@ -735,7 +748,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     public void changeIcon(int position) {
-        MainUtils.memberItem = adapter.getItem(position);
+        MainUtils.memberItem = adapterMember.getItem(position);
         Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
         Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         positionNow = position;
@@ -750,7 +763,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     public void listScheduler(int position) {
-        MainUtils.memberItem = adapter.getItem(position);
+        MainUtils.memberItem = adapterMember.getItem(position);
         //Intent intent = new Intent(DeviceMemberManagerment.this, ParentSchedulerActivity.class);
         //startActivity(intent);
         editSchedule();
@@ -769,7 +782,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        mDataHelper.deleteMemberItemById(adapter.getItem(mPosition).getId_member());
+                        mDataHelper.deleteMemberItemById(adapterMember.getItem(mPosition).getId_member());
                         MainUtils.parentGroupItem.getListMember().remove(mPosition);
                         displayMember();
                     }
@@ -784,7 +797,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
 
     public void showDetail(int position) {
-        MainUtils.memberItem = adapter.getItem(position);
+        MainUtils.memberItem = adapterMember.getItem(position);
         //editName.setText(MainUtils.memberItem.getName_member().toString());
         if(detailLayout.getVisibility() == View.GONE) {
             //detailLayout.startAnimation(bottomUp);
@@ -924,7 +937,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             }
             //familyIconEdit.setImageBitmap(bitmap);
             if(MainUtils.memberItem!=null){
-                coverFlow.scrollToPosition(positionNow);
+               // coverFlow.scrollToPosition(positionNow);
             }
             displayMember();
 
@@ -1043,31 +1056,31 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     public boolean blockAll(int positionMember) {
-        if (adapter.getItem(positionMember).getIs_alowall() == 1) {
-            schedulerRequestController.testUnAllowAllRequest(adapter.getItem(positionMember));
+        if (adapterMember.getItem(positionMember).getIs_alowall() == 1) {
+            schedulerRequestController.testUnAllowAllRequest(adapterMember.getItem(positionMember));
         }
-        schedulerRequestController.testBlockAllRequest(adapter.getItem(positionMember));
+        schedulerRequestController.testBlockAllRequest(adapterMember.getItem(positionMember));
         return true;
     }
 
 
     public boolean unBlockAll(int positionMember) {
-        schedulerRequestController.testUnBlockAllRequest(adapter.getItem(positionMember));
+        schedulerRequestController.testUnBlockAllRequest(adapterMember.getItem(positionMember));
         return true;
     }
 
 
     public boolean allowAll(int positionMember) {
-        if (adapter.getItem(positionMember).getIs_blockall() == 1) {
-            schedulerRequestController.testUnBlockAllRequest(adapter.getItem(positionMember));
+        if (adapterMember.getItem(positionMember).getIs_blockall() == 1) {
+            schedulerRequestController.testUnBlockAllRequest(adapterMember.getItem(positionMember));
         }
-        schedulerRequestController.testAllowAllRequest(adapter.getItem(positionMember));
+        schedulerRequestController.testAllowAllRequest(adapterMember.getItem(positionMember));
         return true;
     }
 
 
     public boolean unAllowAll(int positionMember) {
-        schedulerRequestController.testUnAllowAllRequest(adapter.getItem(positionMember));
+        schedulerRequestController.testUnAllowAllRequest(adapterMember.getItem(positionMember));
         return true;
     }
 

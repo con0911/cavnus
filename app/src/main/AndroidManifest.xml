@@ -52,6 +52,14 @@
 
 
 
+        <activity android:name=".activity.TestAcitivity"
+            android:theme="@style/CustomizeActionbarAppTheme">
+
+        </activity>
+
+
+
+
         <activity android:name=".activity.ParentSchedulerActivity"
             android:theme="@style/CustomizeActionbarAppTheme"/>
 
