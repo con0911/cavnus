@@ -322,7 +322,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         displayScreen(); // setup Button, image,...
         loadDayButton();
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Create new schedule")
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(true)
+                .setTitle("Create new schedule")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -347,7 +348,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         displayScreen(); // setup Button, image,...
         loadDayButton(); // status of day button
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Edit this schedule")
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(true)
+                .setTitle("Edit this schedule")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -692,7 +694,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mTextMsg = (TextView) mView.findViewById(R.id.add_member_text);
         mTextMsg.setText(getResources().getString(R.string.add_member_text));
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add new device")
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(true)
+                .setTitle("Add new device")
                 .setPositiveButton("Create Test", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -778,7 +781,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         View view = getLayoutInflater().inflate(R.layout.delete_profile_popup, null);
         mTextMsg = (TextView) view.findViewById(R.id.delete_text);
         mTextMsg.setText("Are you sure to remove this device?");
-        AlertDialog mDeleteDialog = new AlertDialog.Builder(this).setView(view).setTitle("Delete device")
+        AlertDialog mDeleteDialog = new AlertDialog.Builder(this).setView(view)
+                .setCancelable(true)
+                .setTitle("Delete device")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -960,8 +965,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         timePickerFrom.setCurrentMinute(timeItem.getMinusBegin());
         timePickerTo.setCurrentHour(timeItem.getHourEnd());
         timePickerTo.setCurrentMinute(timeItem.getMinusEnd());
-        timePickerFrom.setIs24HourView(true);
-        timePickerTo.setIs24HourView(true);
+        timePickerFrom.setIs24HourView(false);
+        timePickerTo.setIs24HourView(false);
         fromBt.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -987,6 +992,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             }
         });
         builder.setView(view)
+                .setCancelable(true)
                 // Add action buttons
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
