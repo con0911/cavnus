@@ -252,13 +252,14 @@ public class ChildSchedulerDetail extends Activity implements
         timePickerTo = (TimePicker) view.findViewById(R.id.timerPickerTo);
         fromBt = (Button) view.findViewById(R.id.fromBt);
         toBt = (Button) view.findViewById(R.id.toBt);
+        timePickerFrom.setIs24HourView(false);
+        timePickerTo.setIs24HourView(false);
         // Get data TimeItems
         timePickerFrom.setCurrentHour(timeItem.getHourBegin());
         timePickerFrom.setCurrentMinute(timeItem.getMinusBegin());
         timePickerTo.setCurrentHour(timeItem.getHourEnd());
         timePickerTo.setCurrentMinute(timeItem.getMinusEnd());
-        timePickerFrom.setIs24HourView(true);
-        timePickerTo.setIs24HourView(true);
+
         fromBt.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -284,6 +285,7 @@ public class ChildSchedulerDetail extends Activity implements
             }
         });
         builder.setView(view)
+                .setCancelable(true)
                 // Add action buttons
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
