@@ -18,6 +18,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/dividerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -44,24 +45,18 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:layout_below="@+id/dividerLayout"
             android:id="@+id/layout_list"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/activity_horizontal_margin"
             android:layout_height="wrap_content">
 
-            <it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow
-                android:id="@+id/coverflow"
-                android:layout_width="wrap_content"
+            <com.android.keepfocus.fancycoverflow.FancyCoverFlow
+                android:id="@+id/fancyCoverFlow"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="0dp"
-                android:padding="0dp"
-                coverflow:coverHeight="151dp"
-                coverflow:coverWidth="151dp"
-                coverflow:maxScaleFactor="1.1"
-                coverflow:reflectionGap="0px"
-                coverflow:rotationThreshold="0.5"
-                coverflow:scalingThreshold="0.5"
-                coverflow:spacing="0.5" />
+                android:paddingBottom="15dp"
+                android:paddingTop="15dp" />
         </RelativeLayout>
 
         <LinearLayout

@@ -32,7 +32,9 @@ import com.android.keepfocus.R;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
+import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
+import com.android.keepfocus.settings.CircleGroupAdapter;
 import com.android.keepfocus.settings.CoverFlowAdapter;
 import com.android.keepfocus.settings.CoverFlowAdapter2;
 import com.android.keepfocus.utils.HorizontalListView;
@@ -48,8 +50,8 @@ import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
 public class FamilyManagerment extends Activity implements View.OnClickListener{
 
     private static final String TAG = FamilyManagerment.class.getSimpleName();
-    private FeatureCoverFlow coverFlow;
-    private CoverFlowAdapter adapter;
+    private CircleGroupAdapter adapterGroup;
+    private FancyCoverFlow fancyCoverFlowGroup;
     private boolean lable[];
 
     private final static long DURATION_SHORT = 200;
@@ -99,7 +101,14 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_family_layout);
         initFontStyle();
-        coverFlow = (FeatureCoverFlow) findViewById(R.id.coverflow);
+        fancyCoverFlowGroup = (FancyCoverFlow) findViewById(R.id.fancyCoverFlow);
+        fancyCoverFlowGroup.setUnselectedAlpha(1.0f);
+        fancyCoverFlowGroup.setUnselectedSaturation(0.0f);
+        fancyCoverFlowGroup.setUnselectedScale(0.5f);
+        fancyCoverFlowGroup.setSpacing(50);
+        fancyCoverFlowGroup.setMaxRotation(0);
+        fancyCoverFlowGroup.setScaleDownGravity(0.2f);
+        fancyCoverFlowGroup.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
         mContext = this;
         mDataHelper = new MainDatabaseHelper(mContext);
         ParentGroupItem defaultParent = new ParentGroupItem();
@@ -125,13 +134,38 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 R.anim.bottom_down);
 
         displayProfile();
-        coverFlow.setOnScrollPositionListener(onScrollListener());
-        coverFlow.setOnItemSelectedListener(onItemSelectedListener());
-
 
         groupRequestController = new GroupRequestController(this);
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
+
+        //
+        fancyCoverFlowGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                Log.d("thong.nv", " position : " + position);
+                lable[position] = true;
+                MainUtils.parentGroupItem = adapterGroup.getItem(position);
+                nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
+                ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
+                if (listDevice.size() > 0) {
+                    String listDeviceText = " ";
+                    for (int i =0; i < listDevice.size(); i++){
+                        listDeviceText += listDevice.get(i).getName_member() + ", ";
+                    }
+                    listDeviceText = listDeviceText.substring(0,listDeviceText.length()-2);
+                    listDeviceName.setText(listDeviceText);
+                } else {
+                    listDeviceName.setText(" ");
+                }
+                showAddMember(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 
@@ -140,53 +174,53 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         mTextFamilyIDFace = Typeface.createFromAsset(getAssets(),
                 "fonts/DroidSerif-Bold.ttf");
     }
-    private FeatureCoverFlow.OnScrollPositionListener onScrollListener() {
-        return new FeatureCoverFlow.OnScrollPositionListener() {
-            @Override
-            public void onScrolledToPosition(int position) {
-                Log.v(TAG, "position: " + position);
-                View currentView = coverFlow.findViewWithTag(String.valueOf(position));
-                if (currentView != null) {
-                    lable[position] = true;
-                    onMainButtonClicked(currentView);
-                    MainUtils.parentGroupItem = adapter.getItem(position);
-                    nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
-                    ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
-                    if (listDevice.size() > 0) {
-                        String listDeviceText = " ";
-                        for (int i =0; i < listDevice.size(); i++){
-                            listDeviceText += listDevice.get(i).getName_member() + ", ";
-                        }
-                        listDeviceText = listDeviceText.substring(0,listDeviceText.length()-2);
-                        listDeviceName.setText(listDeviceText);
-                    } else {
-                        listDeviceName.setText(" ");
-                    }
-                    showAddMember(position);
-                }
-
-            }
-
-            @Override
-            public void onScrolling() {
-                Log.i(TAG, "scrolling");
-            }
-        };
-    }
-
-    private FeatureCoverFlow.OnItemSelectedListener onItemSelectedListener() {
-        return new FeatureCoverFlow.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(TAG, "view : " + view + " pos : " + i + " id : " + l);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        };
-    }
+//    private FeatureCoverFlow.OnScrollPositionListener onScrollListener() {
+//        return new FeatureCoverFlow.OnScrollPositionListener() {
+//            @Override
+//            public void onScrolledToPosition(int position) {
+//                Log.v(TAG, "position: " + position);
+//                View currentView = coverFlow.findViewWithTag(String.valueOf(position));
+//                if (currentView != null) {
+//                    lable[position] = true;
+//                    onMainButtonClicked(currentView);
+//                    MainUtils.parentGroupItem = adapter.getItem(position);
+//                    nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
+//                    ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
+//                    if (listDevice.size() > 0) {
+//                        String listDeviceText = " ";
+//                        for (int i =0; i < listDevice.size(); i++){
+//                            listDeviceText += listDevice.get(i).getName_member() + ", ";
+//                        }
+//                        listDeviceText = listDeviceText.substring(0,listDeviceText.length()-2);
+//                        listDeviceName.setText(listDeviceText);
+//                    } else {
+//                        listDeviceName.setText(" ");
+//                    }
+//                    showAddMember(position);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onScrolling() {
+//                Log.i(TAG, "scrolling");
+//            }
+//        };
+//    }
+//
+//    private FeatureCoverFlow.OnItemSelectedListener onItemSelectedListener() {
+//        return new FeatureCoverFlow.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Log.d(TAG, "view : " + view + " pos : " + i + " id : " + l);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        };
+//    }
 
 
     public void displayProfile() {
@@ -196,42 +230,31 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 nameFamily.setVisibility(View.GONE);
             }
             mTextNoGroup.setText(R.string.tap_add_to_begin_setup);
-            adapter = new CoverFlowAdapter(this, listDefault);
+            adapterGroup = new CircleGroupAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listTwoFamily.setVisibility(View.GONE);
             detailLayout.setVisibility(View.GONE);
             if(detailLayout.getVisibility() == View.VISIBLE) {
                 detailLayout.setVisibility(View.GONE);
             }
-
-        }else if (listFamily.size() > 0 && listFamily.size() <= 3) {
-            mTextNoGroup.setText(" ");
-            layoutList.setVisibility(View.GONE);
-            listTwoFamily.setVisibility(View.VISIBLE);
-            adapter = new CoverFlowAdapter(this, listFamily);
-            CoverFlowAdapter2 adapter2 = new CoverFlowAdapter2(this, listFamily);
-            listTwoFamily.setAdapter(adapter2);
-            if(detailLayout.getVisibility() == View.VISIBLE) {
-                detailLayout.setVisibility(View.GONE);
-            }
-        } else if (listFamily.size() > 3) {
+        } else {
             if (nameFamily != null) {
                 nameFamily.setVisibility(View.VISIBLE);
             }
             mTextNoGroup.setText(" ");
             listTwoFamily.setVisibility(View.GONE);
             layoutList.setVisibility(View.VISIBLE);
-            adapter = new CoverFlowAdapter(this, listFamily);
+            adapterGroup = new CircleGroupAdapter(this, listFamily);
             if(detailLayout.getVisibility() == View.VISIBLE) {
                 detailLayout.setVisibility(View.GONE);
             }
         }
-        coverFlow.setAdapter(adapter);
-        lable = new boolean[adapter.getCount()];
+        fancyCoverFlowGroup.setAdapter(adapterGroup);
+        lable = new boolean[adapterGroup.getCount()];
     }
 
     private View getItemId(int position) {
-        return adapter.getView(position, null, null);
+        return adapterGroup.getView(position, null, null);
     }
 
     View preView;
@@ -343,9 +366,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
             }
             //familyIconEdit.setImageBitmap(bitmap);
-            if(MainUtils.parentGroupItem!=null){
-                coverFlow.scrollToPosition(positionNow);
-            }
+//            if(MainUtils.parentGroupItem!=null){
+//                coverFlow.scrollToPosition(positionNow);
+//            }
             displayProfile();
 
 
@@ -429,7 +452,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
 
     public void changeIcon(int position) {
-        MainUtils.parentGroupItem = adapter.getItem(position);
+        MainUtils.parentGroupItem = adapterGroup.getItem(position);
         Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
         Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         positionNow = position;
@@ -438,13 +461,13 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
 
     public void showDetail(int position) {
-        MainUtils.parentGroupItem = adapter.getItem(position);
+        MainUtils.parentGroupItem = adapterGroup.getItem(position);
         Intent intent = new Intent(this, DeviceMemberManagerment.class);
         startActivity(intent);
     }
 
     public void showAddMember(int position) {
-        MainUtils.parentGroupItem = adapter.getItem(position);
+        MainUtils.parentGroupItem = adapterGroup.getItem(position);
 
 
         if(detailLayout.getVisibility() == View.GONE) {
