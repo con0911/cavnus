@@ -145,7 +145,7 @@
     <string name="request_admin_text">You have to enable device administrators to use this application</string>
     <string name="title_request_admin">Request administrators</string>
 
-    <string name="replace_device_text">This device is exist, do you want to replace</string>
+    <string name="replace_device_text">This code is already linked to a device. Would you like to use this device instead?</string>
     <string name="title_replace_device">Replace child device</string>
 
     <string name="click_the_button">Click the Red button</string>

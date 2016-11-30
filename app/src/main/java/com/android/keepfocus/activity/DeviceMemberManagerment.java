@@ -322,7 +322,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         displayScreen(); // setup Button, image,...
         loadDayButton();
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(true)
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(false)
                 .setTitle("Create new schedule")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -348,7 +348,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         displayScreen(); // setup Button, image,...
         loadDayButton(); // status of day button
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(true)
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(false)
                 .setTitle("Edit this schedule")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -694,7 +694,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mTextMsg = (TextView) mView.findViewById(R.id.add_member_text);
         mTextMsg.setText(getResources().getString(R.string.add_member_text));
 
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(true)
+        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(false)
                 .setTitle("Add new device")
                 .setPositiveButton("Create Test", new DialogInterface.OnClickListener() {
 
@@ -782,7 +782,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mTextMsg = (TextView) view.findViewById(R.id.delete_text);
         mTextMsg.setText("Are you sure to remove this device?");
         AlertDialog mDeleteDialog = new AlertDialog.Builder(this).setView(view)
-                .setCancelable(true)
+                .setCancelable(false)
                 .setTitle("Delete device")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -992,7 +992,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             }
         });
         builder.setView(view)
-                .setCancelable(true)
+                .setCancelable(false)
                 // Add action buttons
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override

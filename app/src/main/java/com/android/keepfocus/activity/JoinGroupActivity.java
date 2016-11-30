@@ -531,10 +531,10 @@ public class JoinGroupActivity extends Activity {
             String enableNotificationListener = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
             String packageName = mContext.getPackageName();
             if (enableNotificationListener == null || !enableNotificationListener.contains(packageName)) {
-                Log.d("ProfileEditActivity", "The Notification Permission not enable");
+                Log.d(TAG, "The Notification Permission not enable");
                 isEnable = false;
             } else {
-                Log.d("ProfileEditActivity", "The Notification Permission enable");
+                Log.d(TAG, "The Notification Permission enable");
                 isEnable = true;
             }
         } else {
@@ -646,7 +646,7 @@ public class JoinGroupActivity extends Activity {
                             } else {
                                 isJoinSuccess = true;
                                 SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
-                                Log.e("vinh", "isJoinSuccess" + isJoinSuccess);
+                                Log.e(TAG, "isJoinSuccess" + isJoinSuccess);
                                 groupRequestController.updateSuccess();
                                 Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
                                 SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
@@ -654,16 +654,16 @@ public class JoinGroupActivity extends Activity {
                                 startActivity(childSchedule);
                             }
                         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager) {
-                            Log.e("vinh", "isJoinSuccess Manager" + isJoinSuccess);
+                            Log.e(TAG, "isJoinSuccess Manager" + isJoinSuccess);
                             Intent familyManagement = new Intent(JoinGroupActivity.this, FamilyManagerment.class);
                             startActivity(familyManagement);
                         }
 
                     } else if (status_result.equals("2")) {
                         if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
-                            Toast.makeText(mContext, "The activation code is wrong, please enter correctly Activation code", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "The activation code is incorrect, please chec Activation code and try again.", Toast.LENGTH_SHORT).show();
                         }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
-                            Toast.makeText(mContext, "The Family ID is wrong, please enter correctly Family ID", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "The Family ID entered is incorrect, please check the ID and try again.", Toast.LENGTH_SHORT).show();
                         }
                         Intent intent = new Intent(mContext, GcmIntentService.class);//send intent to get token
                         intent.putExtra("key", "register");

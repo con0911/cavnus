@@ -54,7 +54,7 @@ public class DialogNotificationHistory extends Dialog {
 		super.onCreate(savedInstanceState);
 		mDataHelper = new MainDatabaseHelper(mContext);
 		setContentView(R.layout.list_notification_missing);
-		setCancelable(true);
+		setCancelable(false);
 		setCanceledOnTouchOutside(true);
 		getWindow().setBackgroundDrawable(
 				new ColorDrawable(android.graphics.Color.TRANSPARENT));

@@ -285,7 +285,7 @@ public class ChildSchedulerDetail extends Activity implements
             }
         });
         builder.setView(view)
-                .setCancelable(true)
+                .setCancelable(false)
                 // Add action buttons
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
