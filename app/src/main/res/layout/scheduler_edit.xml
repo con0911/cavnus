@@ -221,7 +221,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="12 AM"
+                        android:text="12 PM"
                         android:textSize="12dp" />
                 </RelativeLayout>
 
@@ -247,7 +247,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="12 PM"
+                        android:text="12 AM"
                         android:textSize="12dp" />
                 </RelativeLayout>
             </LinearLayout>

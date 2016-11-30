@@ -358,6 +358,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                         formatStringDayBlock(dayBlock);
                         MainUtils.parentProfile.setDay_profile(dayBlock);
                         MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
+                        mDataHelper.updateProfileItem(MainUtils.parentProfile);
                         displayDetailTime();
                         schedulerRequestController.updateScheduler();
                         //updateStatusTime(MainUtils.parentProfile.getListTimer());
@@ -944,7 +945,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             if(MainUtils.memberItem!=null){
                // coverFlow.scrollToPosition(positionNow);
             }
-            displayMember();
+            //displayMember();
+            adapterMember.notifyDataSetChanged();
 
         }
     }
