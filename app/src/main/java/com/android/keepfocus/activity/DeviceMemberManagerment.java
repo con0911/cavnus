@@ -239,7 +239,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     protected void onResume() {
         //updateStatusTime(MainUtils.parentProfile.getListTimer());
         super.onResume();
-        displayMember();
+      //  displayMember();
         registerReceiver(getDatabaseReceiver, intentFilter);
     }
 
@@ -270,6 +270,27 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             //detailLayout.setVisibility(View.GONE);
         }
     }
+//Create default devices to test circle layout
+/*    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO Auto-generated method stub
+        switch (item.getItemId()) {
+            case R.id.add :
+                addNewMember();
+                break;
+            case R.id.rename :
+                //renameGroup();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }*/
 
     public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
         boolean chooseList[] = new boolean[145];
@@ -306,7 +327,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         for (int i = 0; i < 144; i++) {
             if (chooseList[i]) {
                 listStatus.get(i).setBackgroundColor(
-                        Color.parseColor(String.valueOf("#ee5c42")));
+                        Color.parseColor("#ee5c42"));
             } else {
                 listStatus.get(i).setBackgroundColor(
                         Color.parseColor("#ff6bdc60"));
@@ -347,21 +368,19 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mView = getLayoutInflater().inflate(R.layout.scheduler_edit, null);
         displayScreen(); // setup Button, image,...
         loadDayButton(); // status of day button
+        updateStatusTime(MainUtils.parentProfile.getListTimer());
 
         mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(false)
                 .setTitle("Edit this schedule")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //MainUtils.parentProfile.setName_profile(mEditScheduleName.getText().toString()); // set name
-                        // profile
                         formatStringDayBlock(dayBlock);
                         MainUtils.parentProfile.setDay_profile(dayBlock);
                         MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
                         mDataHelper.updateProfileItem(MainUtils.parentProfile);
                         displayDetailTime();
                         schedulerRequestController.updateScheduler();
-                        //updateStatusTime(MainUtils.parentProfile.getListTimer());
                     }
                 }).setNegativeButton("CANCEL", new DatePickerDialog.OnClickListener() {
                     @Override

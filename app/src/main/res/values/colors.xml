@@ -32,11 +32,11 @@
     <color name="red">#ffdc4b4e</color>
     <color name="darker_red">#ff97373a</color>
     <color name="orange">#ffdc8d3e</color>
-    <color name="darker_orange">#999999</color>
+    <color name="darker_orange">#BBBBBB</color>
     <color name="yellow">#ffdccf57</color>
-    <color name="darker_yellow">#999999</color>
+    <color name="darker_yellow">#BBBBBB</color>
     <color name="green">#ff6bdc60</color>
-    <color name="darker_green">#999999</color>
+    <color name="darker_green">#BBBBBB</color>
     <color name="blue">#ff6081dc</color>
     <color name="darker_blue">#ff4a59a0</color>
     <color name="indigo">#ffce8fdc</color>

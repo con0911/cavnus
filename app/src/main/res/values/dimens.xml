@@ -20,7 +20,7 @@
 
 
     <dimen name="padding_icon">20dp</dimen>
-    <dimen name="list_item_inner_padding">10dp</dimen>
+    <dimen name="list_item_inner_padding">0dp</dimen>
 
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->

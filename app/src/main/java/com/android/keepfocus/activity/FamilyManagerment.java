@@ -369,7 +369,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 //            if(MainUtils.parentGroupItem!=null){
 //                coverFlow.scrollToPosition(positionNow);
 //            }
-            displayProfile();
+            adapterGroup.notifyDataSetChanged();
+           // displayProfile();
 
 
             //familyIconEdit.setImageURI(selectedImage);

@@ -106,7 +106,7 @@ public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
             textItem.setLayoutParams(param);
-            textItem.setBackgroundColor(Color.parseColor("#3B5998"));
+            textItem.setBackgroundColor(Color.parseColor("#ee5c42"));
             //
             listStatus.add(textItem);
             statusTime.addView(textItem);
@@ -122,7 +122,7 @@ public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
         if (listTime.size() == 0) {
             for (int i = 0; i < 144; i++) {
                 listStatus.get(i).setBackgroundColor(
-                        Color.parseColor("#3B5998"));
+                        Color.parseColor("#ee5c42"));
             }
             return;
         }
@@ -148,10 +148,10 @@ public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
         for (int i = 0; i < 144; i++) {
             if (chooseList[i]) {
                 listStatus.get(i).setBackgroundColor(
-                        Color.parseColor("#3B5998"));
+                        Color.parseColor("#ee5c42"));
             } else {
                 listStatus.get(i).setBackgroundColor(
-                        Color.parseColor("#BDBDBD"));
+                        Color.parseColor("#ff6bdc60"));
             }
         }
 

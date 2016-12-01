@@ -19,7 +19,7 @@
         android:layout_marginLeft="@dimen/list_item_inner_padding"
         android:layout_marginRight="@dimen/list_item_inner_padding"
         android:divider="@android:color/transparent"
-        android:dividerHeight="@dimen/list_item_inner_padding"
+        android:dividerHeight="5dp"
         android:scrollbars="none" >
     </ListView>
 

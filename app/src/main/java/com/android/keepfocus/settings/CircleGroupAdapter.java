@@ -170,22 +170,16 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
             public void onClick(View v) {
                 FamilyManagerment familyManagerment = (FamilyManagerment)activity;
                 switch (v.getId()){
-                    case R.id.img_center:
+                    case R.id.img_center_child:
                         familyManagerment.changeIcon(position);
                         break;
                     case R.id.txt_left_side:
-                        View parent1 = (View) v.getParent();
-                        parent1.setPressed(true);
                         familyManagerment.onItemLongClick(position);
                         break;
                     case R.id.txt_center_side:
-                        View parent2 = (View) v.getParent();
-                        parent2.setPressed(true);
                         familyManagerment.addNewMember(position);
                         break;
                     case R.id.txt_right_side:
-                        View parent3 = (View) v.getParent();
-                        parent3.setPressed(true);
                         familyManagerment.showDetail(position);
                         break;
                 }

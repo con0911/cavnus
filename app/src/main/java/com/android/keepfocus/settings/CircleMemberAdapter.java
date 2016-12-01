@@ -118,6 +118,8 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
         }
         if (is != null) {
             Bitmap bitmap = null;
+            Bitmap resizedBm = null;
+
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
 
@@ -133,8 +135,10 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
                 bmRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                 //bitmap.recycle();
                 bitmap = null;
-                iconFamily.setImageBitmap(bmRotate);
+                resizedBm = getResizedBitmap(bmRotate, 225, 225);
                 bmRotate = null;
+                iconFamily.setImageBitmap(resizedBm);
+                resizedBm = null;
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -159,6 +163,23 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
                 500));
 
         return convertView;
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 
     private View.OnClickListener onClickListener(final int position) {
