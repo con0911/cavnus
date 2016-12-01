@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -100,6 +101,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_family_layout);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         initFontStyle();
         fancyCoverFlowGroup = (FancyCoverFlow) findViewById(R.id.fancyCoverFlow);
         fancyCoverFlowGroup.setUnselectedAlpha(1.0f);
