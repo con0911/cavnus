@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -119,6 +120,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_member_layout);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
         fancyCoverFlowMember = (FancyCoverFlow) findViewById(R.id.fancyCoverFlow);
         fancyCoverFlowMember.setUnselectedAlpha(1.0f);
