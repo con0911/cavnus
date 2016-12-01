@@ -139,13 +139,13 @@
     <string name="notify_missing_notification_content">Tap here to show all missing Notifications</string>
     <string name="missing_notification_title">All of missing Notifications</string>
     <string name="clear">Clear</string>
-    <string name="block_app_description">was blocked. Please use this app later.</string>
+    <string name="block_app_description">was blocked.  Please use this app later.  Tap the Home button below to return to the Home Screen</string>
     <string name="close_button">Home</string>
 
     <string name="request_admin_text">You have to enable device administrators to use this application</string>
     <string name="title_request_admin">Request administrators</string>
 
-    <string name="replace_device_text">This code is already linked to a device. Would you like to use this device instead?</string>
+    <string name="replace_device_text">This code is linked to another device, would you like to use this device instead?</string>
     <string name="title_replace_device">Replace child device</string>
 
     <string name="click_the_button">Click the Red button</string>

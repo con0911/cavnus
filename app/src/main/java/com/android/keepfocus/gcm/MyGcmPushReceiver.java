@@ -184,7 +184,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     break;
                 case BLOCKALL:
                     Log.e(TAG, "BLOCKALL");
-                    sendNotificationNoPressAction("Block all", "You have been block all app from your parent");
+                    sendNotificationNoPressAction("Block all", "Your access to your device has been removed.");
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(MainUtils.IS_BLOCK_ALL, true);
                     editor.putBoolean(MainUtils.IS_ALLOW_ALL, false);
@@ -199,7 +199,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     break;
                 case ALLOWALL:
                     Log.e(TAG, "ALLOWALL");
-                    sendNotificationNoPressAction("Allow all", "You have been Allow all app from your parenty");
+                    sendNotificationNoPressAction("Allow all", "You have been given full access to your phone/tablet");
                     SharedPreferences.Editor editor3 = prefs.edit();
                     editor3.putBoolean(MainUtils.IS_BLOCK_ALL, false);
                     editor3.putBoolean(MainUtils.IS_ALLOW_ALL, true);
