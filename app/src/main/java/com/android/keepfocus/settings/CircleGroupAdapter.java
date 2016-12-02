@@ -140,8 +140,8 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
         deleteGroup.setOnClickListener(onClickListener(position));
         addmember.setOnClickListener(onClickListener(position));
         detailGroup.setOnClickListener(onClickListener(position));
-        convertView.setLayoutParams(new FancyCoverFlow.LayoutParams(500,
-                500));
+        convertView.setLayoutParams(new FancyCoverFlow.LayoutParams(600,
+                600));
         return convertView;
     }
 
