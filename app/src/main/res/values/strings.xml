@@ -58,7 +58,7 @@
     <string name="popup_setting">Settings</string>
     <string name="popup_about">About</string>
     <string name="popup_setting_edit">Edit profile name</string>
-    <string name="popup_setting_delete">Delete profile</string>
+    <string name="popup_setting_delete">Delete schedule</string>
     <string name="create_new_profile">Create new profile</string>
     <string name="edit_name">Edit name</string>
     <string name="ok_button">OK</string>
@@ -107,7 +107,7 @@
 
     <string name="edit_name_popup_msg">Edit your profile name</string>
     <string name="create_profile_popup_msg">Create your new schedule that you want to keep focus</string>
-    <string name="delete_profile_popup_msg">Do you want to delete this profile ?</string>
+    <string name="delete_profile_popup_msg">Do you want to delete this schedule ?</string>
     <string name="color_lock_title">Setup Password</string>
     <string name="password_color_lock_title">PIN CODE</string>
     <string name="choose_color_lock_title">INPUT PIN CODE</string>

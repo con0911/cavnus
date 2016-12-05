@@ -398,7 +398,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             MainUtils.parentGroupItem.getListMember().add(joinDevice);
             mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
 
-            contentNotification = "Device "+ messages.getString("device_name")
+            contentNotification = "Device name: "+ messages.getString("device_name")
                     /*+ ", Model " + messages.getString("device_model")
                     + ", Mode " + messages.getString("device_mode")
                     + ", Type " + messages.getString("device_type")*/;
