@@ -338,6 +338,11 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     }
 
+    public boolean checkExistDaySchedule(String dayBlock){
+
+        return false;
+    }
+
     public void createNewSchedule(){
         mView = getLayoutInflater().inflate(R.layout.scheduler_edit, null);
         MainUtils.parentProfile = new ParentProfileItem();

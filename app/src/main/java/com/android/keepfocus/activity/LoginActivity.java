@@ -12,6 +12,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -103,6 +104,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         mContext = this;
 
@@ -480,5 +482,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>,O
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
+
+
  }
 

@@ -38,6 +38,7 @@ import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.settings.CircleGroupAdapter;
 import com.android.keepfocus.settings.CoverFlowAdapter;
 import com.android.keepfocus.settings.CoverFlowAdapter2;
+import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
@@ -140,7 +141,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         groupRequestController = new GroupRequestController(this);
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
-
         //
         fancyCoverFlowGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -230,6 +230,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         if (listFamily.size() == 0){
             if (nameFamily != null) {
                 nameFamily.setVisibility(View.GONE);
+            }
+            if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin){
+                createNewGroup();
             }
             mTextNoGroup.setText(R.string.tap_add_to_begin_setup);
             adapterGroup = new CircleGroupAdapter(this, listDefault);
@@ -349,7 +352,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG,"onActivityResult= " + data);
+        Log.d(TAG, "onActivityResult= " + data);
         if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data!=null) {
             Uri selectedImage = data.getData();
             boolean success = true;
@@ -391,7 +394,11 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        finishAffinity();
+        if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
+            super.onBackPressed();
+        }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin) {
+            finishAffinity();
+        }
     }
 
 
@@ -515,6 +522,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.global, menu);
+        if (SetupWizardActivity.getTypeLogin(mContext) == Constants.LoginSuccess){
+            menu.getItem(2).setVisible(false);
+        }
         return true;
     }
 
@@ -529,6 +539,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 renameGroup();
                 break;
             case R.id.action_update :
+                SetupWizardActivity.setTypeLogin(Constants.JoinSuccess, mContext);
                 groupRequestController.getGroupInServer();
                 break;
         }

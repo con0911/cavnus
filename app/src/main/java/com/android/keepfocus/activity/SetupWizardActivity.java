@@ -31,7 +31,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     private static final String TAG = "SetupWizardActivity";
     private Button btnNext;
     private SharedPreferences agreePref;
-    private static SharedPreferences modeDevice, typeJoin, nameDevice;
+    private static SharedPreferences modeDevice, typeJoin, typeLogin, nameDevice;
     private CheckBox mCheckboxTerm;
     private Button btnParent, btnChild, btnAddParent;
 
@@ -158,8 +158,15 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
 
     public static void setTypeJoin(int type, Context context){
         typeJoin = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = modeDevice.edit();
+        SharedPreferences.Editor editor = typeJoin.edit();
         editor.putInt(MainUtils.TYPE_JOIN, type);
+        editor.commit();
+    }
+
+    public static void setTypeLogin(int type, Context context){
+        typeLogin = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = typeLogin.edit();
+        editor.putInt(MainUtils.TYPE_LOGIN, type);
         editor.commit();
     }
 
@@ -170,6 +177,8 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         editor.commit();
     }
 
+
+
     public static int getModeDevice(Context context) {
         modeDevice = PreferenceManager.getDefaultSharedPreferences(context);
         return modeDevice.getInt(MainUtils.MODE_DEVICE, 0);
@@ -178,6 +187,11 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     public static int getTypeJoin(Context context){
         typeJoin = PreferenceManager.getDefaultSharedPreferences(context);
         return typeJoin.getInt(MainUtils.TYPE_JOIN, 0);
+    }
+
+    public static int getTypeLogin(Context context){
+        typeLogin = PreferenceManager.getDefaultSharedPreferences(context);
+        return typeLogin.getInt(MainUtils.TYPE_LOGIN, 0);
     }
 
     public static String getNameDevice(Context context){

@@ -160,7 +160,7 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
         iconFamily.setOnClickListener(onClickListener(position));
 
         convertView.setLayoutParams(new FancyCoverFlow.LayoutParams(600,
-                600));
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
         return convertView;
     }

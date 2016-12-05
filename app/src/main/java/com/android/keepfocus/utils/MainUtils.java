@@ -20,6 +20,7 @@ public class MainUtils {
     public static final int LAUNCHER_APP_BLOCK = 2;
     public static final String REGISTATION_ID = "mode_device";
     public static final String TYPE_JOIN ="type_join";
+    public static final String TYPE_LOGIN = "type_login";
     public static String namePackageBlock;
     public static ParentGroupItem parentGroupItem;
     public static ParentProfileItem parentProfile;
