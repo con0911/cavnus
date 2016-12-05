@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -140,8 +141,8 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
         deleteGroup.setOnClickListener(onClickListener(position));
         addmember.setOnClickListener(onClickListener(position));
         detailGroup.setOnClickListener(onClickListener(position));
-        convertView.setLayoutParams(new FancyCoverFlow.LayoutParams(500,
-                500));
+        convertView.setLayoutParams(new FancyCoverFlow.LayoutParams(600,
+                FrameLayout.LayoutParams.MATCH_PARENT));
         return convertView;
     }
 
