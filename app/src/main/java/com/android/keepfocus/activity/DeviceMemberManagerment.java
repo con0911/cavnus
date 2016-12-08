@@ -42,6 +42,7 @@ import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
+import com.android.keepfocus.server.request.controllers.DeviceRequestController;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.settings.CircleMemberAdapter;
@@ -70,6 +71,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private AlertDialog mAlertDialog;
     private TextView mTextMsg;
     private GroupRequestController groupRequestController;
+    private DeviceRequestController deviceRequestController;
     private BroadcastReceiver getDatabaseReceiver;
     private IntentFilter intentFilter;
 
@@ -175,6 +177,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
 
         displayMember();
+        deviceRequestController = new DeviceRequestController(this);
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(MainUtils.UPDATE_CHILD_DEVICE);
         getDatabaseReceiver = new BroadcastReceiver(){
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -182,6 +187,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 if (MainUtils.UPDATE_FAMILY_GROUP.equals(action)) {
                     displayMember();
                     setTitle(MainUtils.parentGroupItem.getGroup_name());
+                }else if (MainUtils.UPDATE_CHILD_DEVICE.equals(action)){
+                    displayMember();
+                    //setTitle(MainUtils.parentGroupItem.getGroup_name());
                 } else if (MainUtils.UPDATE_SCHEDULER.equals(action)) {
                     displayDetailTime();
                 } else if (MainUtils.BLOCK_ALL.equals(action)) {
@@ -336,6 +344,11 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             }
         }
 
+    }
+
+    public boolean checkExistDaySchedule(String dayBlock){
+
+        return false;
     }
 
     public void createNewSchedule(){
@@ -725,9 +738,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                         ParentMemberItem childItem = new ParentMemberItem();
                         childItem.setName_member("Test device");
                         childItem.setType_member(0);
-                        childItem.setId_member(mDataHelper.addMemberItemParent(childItem,MainUtils.parentGroupItem.getId_group()));
+                        childItem.setId_member(mDataHelper.addMemberItemParent(childItem, MainUtils.parentGroupItem.getId_group()));
                         MainUtils.parentGroupItem.getListMember().add(childItem);
-
                         displayMember();
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -743,11 +755,13 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
         listBlockPropertiesArr = MainUtils.parentGroupItem.getListMember();
         if (listBlockPropertiesArr.size() == 0){
+            Log.e("vinh", "listBlockPropertiesArr.size() = 0");
             mTextNoGroup.setText(R.string.text_no_group);
             adapterMember = new CircleMemberAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listProperties.setVisibility(View.GONE);
         } else  {
+            Log.e("vinh", "listBlockPropertiesArr.size() != 0");
             mTextNoGroup.setText(" ");
             listProperties.setVisibility(View.GONE);
             layoutList.setVisibility(View.VISIBLE);
@@ -793,35 +807,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         //startActivity(intent);
         editSchedule();
     }
-
-    public void onItemLongClick(int position) {
-        deleteMember(position);
-    }
-
-    public void deleteMember(int position) {
-        final int mPosition = position;
-        View view = getLayoutInflater().inflate(R.layout.delete_profile_popup, null);
-        mTextMsg = (TextView) view.findViewById(R.id.delete_text);
-        mTextMsg.setText("Are you sure to remove this device?");
-        AlertDialog mDeleteDialog = new AlertDialog.Builder(this).setView(view)
-                .setCancelable(false)
-                .setTitle("Delete device")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        mDataHelper.deleteMemberItemById(adapterMember.getItem(mPosition).getId_member());
-                        MainUtils.parentGroupItem.getListMember().remove(mPosition);
-                        displayMember();
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                }).create();
-        mDeleteDialog.show();
-    }
-
 
     public void showDetail(int position) {
         MainUtils.memberItem = adapterMember.getItem(position);
@@ -1048,6 +1033,37 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                             }
                         });
         builder.create().show();
+    }
+
+    public void onItemLongClick(int position) {
+        deleteDevice(position);
+    }
+
+    public void deleteDevice(final int position) {
+        final int mPosition = position;
+        View view = getLayoutInflater().inflate(R.layout.delete_profile_popup, null);
+        TextView mTextMsg = (TextView) view.findViewById(R.id.delete_text);
+        mTextMsg.setText("Are you sure to remove this device from family?");
+        AlertDialog mDeleteDialog = new AlertDialog.Builder(this).setView(view).setTitle("Remove device")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        MainUtils.memberItem = listBlockPropertiesArr.get(position);
+                        deviceRequestController.deleteDeviceInServer();
+                        mDataHelper.deleteMemberItemById(adapterMember.getItem(mPosition).getId_member());
+                        MainUtils.parentGroupItem.getListMember().remove(mPosition);
+                        displayMember();
+                        finish();
+                        Intent deviceManagement = new Intent(mContext, DeviceMemberManagerment.class);
+                        startActivity(deviceManagement);
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                }).create();
+        mDeleteDialog.show();
     }
 
     public void deleteProfile(int position) {

@@ -161,7 +161,7 @@ public class ServiceBlockApp extends Service {
 
     private boolean isInBlackList(String packageName) {
         String[] blackList = {"YouTube","Facebook","Gmail","Google +","Hangouts", "Google Play Music",
-                "Google Play Movies","Google Play Games","Chrome", "Internet", "Safari"};
+                "Google Play Movies","Google Play Games","Chrome", "Internet", "Safari", "Camera", "Play Store", "Gallery", "Photos"};
         String nameApp = "";
         PackageManager mPackageManager = mContext.getPackageManager();
         try {

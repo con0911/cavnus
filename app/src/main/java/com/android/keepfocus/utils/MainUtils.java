@@ -41,10 +41,12 @@ public class MainUtils {
     public static final String EXTRA_NOTI_CONTENT = "android.text";
 
     public static String UPDATE_CHILD_SCHEDULER = "com.android.keepfocus.UPDATE_CHILD_SCHEDULER";
+    public static String UPDATE_CHILD_DEVICE = "com.android.keepfocus.UPDATE_CHILD_DEVICE";
     public static String UPDATE_FAMILY_GROUP = "com.android.keepfocus.UPDATE_FAMILY_GROUP";
     public static String UPDATE_SCHEDULER = "com.android.keepfocus.UPDATE_SCHEDULER";
     public static String BLOCK_ALL = "com.android.keepfocus.BLOCK_ALL";
     public static String UNBLOCK_ALL = "com.android.keepfocus.UNBLOCK_ALL";
     public static String ALLOW_ALL = "com.android.keepfocus.ALLOW_ALL";
     public static String UNALLOW_ALL = "com.android.keepfocus.UNALLOW_ALL";
+    public static String PACKAGE_UNINSTALL = "com.android.keepfocus.PACKAGE_UNINSTALL";
 }

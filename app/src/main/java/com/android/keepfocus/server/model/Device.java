@@ -27,6 +27,15 @@ public class Device {
         this.device_mode = device_mode;
     }
 
+    public Device(String device_name) {
+
+        this.device_name = device_name;
+
+    }
+
+    public Device(int id) {
+        this.id = id;
+    }
 
 
 }

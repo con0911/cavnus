@@ -158,6 +158,7 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
         allowAll.setOnClickListener(onClickListener(position));
         addmember.setOnClickListener(onClickListener(position));
         iconFamily.setOnClickListener(onClickListener(position));
+        iconFamily.setOnLongClickListener(onLongClickListener(position));
 
         convertView.setLayoutParams(new FancyCoverFlow.LayoutParams(600,
                 ViewGroup.LayoutParams.MATCH_PARENT));
@@ -214,6 +215,21 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
                         break;
                 }
 
+            }
+        };
+    }
+
+    private View.OnLongClickListener onLongClickListener(final int position){
+        return new View.OnLongClickListener(){
+
+            @Override
+            public boolean onLongClick(View v) {
+                DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment) activity;
+                switch (v.getId()){
+                    case R.id.img_center_child:
+                        deviceMemberManagerment.onItemLongClick(position);;
+                }
+                return true;
             }
         };
     }

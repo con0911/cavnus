@@ -1,14 +1,18 @@
 package com.android.keepfocus.server.request.controllers;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.request.model.DeviceRequest;
 import com.android.keepfocus.utils.Constants;
+import com.android.keepfocus.utils.MainUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -26,16 +30,18 @@ import java.net.URL;
  * Created by sev_user on 9/23/2016.
  */
 public class DeviceRequestController {
-    public static final String DEVICE_BASE_URL = "http://104.156.224.47/api/device?pRequest=";
+    public static final String DEVICE_BASE_URL = "http://45.32.103.87/api/device?pRequest=";
     private DeviceRequest deviceRequest;
     private static final int NET_READ_TIMEOUT_MILLIS = 10000;
     private static final int NET_CONNECT_TIMEOUT_MILLIS = 10000;
-    private Context mContext;
     private String TAG = "DeviceRequestController";
     static boolean isSuccess;
+    private Context mContext;
+    private MainDatabaseHelper mDataHelper;
 
-    public DeviceRequestController(Context mContext) {
-        this.mContext = mContext;
+    public DeviceRequestController(Context context) {
+        this.mContext = context;
+        mDataHelper = new MainDatabaseHelper(context);
     }
 
 
@@ -47,6 +53,96 @@ public class DeviceRequestController {
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
     }*/
+
+    public String connectToServer(String urlRequest) {
+        try {
+            URL url = new URL(urlRequest);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
+            connection.setConnectTimeout(NET_CONNECT_TIMEOUT_MILLIS);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream is = connection.getInputStream();
+            String streamToString = convertStreamToString(is);
+            return streamToString;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String deleteDevice() {
+        Device deviceItem = new Device(MainUtils.memberItem.getId_member_server());
+        deviceRequest = new DeviceRequest(Constants.RequestTypeUpdate, Constants.ActionTypeDelete, deviceItem);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(deviceRequest);
+        return jsonRequest;
+    }
+
+    public void deleteDeviceInServer() {
+        DeleteDeviceAsynTask deleteAsyn = new DeleteDeviceAsynTask();
+        deleteAsyn.execute();
+    }
+
+    //=====================Block code for delete Device api==================================
+
+    private class DeleteDeviceAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
+        ProgressDialog mDialog;
+
+        @Override
+        protected String doInBackground(ParentGroupItem... params) {
+            String result = "";
+            String link;
+            link = DEVICE_BASE_URL + deleteDevice();
+            Log.d(TAG, "link: " + link);
+            result = connectToServer(link);
+            //result = serverUtils.postData(BASE_URL,getListGroup());
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG, "onPostExecute" + result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    int status = message.getInt("Status");
+                    if (status == 1) {
+                        mDataHelper.deleteMemberItemById(MainUtils.memberItem.getId_member());
+                        updateSuccess();
+                    } else {
+                        Toast.makeText(mContext, "Error in server " + description_result, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Can't delete device! Error in database", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
+            }
+            mDialog.dismiss();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setCancelable(false);
+            mDialog.setInverseBackgroundForced(false);
+            mDialog.setMessage("Request to server...");
+            mDialog.show();
+        }
+    }
+
+    public void updateSuccess() {
+        Intent intent = new Intent();
+        intent.setAction(MainUtils.UPDATE_CHILD_DEVICE);
+        mContext.sendBroadcast(intent);
+    }
 
 
     public boolean checkDeviceRequest(String jsonObject) {

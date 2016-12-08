@@ -34,6 +34,7 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
+import com.android.keepfocus.server.request.controllers.DeviceRequestController;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.settings.CircleGroupAdapter;
 import com.android.keepfocus.settings.CoverFlowAdapter;
@@ -74,6 +75,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     static Button notifCount;
     static int mNotifCount = 0;
     private GroupRequestController groupRequestController;
+    private DeviceRequestController deviceRequestController;
     private IntentFilter intentFilter;
     private LinearLayout detailLayout;
     private Animation bottomUp;
@@ -88,7 +90,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     private static int PICK_IMAGE = 1;
     private static int positionNow = 0;
     private Typeface mTextFamilyIDFace;
-
+    private boolean isFirstTime = false;
 
     private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver(){
 
@@ -231,6 +233,10 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         if (listFamily.size() == 0){
             if (nameFamily != null) {
                 nameFamily.setVisibility(View.GONE);
+            }
+            if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin && !isFirstTime){
+                isFirstTime = true;
+                createNewGroup();
             }
             mTextNoGroup.setText(R.string.tap_add_to_begin_setup);
             adapterGroup = new CircleGroupAdapter(this, listDefault);
@@ -392,7 +398,11 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        finishAffinity();
+        if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
+            super.onBackPressed();
+        }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin) {
+            finishAffinity();
+        }
     }
 
 
@@ -413,6 +423,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        isFirstTime = true;
                         String name = mEditText.getText().toString();
                         mEditText.setError(null);
                         View focusView = null;
