@@ -192,7 +192,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     break;
                 case UNBLOCKALL:
                     Log.e(TAG, "UNBLOCKALL");
-                    sendNotificationNoPressAction("Unblock all", "You have been Unblock all app from your parent");
+                    sendNotificationNoPressAction("Unblock all", "Your device's schedule is now on");
                     SharedPreferences.Editor editor2 = prefs.edit();
                     editor2.putBoolean(MainUtils.IS_BLOCK_ALL, false);
                     editor2.commit();
@@ -207,7 +207,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     break;
                 case UNALLOWALL:
                     Log.e(TAG, "UNALLOWALL");
-                    sendNotificationNoPressAction("Unallow all", "You have been Unallow all app from your parent");
+                    sendNotificationNoPressAction("Unallow all", "Your device's schedule is now on");
                     SharedPreferences.Editor editor4 = prefs.edit();
                     editor4.putBoolean(MainUtils.IS_ALLOW_ALL, false);
                     editor4.commit();

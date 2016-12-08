@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -88,8 +89,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     private static int PICK_IMAGE = 1;
     private static int positionNow = 0;
     private Typeface mTextFamilyIDFace;
-    private boolean isFirstTime = false;
 
+    private CountDownTimer mCDT = null;
 
     private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver(){
 
@@ -232,8 +233,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             if (nameFamily != null) {
                 nameFamily.setVisibility(View.GONE);
             }
-            if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin && !isFirstTime){
-                isFirstTime = true;
+            if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin){
                 createNewGroup();
             }
             mTextNoGroup.setText(R.string.tap_add_to_begin_setup);
@@ -421,7 +421,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        isFirstTime = true;
                         String name = mEditText.getText().toString();
                         mEditText.setError(null);
                         View focusView = null;
@@ -431,7 +430,19 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                             //mDataHelper.addGroupItemParent(parentItem);
                             if (isNameInValid(name)){
                                 mEditText.setError("This name is invalid because of containing space");
-                                Toast.makeText(FamilyManagerment.this, "This Family name is invalid because of containing space!", Toast.LENGTH_LONG).show();
+                                final Toast toastSpace = Toast.makeText(FamilyManagerment.this, "This Family name is invalid because of containing space!", Toast.LENGTH_LONG);
+                                toastSpace.show();
+                                mCDT = new CountDownTimer(6000, 1000) {
+                                    @Override
+                                    public void onTick(long l) {
+                                        toastSpace.show();
+                                    }
+
+                                    @Override
+                                    public void onFinish() {
+                                        toastSpace.show();
+                                    }
+                                }.start();
                                 focusView = mEditText;
                                 focusView.requestFocus();
                             }else {
@@ -444,7 +455,19 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                         } else {
                             //dialog.cancel();
                             mEditText.setError("This name is empty");
-                            Toast.makeText(FamilyManagerment.this, "This Family name is empty.Can not create!", Toast.LENGTH_LONG).show();
+                            final Toast toastEmptyName = Toast.makeText(FamilyManagerment.this, "This Family name is empty.Can not create!", Toast.LENGTH_LONG);
+                            toastEmptyName.show();
+                            mCDT = new CountDownTimer(6000, 1000) {
+                                @Override
+                                public void onTick(long l) {
+                                    toastEmptyName.show();
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    toastEmptyName.show();
+                                }
+                            }.start();
                             focusView = mEditText;
                             focusView.requestFocus();
                         }
