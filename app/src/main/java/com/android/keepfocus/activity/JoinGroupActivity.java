@@ -648,7 +648,7 @@ public class JoinGroupActivity extends Activity {
                                 SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
                                 Log.e(TAG, "isJoinSuccess" + isJoinSuccess);
                                 groupRequestController.updateSuccess();
-                                //Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
                                 SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
                                 Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
                                 startActivity(childSchedule);

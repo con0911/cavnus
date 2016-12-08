@@ -109,7 +109,7 @@ public class GcmIntentService extends IntentService {
             }
         } catch (IOException e) {
             Log.e(TAG, "Topic subscribe error. Topic: " + topic + ", error: " + e.getMessage());
-            //Toast.makeText(getApplicationContext(), "Topic subscribe error. Topic: " + topic + ", error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Topic subscribe error. Topic: " + topic + ", error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -128,7 +128,7 @@ public class GcmIntentService extends IntentService {
             }
         } catch (IOException e) {
             Log.e(TAG, "Topic unsubscribe error. Topic: " + topic + ", error: " + e.getMessage());
-            //Toast.makeText(getApplicationContext(), "Topic subscribe error. Topic: " + topic + ", error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Topic subscribe error. Topic: " + topic + ", error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 }

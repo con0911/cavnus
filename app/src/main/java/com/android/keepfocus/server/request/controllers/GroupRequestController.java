@@ -172,11 +172,9 @@ public class GroupRequestController {
                     JSONObject data = jsonObj.getJSONObject("Data");
                     String group_code = data.getString("group_code");
                     int group_id_server = data.getInt("id");
-                    String group_name = data.getString("group_name");
                     if (description_result.equals("Success")) {
                         MainUtils.parentGroupItem.setGroup_code(group_code);
                         MainUtils.parentGroupItem.setId_group_server(group_id_server);
-                        MainUtils.parentGroupItem.setGroup_name(group_name);
                         mDataHelper.addGroupItemParent(MainUtils.parentGroupItem);
                         updateSuccess();
                     } else {
@@ -466,7 +464,7 @@ public class GroupRequestController {
                     Toast.makeText(mContext, "Can't create new family! Error in database", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }

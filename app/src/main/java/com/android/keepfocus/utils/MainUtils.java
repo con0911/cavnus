@@ -47,5 +47,4 @@ public class MainUtils {
     public static String UNBLOCK_ALL = "com.android.keepfocus.UNBLOCK_ALL";
     public static String ALLOW_ALL = "com.android.keepfocus.ALLOW_ALL";
     public static String UNALLOW_ALL = "com.android.keepfocus.UNALLOW_ALL";
-    public static String PACKAGE_UNINSTALL = "com.android.keepfocus.PACKAGE_UNINSTALL";
 }

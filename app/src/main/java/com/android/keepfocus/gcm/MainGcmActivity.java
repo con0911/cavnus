@@ -48,17 +48,17 @@ public class MainGcmActivity extends AppCompatActivity {
                     // now subscribe to `global` topic to receive app wide notifications
                     String token = intent.getStringExtra("token");
                     tokenView.setText(""+token);
-                    //Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
 
                 } else if (intent.getAction().equals(SENT_TOKEN_TO_SERVER)) {
                     // gcm registration id is stored in our server's MySQL
 
-                    //Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
 
                 } else if (intent.getAction().equals(PUSH_NOTIFICATION)) {
                     // new push notification is received
 
-                    //Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
                 }
             }
         };

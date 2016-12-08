@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/action_update"
-        android:title="Restore Info" />
+        android:title="Restore" />
 
 
 </menu>

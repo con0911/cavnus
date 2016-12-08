@@ -22,6 +22,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Created by sev_user on 9/23/2016.
+ */
 public class DeviceRequestController {
     public static final String DEVICE_BASE_URL = "http://104.156.224.47/api/device?pRequest=";
     private DeviceRequest deviceRequest;
@@ -88,15 +91,15 @@ public class DeviceRequestController {
                         Log.d(TAG, "description_result" + description_result);
                         if (description_result.equals("1")) {
                             isSuccess = true;
-                            //Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                         } else {
                             isSuccess = false;
-                           // Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
                         }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        //Toast.makeText(mContext, "Error parsing JSON data.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Error parsing JSON data.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(mContext, "Couldn't get any JSON data.", Toast.LENGTH_SHORT).show();
