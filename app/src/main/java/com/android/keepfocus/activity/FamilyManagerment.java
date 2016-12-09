@@ -94,7 +94,12 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            displayProfile();
+            if (MainUtils.mIsEditGroupName) {
+                MainUtils.mIsEditGroupName = false;
+                nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
+            } else {
+                displayProfile();
+            }
         }
     };
 
@@ -560,7 +565,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
         mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
         mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
-
+        mEditText.setText(MainUtils.parentGroupItem.getGroup_name());
         mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Edit name : ")
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -569,6 +574,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (!mEditText.getText().toString().equals("")) {
                             MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
+                            MainUtils.mIsEditGroupName = true;
                             groupRequestController.updateGroupInServer();
                         } else {
                             dialog.cancel();

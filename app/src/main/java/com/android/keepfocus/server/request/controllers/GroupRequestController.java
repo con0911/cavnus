@@ -355,13 +355,16 @@ public class GroupRequestController {
                         mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
                         updateSuccess();
                     } else {
+                        MainUtils.mIsEditGroupName = false;
                         Toast.makeText(mContext, "Error in server", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    MainUtils.mIsEditGroupName = false;
                     Toast.makeText(mContext, "Can't update family! Error in database", Toast.LENGTH_SHORT).show();
                 }
             } else {
+                MainUtils.mIsEditGroupName = false;
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
