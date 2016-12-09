@@ -5,7 +5,7 @@
     android:background="@drawable/layout_border"
     android:orientation="vertical">
 
-    <ImageButton
+<!--    <ImageButton
         android:id="@+id/btn_delete_schedule"
         android:layout_width="20dp"
         android:layout_height="20dp"
@@ -13,8 +13,21 @@
         android:layout_marginRight="5dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/icon_close"
+        android:background="@drawable/icon_close"-->
  />
+
+    <Button
+            android:id="@+id/btn_delete_schedule"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/button_add"
+            android:text="DELETE"
+            android:textSize="12dp"
+            android:textColor="@color/color_text_button" />
 
     <Switch
         android:id="@+id/is_active"

@@ -134,13 +134,10 @@
 
                 <Button
                     android:id="@+id/details_time_add"
-                    android:layout_width="@dimen/width_button_add"
-                    android:layout_height="@dimen/height_button_add"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_gravity="right"
-                    android:background="@drawable/button_add"
-                    android:text="@string/add_button"
-                    android:textSize="14dp"
-                    android:textColor="@color/color_text_button" />
+                    android:background="@drawable/icon_add" />
             </LinearLayout>
 
             <com.android.keepfocus.settings.CustomListView

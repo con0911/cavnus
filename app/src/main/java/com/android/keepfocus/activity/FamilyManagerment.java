@@ -34,7 +34,6 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
-import com.android.keepfocus.server.request.controllers.DeviceRequestController;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.settings.CircleGroupAdapter;
 import com.android.keepfocus.settings.CoverFlowAdapter;
@@ -75,7 +74,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     static Button notifCount;
     static int mNotifCount = 0;
     private GroupRequestController groupRequestController;
-    private DeviceRequestController deviceRequestController;
     private IntentFilter intentFilter;
     private LinearLayout detailLayout;
     private Animation bottomUp;

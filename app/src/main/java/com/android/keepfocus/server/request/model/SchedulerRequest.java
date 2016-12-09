@@ -30,4 +30,9 @@ public class SchedulerRequest {
         Type = type;
         Action = action;
     }
+
+    public SchedulerRequest(int type, Device device){
+        this.Type = type;
+        this.Device = device;
+    }
 }

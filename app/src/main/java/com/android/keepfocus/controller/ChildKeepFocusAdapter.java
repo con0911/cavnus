@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -33,7 +34,7 @@ public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
 
     private TextView titleTime;
     private TextView dayScheduler;
-    private ImageButton btnDeleteSchedule;
+    private Button btnDeleteSchedule;
     private LinearLayout statusTime;
     private Switch isActive;
     private ArrayList<TextView> listStatus;
@@ -54,7 +55,7 @@ public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
         statusTime = (LinearLayout) convertView.findViewById(R.id.statusBarTime);
         dayScheduler = (TextView) convertView.findViewById(R.id.day_scheduler);
         isActive = (Switch) convertView.findViewById(R.id.is_active);
-        btnDeleteSchedule = (ImageButton) convertView.findViewById(R.id.btn_delete_schedule);
+        btnDeleteSchedule = (Button) convertView.findViewById(R.id.btn_delete_schedule);
         btnDeleteSchedule.setVisibility(View.GONE);
 
 

@@ -112,15 +112,13 @@
 
             <Button
                 android:id="@+id/btn_add_schedule"
-                android:layout_width="@dimen/width_button_add"
-                android:layout_height="@dimen/height_button_add"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="6dp"
-                android:background="@drawable/button_add"
+                android:background="@drawable/icon_add"
                 android:clickable="true"
-                android:text="@string/add_button"
-                android:textColor="@color/color_text_button"
                 android:textSize="15dp" />
         </RelativeLayout>
 

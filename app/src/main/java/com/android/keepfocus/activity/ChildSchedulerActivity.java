@@ -23,6 +23,7 @@ import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildNotificationItemMissHistory;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.receive.ChildProfileReceiver;
+import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.service.KeepFocusMainService;
 import com.android.keepfocus.service.ServiceBlockApp;
 import com.android.keepfocus.utils.MainUtils;
@@ -33,13 +34,10 @@ public class ChildSchedulerActivity extends Activity {
     private ListView listProperties;
     private LinearLayout headerView;
     private TextView mTextNoGroup;
+    private Button mBtnRestore;
     public ArrayList<ChildKeepFocusItem> listBlockPropertiesArr;
     private MainDatabaseHelper mDataHelper;
     private Context mContext;
-    private View mView;
-    private EditText mEditText;
-    private AlertDialog mAlertDialog;
-    private TextView mTextMsg;
     private ChildKeepFocusAdapter mProfileAdapter;
 
     static int mNotifCount = 0;
@@ -47,6 +45,7 @@ public class ChildSchedulerActivity extends Activity {
     private DialogNotificationHistory mDialogNotiHistory;
     private ChildProfileReceiver myReceiver;
     private IntentFilter intentFilter;
+    private SchedulerRequestController mSchedulerRequestController;
 
     private MainDatabaseHelper keepData;
 
@@ -56,6 +55,7 @@ public class ChildSchedulerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_group_management);
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
+        mBtnRestore = (Button) findViewById(R.id.btn_restore);
         mContext = this;
         setTitle(SetupWizardActivity.getNameDevice(mContext));
         //keepData = new MainDatabaseHelper(this);
@@ -66,6 +66,7 @@ public class ChildSchedulerActivity extends Activity {
 
         mDataHelper = new MainDatabaseHelper(mContext);
         displayProfile();
+        mSchedulerRequestController = new SchedulerRequestController(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             startService(new Intent(this, KeepFocusMainService.class));
         }
@@ -80,6 +81,19 @@ public class ChildSchedulerActivity extends Activity {
         };
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+
+        String bundle = JoinGroupActivity.getBundleString();
+        if (bundle != null && bundle.equals("replace")){
+            mBtnRestore.setVisibility(View.VISIBLE);
+        }else {
+            mBtnRestore.setVisibility(View.GONE);
+        }
+        mBtnRestore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 //mSchedulerRequestController.restoreSchedulerForChild();
+            }
+        });
     }
 
     @Override
@@ -107,39 +121,6 @@ public class ChildSchedulerActivity extends Activity {
         super.onPause();
         unregisterReceiver(myReceiver);
     }
-
-/*    public void createNewGroup() {
-        mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
-        mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
-        mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
-        mTextMsg.setText("Name schedule:");
-
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setTitle("Add test schedule")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if (!mEditText.getText().toString().equals("")) {
-                            ChildKeepFocusItem childItem = new ChildKeepFocusItem();
-                            childItem.setNameFocus(mEditText.getText().toString());
-                            childItem.setDayFocus("");
-                            mDataHelper.addNewFocusItem(childItem);
-                            MainUtils.childKeepFocusItem = childItem;
-                            Intent intent = new Intent(ChildSchedulerActivity.this, ChildSchedulerDetail.class);
-                            startActivity(intent);
-                        } else {
-                            dialog.cancel();
-                        }
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                }).create();
-
-        mAlertDialog.show();
-    }*/
 
     private ArrayList<ChildNotificationItemMissHistory> getListMissingNotification() {
         return mDataHelper.getListNotificaionHistoryItem();

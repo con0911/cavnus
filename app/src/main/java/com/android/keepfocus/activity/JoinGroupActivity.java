@@ -99,6 +99,8 @@ public class JoinGroupActivity extends Activity {
     private static String mPopupContentMgs = "";
     private AlertDialog mEnableNotiDialog, mEnableDataAccessDialog;
 
+    public static Bundle bundle;
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -334,10 +336,18 @@ public class JoinGroupActivity extends Activity {
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children
                         && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty()
                             || mActiveCode.getText().toString().isEmpty())) {
-                    JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
-                    joinAsyn.execute();
+                    if (isNameInValid(joinFamilyIDText.getText().toString()) || isNameInValid(nameDevice.getText().toString())
+                            || isNameInValid(mActiveCode.getText().toString())){
+                        Toast.makeText(mContext, "This name, familyID or activation code is invalid because of containing space", Toast.LENGTH_SHORT).show();
+                    }else {
+                        JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
+                        joinAsyn.execute();
+                    }
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager
                         && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty())) {
+                    if (isNameInValid(joinFamilyIDText.getText().toString()) || isNameInValid(nameDevice.getText().toString())){
+                        Toast.makeText(mContext, "This name or familyID is invalid because of containing space", Toast.LENGTH_SHORT).show();
+                    }
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
                 }
@@ -388,6 +398,9 @@ public class JoinGroupActivity extends Activity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
+    private boolean isNameInValid(String name){
+        return name.contains(" ");
+    }
 
     private void showAdminDialog(int dialogId) {
         View view = getLayoutInflater().inflate(R.layout.request_admin_popup, null);
@@ -650,6 +663,7 @@ public class JoinGroupActivity extends Activity {
                                 groupRequestController.updateSuccess();
                                 Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
                                 SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
+                                setBundle("join");
                                 Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
                                 startActivity(childSchedule);
                             }
@@ -686,9 +700,22 @@ public class JoinGroupActivity extends Activity {
             mDialog = new ProgressDialog(JoinGroupActivity.this);
             mDialog.setCancelable(false);
             mDialog.setInverseBackgroundForced(false);
-            mDialog.setMessage("Request to server...");
+            if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
+                mDialog.setMessage("Please wait while a connection is made with parent device...");
+            }else {
+                mDialog.setMessage("Request to server...");
+            }
             mDialog.show();
         }
+    }
+
+    public static void setBundle(String type){
+         bundle = new Bundle();
+         bundle.putString("title", type);
+    }
+
+    public static String getBundleString(){
+        return bundle.getString("title");
     }
 
     private class ReplaceDeviceAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
@@ -720,6 +747,7 @@ public class JoinGroupActivity extends Activity {
                         groupRequestController.updateSuccess();
                         SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
                         SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
+                        setBundle("replace");
                         Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
                         startActivity(childSchedule);
                     } else {

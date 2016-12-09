@@ -9,10 +9,13 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.keepfocus.data.ChildKeepFocusItem;
+import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
+import com.android.keepfocus.receive.ChildProfileReceiver;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Scheduler;
 import com.android.keepfocus.server.model.TimeItems;
@@ -22,6 +25,7 @@ import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,6 +74,11 @@ public class SchedulerRequestController {
         updateAsyn.execute();
     }
 
+    public void restoreSchedulerForChild(){
+        RestoreScheduleAsynTask restoreAsyn = new RestoreScheduleAsynTask();
+        restoreAsyn.execute();
+    }
+
     private int isActive(boolean active){
         if(active) return 1;
         else return 2;
@@ -114,6 +123,17 @@ public class SchedulerRequestController {
         Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","","child");
         ArrayList<TimeItems> timeItem = getListTime(profileItem);
         schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeDelete);
+
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(schedulerRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    public String restoreSchedulerForChild(ChildKeepFocusItem profileItem){
+        ChildKeepFocusItem child = MainUtils.childKeepFocusItem;
+        Device deviceItem = new Device(child.getId_profile_server(), "","samsung","android","","","child");
+        schedulerRequest = new SchedulerRequest(Constants.RequestTypeGet, deviceItem);
 
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(schedulerRequest);
@@ -203,6 +223,68 @@ public class SchedulerRequestController {
         intent.setAction(MainUtils.UPDATE_SCHEDULER);
         mContext.sendBroadcast(intent);
     }
+
+    //=============== Restore scheduler for Child replaced device ==================
+    private class RestoreScheduleAsynTask extends AsyncTask<ParentMemberItem, Void, String> {
+        ProgressDialog mDialog;
+        @Override
+        protected String doInBackground(ParentMemberItem... params) {
+            String result = "";
+            String link;
+            link = BASE_URL + restoreSchedulerForChild(MainUtils.childKeepFocusItem);
+            Log.d(TAG,"link: "+link);
+            result = connectToServer(link);
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            String jsonStr = result;
+            Log.d(TAG,"onPostExecute"+result);
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONObject message = jsonObj.getJSONObject("Message");
+                    String description_result = message.getString("Description");
+                    int status = message.getInt("Status");
+                    JSONArray data = jsonObj.getJSONArray("Data");
+                    ArrayList<ChildKeepFocusItem> listSchedule = mDataHelper.getAllKeepFocusFromDb();
+                    if(status == 1) {
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject scheduleItem = data.getJSONObject(i);
+                            if (listSchedule.size() > 0) {
+                                for (int j = 0; j < listSchedule.size(); j++) {
+                                    listSchedule.get(j).setId_profile_server(scheduleItem.getInt("id"));
+                                    listSchedule.get(j).setNameFocus(scheduleItem.getString("scheduler_name"));
+                                    listSchedule.get(j).setDayFocus(scheduleItem.getString("days"));
+                                    listSchedule.get(j).setActive(scheduleItem.getString("isActive").equals("1"));
+                                    mDataHelper.updateFocusItem(MainUtils.childKeepFocusItem);
+                                }
+                            }
+                        }
+                        updateSuccess();
+                    } else {
+                        Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+            }
+            mDialog.dismiss();
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setCancelable(false);
+            mDialog.setInverseBackgroundForced(false);
+            mDialog.setMessage("Request to server...");
+            mDialog.show();
+        }
+    }
+
 
 
 
@@ -539,4 +621,7 @@ public class SchedulerRequestController {
         mContext.sendBroadcast(intent);
         Log.e("thong.nv","sendBroadcast" + intent);
     }
+
+
+
 }
