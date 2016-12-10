@@ -94,9 +94,9 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (MainUtils.mIsEditGroupName) {
-                MainUtils.mIsEditGroupName = false;
-                nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
+            if (MainUtils.mIsEditNameGroup) {
+                  MainUtils.mIsEditNameGroup = false;
+                  nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
             } else {
                 displayProfile();
             }
@@ -550,6 +550,10 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 SetupWizardActivity.setTypeLogin(Constants.JoinSuccess, mContext);
                 groupRequestController.getGroupInServer();
                 break;
+            case R.id.settings:
+                Intent settingIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingIntent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -574,7 +578,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (!mEditText.getText().toString().equals("")) {
                             MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
-                            MainUtils.mIsEditGroupName = true;
+                            MainUtils.mIsEditNameGroup = true;
                             groupRequestController.updateGroupInServer();
                         } else {
                             dialog.cancel();

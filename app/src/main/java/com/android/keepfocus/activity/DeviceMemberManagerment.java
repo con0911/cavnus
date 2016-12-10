@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,13 +22,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SoundEffectConstants;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -68,6 +72,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private View mView;
     private TextView mIDText;
     private EditText mEditText;
+    private TimeListAdapter mTimeListAdapter;
     private AlertDialog mAlertDialog;
     private TextView mTextMsg;
     private GroupRequestController groupRequestController;
@@ -77,6 +82,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     private ArrayList<ParentProfileItem> listProfileItem;
     private ListView listTime;
+    private CustomListView listTimer;
     private ChildTimeListAdapter timeListAdapter;
 
 
@@ -101,12 +107,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private Button btnAddSchedule;
     private Button btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday,
             btnSaturday, btnSunday;
+    private LinearLayout layoutTextHours;
     private EditText mEditScheduleName;
     private LinearLayout statusBarTime, emptyTimeView;
     private String dayBlock;
     private String titleDayBlock;
     private Button mBtnAddTime;
-    private CustomListView listTimer;
     private TimePicker timePickerFrom, timePickerTo;
     private Button fromBt, toBt;
     private MainDatabaseHelper keepData;
@@ -123,6 +129,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_member_layout);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
         fancyCoverFlowMember = (FancyCoverFlow) findViewById(R.id.fancyCoverFlow);
         fancyCoverFlowMember.setUnselectedAlpha(1.0f);
@@ -242,15 +249,24 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     @Override
     public void setTitle(CharSequence title) {
-        super.setTitle(title );
+        super.setTitle(title);
     }
 
     @Override
     protected void onResume() {
-        //updateStatusTime(MainUtils.parentProfile.getListTimer());
+        //updateTimerList();
         super.onResume();
       //  displayMember();
         registerReceiver(getDatabaseReceiver, intentFilter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void schedulerChecked(boolean isChecked, int position) {
@@ -302,7 +318,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }*/
 
-    public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
+/*    public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
         boolean chooseList[] = new boolean[145];
         // init
         for (int i = 0; i < 144; i++) {
@@ -344,7 +360,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             }
         }
 
-    }
+    }*/
 
     public boolean checkExistDaySchedule(String dayBlock){
 
@@ -383,7 +399,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mView = getLayoutInflater().inflate(R.layout.scheduler_edit, null);
         displayScreen(); // setup Button, image,...
         loadDayButton(); // status of day button
-        updateStatusTime(MainUtils.parentProfile.getListTimer());
+        //updateStatusTime(MainUtils.parentProfile.getListTimer());
+        updateTimerList();
 
         mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(false)
                 .setTitle("Edit this schedule")
@@ -407,6 +424,17 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     }
 
+    public void updateTimerList() {
+        mTimeListAdapter = new TimeListAdapter(this, R.layout.show_block_app,
+                0, MainUtils.parentProfile.getListTimer());
+        listTimer.setAdapter(mTimeListAdapter);
+/*        if (MainUtils.parentProfile.getListTimer().size() == 0) {
+            emptyTimeView.setVisibility(View.VISIBLE);
+        } else {
+            emptyTimeView.setVisibility(View.GONE);
+        }*/
+    }
+
     public void displayScreen() {
         btnMonday = (Button) mView.findViewById(R.id.details_day_monday);
         btnTuesday = (Button) mView.findViewById(R.id.details_day_tuesday);
@@ -415,13 +443,17 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         btnFriday = (Button) mView.findViewById(R.id.details_day_friday);
         btnSaturday = (Button) mView.findViewById(R.id.details_day_saturday);
         btnSunday = (Button) mView.findViewById(R.id.details_day_sunday);
-        statusBarTime = (LinearLayout) mView.findViewById(R.id.statusBarTime);
-        emptyTimeView = (LinearLayout) mView.findViewById(R.id.empyTimeView);
+        layoutTextHours = (LinearLayout) mView.findViewById(R.id.text_hours);
+        layoutTextHours.setVisibility(View.INVISIBLE);
+        //statusBarTime = (LinearLayout) mView.findViewById(R.id.statusBarTime);
+        //emptyTimeView = (LinearLayout) mView.findViewById(R.id.empyTimeView);
+        listTimer = (CustomListView) mView.findViewById(R.id.time_listview);
+        listTimer.setFocusable(false);
         //mEditScheduleName = (EditText) mView.findViewById(R.id.editScheduleName);
 //        if (MainUtils.parentProfile != null){
 //            mEditScheduleName.setText(MainUtils.parentProfile.getName_profile());
 //        }
-        addItemStatusTime();
+        //addItemStatusTime();
 
         btnMonday.setOnClickListener(this);
         btnTuesday.setOnClickListener(this);
@@ -436,12 +468,11 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         titleDayBlock = MainUtils.parentProfile.getName_profile();
 
         mBtnAddTime = (Button) mView.findViewById(R.id.details_time_add);
-        listTimer = (CustomListView) findViewById(R.id.time_listview);
         mBtnAddTime.setOnClickListener(this);
     }
 
 
-    public void addItemStatusTime() {
+/*    public void addItemStatusTime() {
         listStatus = new ArrayList<TextView>();
         for (int i = 0; i < 144; i++) {
             TextView textItem = new TextView(mContext);
@@ -454,7 +485,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             statusBarTime.addView(textItem);
             //
         }
-    }
+    }*/
 
     public void loadDayButton() {
         if (dayBlock.contains("Mon")) {
@@ -752,7 +783,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     public void displayMember() {
-        mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
+        mDataHelper.makeListMemberInGroup(MainUtils.parentGroupItem);
         listBlockPropertiesArr = MainUtils.parentGroupItem.getListMember();
         if (listBlockPropertiesArr.size() == 0){
             Log.e("vinh", "listBlockPropertiesArr.size() = 0");
@@ -1021,9 +1052,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                         } else {
                             keepData.updateTimeParentItem(timeItem);
                         }
-                        //updateTimerList();
+                        updateTimerList();
                         //timeListAdapter.updateStatusTime(listStatus);
-                        updateStatusTime(MainUtils.parentProfile.getListTimer());
+                        //updateStatusTime(MainUtils.parentProfile.getListTimer());
                     }
                 })
                 .setNegativeButton("CANCEL",
@@ -1127,6 +1158,57 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     public boolean unAllowAll(int positionMember) {
         schedulerRequestController.testUnAllowAllRequest(adapterMember.getItem(positionMember));
         return true;
+    }
+
+
+    public class TimeListAdapter extends ArrayAdapter<ParentTimeItem> {
+        MainDatabaseHelper kFDHelper = new MainDatabaseHelper(
+                getContext());
+
+        public TimeListAdapter(Context context, int resource,
+                               int textViewResourceId, ArrayList<ParentTimeItem> objects) {
+            super(context, resource, textViewResourceId, objects);
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = getLayoutInflater();
+            convertView = inflater.inflate(R.layout.show_block_app, null);
+
+            TextView timerDetail = (TextView) convertView
+                    .findViewById(R.id.app_block_name);
+            ImageView timerIcon = (ImageView) convertView
+                    .findViewById(R.id.app_block_icon);
+            Button unBlock = (Button) convertView
+                    .findViewById(R.id.list_item_button);
+
+            final int mPosition = position;
+            unBlock.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ParentTimeItem timeItem = MainUtils.parentProfile.getListTimer()
+                            .get(mPosition);
+                    MainUtils.parentProfile.getListTimer().remove(mPosition);
+                    // delete in db
+                    kFDHelper.deleteTimerParentItemById(timeItem.getId_timer_parent());
+                    // update in view
+                    updateTimerList();
+                }
+            });
+            final ParentTimeItem item = getItem(mPosition);
+            String textBegin, textEnd;
+            textBegin = item.getStringHour(item.getHourBegin(), item.getMinusBegin());
+            textEnd = item.getStringHour(item.getHourEnd(), item.getMinusEnd());
+            timerDetail.setText(textBegin +" - "+textEnd);
+            timerIcon.setImageResource(R.drawable.ic_clock);
+            convertView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    showDetailsTime(item);
+                }
+            });
+            return convertView;
+        }
     }
 
 }

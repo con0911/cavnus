@@ -79,7 +79,7 @@ public class ParentTimeItem {
          * This method used to convert time hour, minus to string , in oder to
          * display
          */
-    private String getStringHour(int hour, int minus) {
+    public String getStringHour(int hour, int minus) {
         StringBuilder hourString = new StringBuilder();
         if (hour < 10) {
             hourString.append("0" + hour);
@@ -91,6 +91,24 @@ public class ParentTimeItem {
             hourString.append("0" + minus);
         } else {
             hourString.append("" + minus);
+        }
+        if (hour < 12){
+            hourString.append(" AM");
+        }else {
+            hourString = new StringBuilder();
+            hour = hour - 12;
+            if (hour < 10) {
+                hourString.append("0" + hour);
+            } else {
+                hourString.append("" + hour);
+            }
+            hourString.append(":");
+            if (minus < 10) {
+                hourString.append("0" + minus);
+            } else {
+                hourString.append("" + minus);
+            }
+            hourString.append(" PM");
         }
         return hourString.toString();
     }

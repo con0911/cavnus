@@ -711,6 +711,11 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public void makeListMemberInGroup(ParentGroupItem groupItem) {
+        groupItem.setListMember(getListMember(groupItem.getId_group()));
+        makeDetailOneGroupItemParent(groupItem);
+    }
+
     public void makeDetailOneGroupItemParent(ParentGroupItem groupItem) {
         int size = groupItem.getListMember().size();
         dbMain = this.getWritableDatabase();

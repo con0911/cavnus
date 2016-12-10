@@ -48,15 +48,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-
-
-        <activity android:name=".activity.TestAcitivity"
-            android:theme="@style/CustomizeActionbarAppTheme">
 
         </activity>
-
 
 
 
@@ -110,6 +103,11 @@
 
         <activity android:name=".activity.DeviceMemberManagerment"
             android:theme="@style/CustomizeActionbarAppTheme"/>
+
+        <activity android:name=".activity.SettingsActivity"
+            android:label="Settings"
+            android:theme="@style/CustomizeActionbarAppTheme"
+            android:parentActivityName=".activity.FamilyManagerment"/>
 
         <activity android:name=".activity.InstallAppActivityForChild"
             android:parentActivityName=".activity.ChildSchedulerDetail"

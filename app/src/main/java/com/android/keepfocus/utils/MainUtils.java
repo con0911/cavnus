@@ -27,7 +27,7 @@ public class MainUtils {
     public static ParentMemberItem memberItem;
     public static ParentMemberItem memberItemForBlockAll;
     public static ChildKeepFocusItem childKeepFocusItem;
-    public static boolean mIsEditGroupName = false;
+    public static boolean mIsEditNameGroup = false;
     public static String getRegistationId = "";//get token in login screen
 
     public static final String[] DAY_OF_WEEK = { "Sun", "Mon", "Tue", "Wed",

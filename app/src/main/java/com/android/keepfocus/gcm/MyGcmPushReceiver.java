@@ -395,6 +395,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             joinDevice.setType_member(type);
 
             mDataHelper.addMemberItemParent(joinDevice,MainUtils.parentGroupItem.getId_group());
+            Log.e("thong.nv", "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
             MainUtils.parentGroupItem.getListMember().add(joinDevice);
             mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
 
@@ -402,7 +403,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     /*+ ", Model " + messages.getString("device_model")
                     + ", Mode " + messages.getString("device_mode")
                     + ", Type " + messages.getString("device_type")*/;
-
+            Log.e("thong.nv", "MainUtils.parentGroupItem.getListMember() after " + MainUtils.parentGroupItem.getListMember().size());
+            Log.e("thong.nv", "MainUtils = " + MainUtils.parentGroupItem);
             sendNotification(contentNotification, "Device added to SetLimitz");
 
         } catch (JSONException e) {

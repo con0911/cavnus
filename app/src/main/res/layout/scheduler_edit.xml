@@ -13,18 +13,6 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin" >
 
-<!--        <EditText
-            android:id="@+id/editScheduleName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:hint="Schedule Name"
-            android:background="@drawable/layout_border"
-            android:imeOptions="actionDone"
-            android:singleLine="true" />-->
-
         <RelativeLayout
             android:id="@+id/details_day"
             android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -149,7 +137,7 @@
                 android:descendantFocusability="blocksDescendants"
                 android:divider="@null" />
 
-           <LinearLayout
+<!--            <LinearLayout
                 android:id="@+id/empyTimeView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -157,35 +145,21 @@
                 android:layout_marginTop="10dp"
                 android:orientation="vertical" >
 
-<!--                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Active all day"
-                    android:textSize="@dimen/title_text_size"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Add new interval to change this settings"
-                    android:textSize="@dimen/description_text_size" />-->
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/statusBarTime"
                 android:layout_width="match_parent"
-                android:layout_height="7dp"
-                android:background="@color/green"
-                android:layout_marginTop="10dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="0dp"
                 android:orientation="horizontal" >
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/text_hours"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="0dp"
                 android:orientation="horizontal" >
 
                 <RelativeLayout
@@ -256,91 +230,6 @@
             </LinearLayout>
         </LinearLayout>
 
-<!--        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/list_divider_height"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:background="?android:attr/listDivider"
-            android:contentDescription="@null"
-            android:focusable="false" />-->
-
-<!--        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/list_divider_height"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:background="?android:attr/listDivider"
-            android:contentDescription="@null"
-            android:focusable="false" />-->
-
-<!--        <LinearLayout
-            android:id="@+id/selected_app"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/selected_app_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:contentDescription="@string/selected_app_title"
-                    android:text="@string/selected_app_title"
-                    android:textColor="@color/color_text_title"
-                    android:textSize="@dimen/title_text_size"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/selected_app_add"
-                    android:layout_width="@dimen/width_button_add"
-                    android:layout_height="@dimen/height_button_add"
-                    android:layout_gravity="right"
-                    android:background="@drawable/button_add"
-                    android:text="@string/add_button"
-                    android:textSize="14dp"
-                    android:textColor="@color/color_text_button" />
-            </LinearLayout>
-
-            <com.android.keepfocus.settings.CustomListView
-                android:id="@+id/apps_list"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:cacheColorHint="@color/transparent"
-                android:descendantFocusability="blocksDescendants"
-                android:divider="@null" />
-
-            <LinearLayout
-                android:id="@+id/empyAppView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="No applications"
-                    android:textSize="@dimen/title_text_size"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Add applications to block"
-                    android:textSize="@dimen/description_text_size" />
-            </LinearLayout>
-        </LinearLayout>-->
     </LinearLayout>
 
 </ScrollView>

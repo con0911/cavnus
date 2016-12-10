@@ -159,4 +159,7 @@
     <string name="green">Green</string>
     <string name="blue">Blue</string>
     <string name="indigo">Indigo</string>
+
+    <string name="setting_description">Switch on the below option to block Settings application and prevent your children access and change settings in their devices.</string>
+    <string name="prevent_access_settings_app">Always block</string>
 </resources>

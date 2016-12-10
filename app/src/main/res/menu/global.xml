@@ -14,5 +14,8 @@
         android:id="@+id/action_update"
         android:title="Restore Info" />
 
+    <item
+        android:id="@+id/settings"
+        android:title="Settings" />
 
 </menu>

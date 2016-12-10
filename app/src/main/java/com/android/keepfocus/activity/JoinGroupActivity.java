@@ -55,9 +55,11 @@ import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -742,6 +744,12 @@ public class JoinGroupActivity extends Activity {
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
                     String status_result = message.getString("Status");
+                    JSONObject data = jsonObj.getJSONObject("Data");
+                    int id_profile_server = data.getInt("id");
+                    Log.e("vinh", "id_profile_server : "+id_profile_server);
+                    //ArrayList<ChildKeepFocusItem> listChild =  mDataHelper.getAllKeepFocusFromDb();
+                    //MainUtils.childKeepFocusItem.setId_profile_server(id_profile_server);
+                    //mDataHelper.updateFocusItem(MainUtils.childKeepFocusItem);
                     if (status_result.equals("1")) {
                         Toast.makeText(mContext, "Replace device successfully", Toast.LENGTH_SHORT).show();
                         groupRequestController.updateSuccess();
