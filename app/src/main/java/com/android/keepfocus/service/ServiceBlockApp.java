@@ -74,12 +74,12 @@ public class ServiceBlockApp extends Service {
                     getCurrentPackageOldVersion();
                 }
                 // Log.e(TAG, "Find out " + currentPackageApp);
-                if (isHaveToCheck()) {
+                if (isHaveToCheck() || isBlockSettings()) {
                     oldPackageApp = currentPackageApp;
                     Log.e(TAG, "Check " + currentPackageApp);
                     Calendar c = Calendar.getInstance();
                     Date rightNow = c.getTime();
-                    if (isBlockAllNow() || dbHelper.isAppOrNotifiBlock(
+                    if (isBlockSettings() || isBlockAllNow() || dbHelper.isAppOrNotifiBlock(
                             MainUtils.DAY_OF_WEEK[rightNow.getDay()],
                             rightNow.getHours(), rightNow.getMinutes(),
                             MainUtils.LAUNCHER_APP_BLOCK)) {
@@ -134,6 +134,17 @@ public class ServiceBlockApp extends Service {
                 MainUtils.PACKET_APP, Context.MODE_PRIVATE);
         boolean isAllow = prefs.getBoolean(MainUtils.IS_ALLOW_ALL,false);
         return isAllow;
+    }
+
+    private boolean isBlockSettings() {
+        SharedPreferences prefs = this.getSharedPreferences(
+                MainUtils.PACKET_APP, Context.MODE_PRIVATE);
+        boolean isBlockSettings = prefs.getBoolean(MainUtils.IS_BLOCK_SETTINGS,false);
+        if (isBlockSettings && currentPackageApp.equals("com.android.settings")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean isSystemApp(String packageName) {
