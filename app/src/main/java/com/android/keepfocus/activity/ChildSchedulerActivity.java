@@ -142,7 +142,7 @@ public class ChildSchedulerActivity extends Activity {
                 0, listBlockPropertiesArr);
         listProperties.setAdapter(mProfileAdapter);
         if (listBlockPropertiesArr.size() == 0) {
-            mTextNoGroup.setText("No scheduler available");
+            mTextNoGroup.setText("No schedule available");
         } else {
             mTextNoGroup.setText("");
         }
