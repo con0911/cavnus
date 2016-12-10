@@ -96,7 +96,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 + "id_member INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " name_member text not null," + " type_member INTEGER,"
                 + " image_member text not null," + " id_member_server INTEGER,"
-                + " is_blockall INTEGER," + " is_alowall INTEGER" + ")";
+                + " is_blockall INTEGER," + " is_alowall INTEGER," + " is_blocksettings INTEGER" + ")";
         db.execSQL(CREATE_TABLE_MEMBER);
         // tblGroupMemberParent
         String CREATE_TABLE_GROUP_MEMBER_PARENT = "CREATE TABLE " + TABLE_GROUP_MEMBER_PARENT + "("
@@ -699,6 +699,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             int id_member_server = cursor.getInt(4);
             int is_blockall = cursor.getInt(5);
             int is_alowall = cursor.getInt(6);
+            int is_blocksettings = cursor.getInt(7);
             memberItem.setId_member(id_member);
             memberItem.setName_member(name_member);
             memberItem.setType_member(type_member);
@@ -706,6 +707,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             memberItem.setId_member_server(id_member_server);
             memberItem.setIs_blockall(is_blockall);
             memberItem.setIs_alowall(is_alowall);
+            memberItem.setIs_blocksettings(is_blocksettings);
             return memberItem;
         }
         return null;
@@ -882,6 +884,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             values3.put("id_member_server",parentMemberItem.getId_member_server());
             values3.put("is_blockall", parentMemberItem.getIs_blockall());
             values3.put("is_alowall",parentMemberItem.getIs_alowall());
+            values3.put("is_blocksettings",parentMemberItem.getIs_blocksettings());
             id_member = (int) dbMain.insert("tblMemberParent", null, values3);
             parentMemberItem.setId_member(id_member);
         }
@@ -1064,6 +1067,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         int id_member_server = parentMemberItem.getId_member_server();
         int is_blockall =  parentMemberItem.getIs_blockall();
         int is_alowall = parentMemberItem.getIs_alowall();
+        int is_blocksettings = parentMemberItem.getIs_blocksettings();
         //
         dbMain = this.getWritableDatabase();
         String update = "update tblMemberParent set name_member = " + name_member
@@ -1071,6 +1075,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 + ", id_member_server = " + id_member_server
                 + ", is_blockall = " + is_blockall
                 + ", is_alowall = " + is_alowall
+                + ", is_blocksettings = " + is_blocksettings
                 + " where id_member = " + id_member;
         dbMain.execSQL(update);
         dbMain.close();

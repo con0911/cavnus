@@ -13,6 +13,7 @@ public class ParentMemberItem {
     private int id_member_server;
     private int is_blockall;
     private int is_alowall;
+    private int is_blocksettings;
     private ArrayList<ParentProfileItem> listProfile;
 
     public ParentMemberItem() {
@@ -23,6 +24,7 @@ public class ParentMemberItem {
         this.id_member_server = -1;
         this.is_alowall = 0;
         this.is_blockall = 0;
+        this.is_blocksettings = 0;
         this.listProfile = new ArrayList<ParentProfileItem>();
     }
 
@@ -88,5 +90,13 @@ public class ParentMemberItem {
 
     public void setIs_blockall(int is_blockall) {
         this.is_blockall = is_blockall;
+    }
+
+    public int getIs_blocksettings() {
+        return is_blocksettings;
+    }
+
+    public void setIs_blocksettings(int is_blocksettings) {
+        this.is_blocksettings = is_blocksettings;
     }
 }
