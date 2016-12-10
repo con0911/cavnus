@@ -674,6 +674,7 @@ public class SchedulerRequestController {
                         //Handle Success
                         updateSuccess(MainUtils.BLOCK_SETTINGS);
                         MainUtils.memberItemForBlockAll.setIs_blocksettings(1);
+                        Toast.makeText(mContext, "Block settings successful", Toast.LENGTH_SHORT).show();
                         mDataHelper.updateMemberItem(MainUtils.memberItemForBlockAll);
                     } else {
                         Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
@@ -728,6 +729,7 @@ public class SchedulerRequestController {
                         updateSuccess(MainUtils.UN_BLOCK_SETTINGS);
                         MainUtils.memberItemForBlockAll.setIs_blocksettings(0);
                         mDataHelper.updateMemberItem(MainUtils.memberItemForBlockAll);
+                        Toast.makeText(mContext, "Unblock settings successful", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(mContext, "Error in server "+ description_result, Toast.LENGTH_SHORT).show();
                     }
