@@ -47,6 +47,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static final String UNBLOCKALL = "unblockall";
     public static final String ALLOWALL = "allowall";
     public static final String UNALLOWALL = "unallowall";
+    public static final String BLOCK_SETTINGS = "blocksettings";
+    public static final String UN_BLOCK_SETTINGS = "unblocksettings";
     private ChildKeepFocusItem childProfile;
     private String family_id;
 
@@ -211,6 +213,21 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     SharedPreferences.Editor editor4 = prefs.edit();
                     editor4.putBoolean(MainUtils.IS_ALLOW_ALL, false);
                     editor4.commit();
+                    break;
+
+                case BLOCK_SETTINGS:
+                    Log.e(TAG, "BLOCK_SETTINGS");
+                    sendNotificationNoPressAction("Block settings app", "Your device was blocked settings app");
+                    SharedPreferences.Editor editor5 = prefs.edit();
+                    editor5.putBoolean(MainUtils.IS_BLOCK_SETTINGS, true);
+                    editor5.commit();
+                    break;
+                case UN_BLOCK_SETTINGS:
+                    Log.e(TAG, "UN_BLOCK_SETTINGS");
+                    sendNotificationNoPressAction("Un Block settings app", "Your device was blocked settings app");
+                    SharedPreferences.Editor editor6 = prefs.edit();
+                    editor6.putBoolean(MainUtils.IS_BLOCK_SETTINGS, false);
+                    editor6.commit();
                     break;
 
                 default:
