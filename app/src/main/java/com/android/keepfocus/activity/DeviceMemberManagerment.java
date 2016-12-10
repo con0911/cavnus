@@ -51,6 +51,7 @@ import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.settings.CircleMemberAdapter;
 import com.android.keepfocus.settings.CustomListView;
+import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
@@ -261,8 +262,19 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.create_group, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.settings:
+                Intent settingIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingIntent);
+                break;
             case android.R.id.home:
                 finish();
         }

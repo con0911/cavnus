@@ -550,10 +550,7 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 SetupWizardActivity.setTypeLogin(Constants.JoinSuccess, mContext);
                 groupRequestController.getGroupInServer();
                 break;
-            case R.id.settings:
-                Intent settingIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingIntent);
-                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
