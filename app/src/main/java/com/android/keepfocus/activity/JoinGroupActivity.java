@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
@@ -102,6 +103,7 @@ public class JoinGroupActivity extends Activity {
     private AlertDialog mEnableNotiDialog, mEnableDataAccessDialog;
 
     public static Bundle bundle;
+    private CountDownTimer mCDT = null;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -677,9 +679,13 @@ public class JoinGroupActivity extends Activity {
 
                     } else if (status_result.equals("2")) {
                         if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
-                            Toast.makeText(mContext, "The activation code is incorrect, please chec Activation code and try again.", Toast.LENGTH_SHORT).show();
+                            final Toast wrongActiveCode = Toast.makeText(mContext, "The activation code is incorrect, please chec Activation code and try again.", Toast.LENGTH_SHORT);
+                            wrongActiveCode.show();
+                            extendDisplayTimeOfToast(wrongActiveCode);
                         }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
-                            Toast.makeText(mContext, "The Family ID entered is incorrect, please check the ID and try again.", Toast.LENGTH_SHORT).show();
+                            final Toast toastWrongFamilyID = Toast.makeText(mContext, "The Family ID entered is incorrect, please check the ID and try again.", Toast.LENGTH_SHORT);
+                            toastWrongFamilyID.show();
+                            extendDisplayTimeOfToast(toastWrongFamilyID);
                         }
                         Intent intent = new Intent(mContext, GcmIntentService.class);//send intent to get token
                         intent.putExtra("key", "register");
@@ -779,5 +785,20 @@ public class JoinGroupActivity extends Activity {
         }
     }
 
+    private void extendDisplayTimeOfToast(final Toast toast) {
+        if (mCDT == null) {
+            mCDT = new CountDownTimer(5000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    toast.show();
+                }
+
+                @Override
+                public void onFinish() {
+                    toast.show();
+                }
+            }.start();
+        }
+    }
 
 }
