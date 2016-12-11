@@ -79,9 +79,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private TextView mTextMsg;
     private GroupRequestController groupRequestController;
     private DeviceRequestController deviceRequestController;
-    private BroadcastReceiver getDatabaseReceiver;
     private IntentFilter intentFilter;
-
     private ArrayList<ParentProfileItem> listProfileItem;
     private ListView listTime;
     private CustomListView listTimer;
@@ -127,22 +125,51 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private static int PICK_IMAGE = 1;
     private CountDownTimer mCDT = null;
 
+
+    private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (MainUtils.UPDATE_FAMILY_GROUP.equals(action)) {
+                displayMember();
+                setTitle(MainUtils.parentGroupItem.getGroup_name());
+            }else if (MainUtils.UPDATE_CHILD_DEVICE.equals(action)){
+                displayMember();
+                //setTitle(MainUtils.parentGroupItem.getGroup_name());
+            } else if (MainUtils.UPDATE_SCHEDULER.equals(action)) {
+                Log.e(TAG, "MainUtils.UPDATE_SCHEDULER ");
+                displayDetailTime();
+            } else if (MainUtils.BLOCK_ALL.equals(action)) {
+                Log.d(TAG, "Success need handle BLOCK_ALL ");
+                adapterMember.notifyDataSetChanged();
+                //
+            } else if (MainUtils.UNBLOCK_ALL.equals(action)) {
+                Log.d(TAG, "Success need handle UNBLOCK_ALL ");
+                adapterMember.notifyDataSetChanged();
+                //
+            } else if (MainUtils.ALLOW_ALL.equals(action)) {
+                Log.d(TAG, "Success need handle ALLOW_ALL ");
+                adapterMember.notifyDataSetChanged();
+                //
+            } else if (MainUtils.UNALLOW_ALL.equals(action)) {
+                Log.d(TAG, "Success need handle UNALLOW_ALL  ");
+                adapterMember.notifyDataSetChanged();
+                //
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_member_layout);
+        mContext = this;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        creatIntentForBroastcast();
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
-        fancyCoverFlowMember = (FancyCoverFlow) findViewById(R.id.fancyCoverFlow);
-        fancyCoverFlowMember.setUnselectedAlpha(1.0f);
-        fancyCoverFlowMember.setUnselectedSaturation(0.0f);
-        fancyCoverFlowMember.setUnselectedScale(0.5f);
-        fancyCoverFlowMember.setSpacing(50);
-        fancyCoverFlowMember.setMaxRotation(0);
-        fancyCoverFlowMember.setScaleDownGravity(0.2f);
-        fancyCoverFlowMember.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
-        mContext = this;
+        initCoverFlowMember();
         keepData = new MainDatabaseHelper(this);
         createDefault();//for 0 item
         listProperties = (HorizontalListView) findViewById(R.id.listMember);
@@ -157,11 +184,26 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         groupRequestController = new GroupRequestController(this);
         groupRequestController.updateListDevice();
         schedulerRequestController = new SchedulerRequestController(this);
-
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
         nameDevice = (TextView) findViewById(R.id.nameFamily);
         listScheduler = (TextView) findViewById(R.id.listDeviceName);
+        detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
+        //editName = (EditText) findViewById(R.id.editMemberName);
+        //doneEdit = (ImageButton) findViewById(R.id.layoutEditDone);
+        //doneEdit.setOnClickListener(this);
+        listTime = (ListView) findViewById(R.id.listTime);
+        detailLayout.setVisibility(View.GONE);
+        //layoutClose = (ImageButton) findViewById(R.id.layoutClose);
+        //layoutClose.setOnClickListener(this);
+        bottomUp = AnimationUtils.loadAnimation(this, R.anim.bottom_up);
+        bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
+        displayMember();
+        deviceRequestController = new DeviceRequestController(this);
+        btnAddSchedule = (Button) findViewById(R.id.btn_add_schedule);
+        btnAddSchedule.setOnClickListener(this);
+    }
 
+    private void creatIntentForBroastcast() {
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
         intentFilter.addAction(MainUtils.UPDATE_SCHEDULER);
@@ -169,78 +211,33 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         intentFilter.addAction(MainUtils.UNBLOCK_ALL);
         intentFilter.addAction(MainUtils.ALLOW_ALL);
         intentFilter.addAction(MainUtils.UNALLOW_ALL);
-
-
-        detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
-        //editName = (EditText) findViewById(R.id.editMemberName);
-
-        //doneEdit = (ImageButton) findViewById(R.id.layoutEditDone);
-        //doneEdit.setOnClickListener(this);
-
-        listTime = (ListView) findViewById(R.id.listTime);
-
-
-        detailLayout.setVisibility(View.GONE);
-        //layoutClose = (ImageButton) findViewById(R.id.layoutClose);
-        //layoutClose.setOnClickListener(this);
-        bottomUp = AnimationUtils.loadAnimation(this, R.anim.bottom_up);
-        bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
-
-        displayMember();
-        deviceRequestController = new DeviceRequestController(this);
         intentFilter.addAction(MainUtils.UPDATE_CHILD_DEVICE);
-        getDatabaseReceiver = new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                final String action = intent.getAction();
-                if (MainUtils.UPDATE_FAMILY_GROUP.equals(action)) {
-                    displayMember();
-                    setTitle(MainUtils.parentGroupItem.getGroup_name());
-                }else if (MainUtils.UPDATE_CHILD_DEVICE.equals(action)){
-                    displayMember();
-                    //setTitle(MainUtils.parentGroupItem.getGroup_name());
-                } else if (MainUtils.UPDATE_SCHEDULER.equals(action)) {
-                    Log.e(TAG, "MainUtils.UPDATE_SCHEDULER ");
-                    displayDetailTime();
-                } else if (MainUtils.BLOCK_ALL.equals(action)) {
-                    Log.d(TAG, "Success need handle BLOCK_ALL ");
-                    adapterMember.notifyDataSetChanged();
-                    //
-                } else if (MainUtils.UNBLOCK_ALL.equals(action)) {
-                    Log.d(TAG, "Success need handle UNBLOCK_ALL ");
-                    adapterMember.notifyDataSetChanged();
-                    //
-                } else if (MainUtils.ALLOW_ALL.equals(action)) {
-                    Log.d(TAG, "Success need handle ALLOW_ALL ");
-                    adapterMember.notifyDataSetChanged();
-                    //
-                } else if (MainUtils.UNALLOW_ALL.equals(action)) {
-                    Log.d(TAG, "Success need handle UNALLOW_ALL  ");
-                    adapterMember.notifyDataSetChanged();
-                    //
-                }
-            }
-        };
+    }
 
-        btnAddSchedule = (Button) findViewById(R.id.btn_add_schedule);
-        btnAddSchedule.setOnClickListener(this);
+    private void initCoverFlowMember() {
+        fancyCoverFlowMember = (FancyCoverFlow) findViewById(R.id.fancyCoverFlow);
+        fancyCoverFlowMember.setUnselectedAlpha(1.0f);
+        fancyCoverFlowMember.setUnselectedSaturation(0.0f);
+        fancyCoverFlowMember.setUnselectedScale(0.5f);
+        fancyCoverFlowMember.setSpacing(50);
+        fancyCoverFlowMember.setMaxRotation(0);
+        fancyCoverFlowMember.setScaleDownGravity(0.2f);
+        fancyCoverFlowMember.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
         //
         fancyCoverFlowMember.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 Log.d("thong.nv", " position : " + position);
                 MainUtils.memberItem = adapterMember.getItem(position);
-                       // showDetail(position);
+                // showDetail(position);
                 nameDevice.setText(MainUtils.memberItem.getName_member());
 
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
-
     }
 
     public void createDefault(){
