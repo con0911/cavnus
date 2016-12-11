@@ -188,7 +188,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
         displayMember();
         deviceRequestController = new DeviceRequestController(this);
-        intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_CHILD_DEVICE);
         getDatabaseReceiver = new BroadcastReceiver(){
             @Override
@@ -201,6 +200,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                     displayMember();
                     //setTitle(MainUtils.parentGroupItem.getGroup_name());
                 } else if (MainUtils.UPDATE_SCHEDULER.equals(action)) {
+                    Log.e(TAG, "MainUtils.UPDATE_SCHEDULER ");
                     displayDetailTime();
                 } else if (MainUtils.BLOCK_ALL.equals(action)) {
                     Log.d(TAG, "Success need handle BLOCK_ALL ");
@@ -825,6 +825,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     public void displayDetailTime(){
+        Log.e(TAG, "displayDetailTime ");
         mDataHelper.makeDetailOneMemberItemParent(MainUtils.memberItem);
         listProfileItem = MainUtils.memberItem.getListProfile();
         timeListAdapter = new ChildTimeListAdapter(this, R.layout.time_adapter, 0, listProfileItem);

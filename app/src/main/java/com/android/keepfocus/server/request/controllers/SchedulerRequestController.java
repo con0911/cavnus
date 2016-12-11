@@ -218,7 +218,8 @@ public class SchedulerRequestController {
         }
     }
 
-    public void updateSuccess(){
+    public void updateSuccess() {
+        Log.d(TAG,"send broadcast UpdateCheduler");
         Intent intent = new Intent();
         intent.setAction(MainUtils.UPDATE_SCHEDULER);
         mContext.sendBroadcast(intent);
