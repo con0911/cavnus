@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.text.Layout;
 import android.util.Log;
@@ -124,6 +125,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private final static String TAG = "DeviceMemberManagerment";
     private static int positionNow = 0;
     private static int PICK_IMAGE = 1;
+    private CountDownTimer mCDT = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,8 +274,15 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
-                Intent settingIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingIntent);
+                if (listBlockPropertiesArr.size() != 0) {
+                    Intent settingIntent = new Intent(this, SettingsActivity.class);
+                    startActivity(settingIntent);
+                } else {
+                    Log.d(TAG, "There are no any child added in your group");
+                    final Toast noChildToast = Toast.makeText(this, getResources().getString(R.string.error_no_child_add), Toast.LENGTH_LONG);
+                    noChildToast.show();
+                    extendDisplayTimeOfToast(noChildToast);
+                }
                 break;
             case android.R.id.home:
                 finish();
@@ -1223,4 +1232,19 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         }
     }
 
+    private void extendDisplayTimeOfToast(final Toast toast) {
+        if (mCDT == null) {
+            mCDT = new CountDownTimer(5000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    toast.show();
+                }
+
+                @Override
+                public void onFinish() {
+                    toast.show();
+                }
+            }.start();
+        }
+    }
 }
