@@ -80,6 +80,7 @@ public class JoinGroupActivity extends Activity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private String token = "";
     private SharedPreferences joinPref;
+    private static SharedPreferences childServerId;
     private EditText joinFamilyIDText, mActiveCode,nameDevice;
     private static boolean checkValidID, checkValidActiveCode, checkValidName;
     private RelativeLayout layoutChooseMode;
@@ -723,7 +724,22 @@ public class JoinGroupActivity extends Activity {
     }
 
     public static String getBundleString(){
+        if (bundle == null){
+            return null;
+        }
         return bundle.getString("title");
+    }
+
+    public static void setChildProfileServerId(int id, Context context){
+        childServerId = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = childServerId.edit();
+        editor.putInt(MainUtils.CHILD_PROFILE_SERVER_ID, id);
+        editor.commit();
+    }
+
+    public static int getChildProfileIdServer(Context context){
+        childServerId = PreferenceManager.getDefaultSharedPreferences(context);
+        return childServerId.getInt(MainUtils.CHILD_PROFILE_SERVER_ID, 0);
     }
 
     private class ReplaceDeviceAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
@@ -756,6 +772,7 @@ public class JoinGroupActivity extends Activity {
                     //ArrayList<ChildKeepFocusItem> listChild =  mDataHelper.getAllKeepFocusFromDb();
                     //MainUtils.childKeepFocusItem.setId_profile_server(id_profile_server);
                     //mDataHelper.updateFocusItem(MainUtils.childKeepFocusItem);
+                    setChildProfileServerId(id_profile_server, mContext);
                     if (status_result.equals("1")) {
                         Toast.makeText(mContext, "Replace device successfully", Toast.LENGTH_SHORT).show();
                         groupRequestController.updateSuccess();

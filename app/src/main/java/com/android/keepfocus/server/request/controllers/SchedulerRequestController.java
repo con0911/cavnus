@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
@@ -132,7 +133,8 @@ public class SchedulerRequestController {
 
     public String restoreSchedulerForChild(ChildKeepFocusItem profileItem){
         ChildKeepFocusItem child = MainUtils.childKeepFocusItem;
-        Device deviceItem = new Device(child.getId_profile_server(), "","samsung","android","","","child");
+        int id_profile_server = JoinGroupActivity.getChildProfileIdServer(mContext);
+        Device deviceItem = new Device(id_profile_server, "","samsung","android","","","child");
         schedulerRequest = new SchedulerRequest(Constants.RequestTypeGet, deviceItem);
 
         Gson gson = new Gson();
@@ -240,7 +242,7 @@ public class SchedulerRequestController {
         @Override
         protected void onPostExecute(String result) {
             String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
+            Log.d(TAG,"onPostExecute : "+result);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
@@ -254,11 +256,14 @@ public class SchedulerRequestController {
                             JSONObject scheduleItem = data.getJSONObject(i);
                             if (listSchedule.size() > 0) {
                                 for (int j = 0; j < listSchedule.size(); j++) {
-                                    listSchedule.get(j).setId_profile_server(scheduleItem.getInt("id"));
-                                    listSchedule.get(j).setNameFocus(scheduleItem.getString("scheduler_name"));
-                                    listSchedule.get(j).setDayFocus(scheduleItem.getString("days"));
-                                    listSchedule.get(j).setActive(scheduleItem.getString("isActive").equals("1"));
-                                    mDataHelper.updateFocusItem(MainUtils.childKeepFocusItem);
+                                    if (scheduleItem.getInt("id") == listSchedule.get(j).getId_profile_server()) {
+                                        //listSchedule.get(j).setId_profile_server(scheduleItem.getInt("id"));
+                                        listSchedule.get(j).setNameFocus(scheduleItem.getString("scheduler_name"));
+                                        listSchedule.get(j).setDayFocus(scheduleItem.getString("days"));
+                                        listSchedule.get(j).setActive(scheduleItem.getString("isActive").equals("1"));
+                                        //mDataHelper.updateFocusItem(listSchedule.get(j));
+                                        mDataHelper.addNewFocusItem(listSchedule.get(j));
+                                    }
                                 }
                             }
                         }

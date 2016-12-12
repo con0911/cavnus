@@ -32,7 +32,7 @@ public class SchedulerRequest {
     }
 
     public SchedulerRequest(int type, Device device){
-        this.Type = type;
-        this.Device = device;
+        Type = type;
+        Device = device;
     }
 }

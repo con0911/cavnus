@@ -336,7 +336,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }*/
 
-/*    public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
+   public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
         boolean chooseList[] = new boolean[145];
         // init
         for (int i = 0; i < 144; i++) {
@@ -378,7 +378,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             }
         }
 
-    }*/
+    }
 
     public boolean checkExistDaySchedule(String dayBlock){
 
@@ -471,7 +471,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 //        if (MainUtils.parentProfile != null){
 //            mEditScheduleName.setText(MainUtils.parentProfile.getName_profile());
 //        }
-        //addItemStatusTime();
+        addItemStatusTime();
 
         btnMonday.setOnClickListener(this);
         btnTuesday.setOnClickListener(this);
@@ -490,7 +490,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
 
-/*    public void addItemStatusTime() {
+    public void addItemStatusTime() {
         listStatus = new ArrayList<TextView>();
         for (int i = 0; i < 144; i++) {
             TextView textItem = new TextView(mContext);
@@ -500,10 +500,10 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             textItem.setBackgroundColor(Color.parseColor("#ee5c42"));
             //
             listStatus.add(textItem);
-            statusBarTime.addView(textItem);
+            //statusBarTime.addView(textItem);
             //
         }
-    }*/
+    }
 
     public void loadDayButton() {
         if (dayBlock.contains("Mon")) {
@@ -1073,7 +1073,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                         }
                         updateTimerList();
                         //timeListAdapter.updateStatusTime(listStatus);
-                        //updateStatusTime(MainUtils.parentProfile.getListTimer());
+                        updateStatusTime(MainUtils.parentProfile.getListTimer());
                     }
                 })
                 .setNegativeButton("CANCEL",

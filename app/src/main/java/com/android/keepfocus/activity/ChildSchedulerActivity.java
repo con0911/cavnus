@@ -83,7 +83,7 @@ public class ChildSchedulerActivity extends Activity {
         intentFilter.addAction(MainUtils.UPDATE_CHILD_SCHEDULER);
 
         String bundle = JoinGroupActivity.getBundleString();
-        if (bundle != null && bundle.equals("replace")){
+        if (bundle != null && bundle.equals("replace") && listBlockPropertiesArr.size() == 0){
             mBtnRestore.setVisibility(View.VISIBLE);
         }else {
             mBtnRestore.setVisibility(View.GONE);
@@ -91,7 +91,7 @@ public class ChildSchedulerActivity extends Activity {
         mBtnRestore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 //mSchedulerRequestController.restoreSchedulerForChild();
+                 mSchedulerRequestController.restoreSchedulerForChild();
             }
         });
     }
