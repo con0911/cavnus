@@ -283,6 +283,9 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         int keep_focus_id = (int) dbMain.insert("tblKeepFocus", null, values);
         keepFocus.setKeepFocusId(keep_focus_id);
         dbMain.close();
+        for (int i = 0; i < keepFocus.getListTimeFocus().size(); i++) {
+            addTimeItemToDb(keepFocus.getListTimeFocus().get(i), keep_focus_id);
+        }
         return keep_focus_id;
     }
 
