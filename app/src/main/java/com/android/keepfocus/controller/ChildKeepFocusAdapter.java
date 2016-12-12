@@ -55,6 +55,9 @@ public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
         statusTime = (LinearLayout) convertView.findViewById(R.id.statusBarTime);
         dayScheduler = (TextView) convertView.findViewById(R.id.day_scheduler);
         isActive = (Switch) convertView.findViewById(R.id.is_active);
+        isActive.setVisibility(View.GONE);
+        dayScheduler.setVisibility(View.VISIBLE);
+        titleTime.setVisibility(View.VISIBLE);
         btnDeleteSchedule = (Button) convertView.findViewById(R.id.btn_delete_schedule);
         btnDeleteSchedule.setVisibility(View.GONE);
 
@@ -63,12 +66,13 @@ public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
         final ChildKeepFocusItem item = getItem(mPosition);
         titleTime.setText(item.getNameFocus());
         String day = item.getDayFocus();
-        if(!day.equals("")) {
+        /*if(!day.equals("")) {
             dayScheduler.setText(item.getDayFocus());
             dayScheduler.setVisibility(View.VISIBLE);
+            titleTime.setVisibility(View.VISIBLE);
         } else {
             dayScheduler.setVisibility(View.GONE);
-        }
+        }*/
         isActive.setChecked(item.isActive());
         isActive.setEnabled(false);
         isActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
