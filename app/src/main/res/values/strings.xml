@@ -163,4 +163,5 @@
     <string name="setting_description">Switch on the below option to block Settings application and prevent your children access and change settings in their devices.</string>
     <string name="prevent_access_settings_app">Always block</string>
     <string name="error_no_child_add">There are no any children added in parent device. Please try again.</string>
+    <string name="tap_to_edit">Tap here to edit schedule.</string>
 </resources>

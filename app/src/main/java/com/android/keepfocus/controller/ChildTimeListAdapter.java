@@ -69,12 +69,12 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         final ParentProfileItem item = getItem(mPosition);
         titleTime.setText(item.getName_profile());
         String day = item.getDay_profile();
-        if(!day.equals("")) {
-            dayScheduler.setText(item.getDay_profile());
-            dayScheduler.setVisibility(View.VISIBLE);
-        } else {
-            dayScheduler.setVisibility(View.GONE);
-        }
+//        if(!day.equals("")) {
+//            dayScheduler.setText(item.getDay_profile());
+//            dayScheduler.setVisibility(View.VISIBLE);
+//        } else {
+//            dayScheduler.setVisibility(View.GONE);
+//        }
         isActive.setChecked(item.isActive());
         isActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
