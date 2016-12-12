@@ -919,6 +919,10 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         values.put("id_profile", id_profile);
         dbMain.insert("tblMemberProfileParent", null, values);
         dbMain.close();
+        // Insert timeItem
+        for (int i = 0; i < parentProfileItem.getListTimer().size(); i++) {
+            addTimeItemParent(parentProfileItem.getListTimer().get(i), id_profile);
+        }
         return id_profile;
     }
 
