@@ -57,6 +57,7 @@ import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
 
@@ -125,6 +126,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private static int PICK_IMAGE = 1;
     private CountDownTimer mCDT = null;
 
+    private static int mCurrentFromHourOfDay;
+    private static int mCurrentFromMinute;
 
     private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver(){
 
@@ -1019,10 +1022,18 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         fromBt = (Button) view.findViewById(R.id.fromBt);
         toBt = (Button) view.findViewById(R.id.toBt);
         // Get data TimeItems
-        timePickerFrom.setCurrentHour(timeItem.getHourBegin());
-        timePickerFrom.setCurrentMinute(timeItem.getMinusBegin());
-        timePickerTo.setCurrentHour(timeItem.getHourEnd());
-        timePickerTo.setCurrentMinute(timeItem.getMinusEnd());
+        Calendar now = Calendar.getInstance();
+        timePickerFrom.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
+        timePickerFrom.setCurrentMinute(now.get(Calendar.MINUTE));
+        timePickerFrom.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker timePicker, int hourOfDay, int minute) {
+                mCurrentFromHourOfDay = hourOfDay;
+                mCurrentFromMinute = minute;
+                timePickerTo.setCurrentHour(mCurrentFromHourOfDay);
+                timePickerTo.setCurrentMinute(mCurrentFromMinute);
+            }
+        });
         timePickerFrom.setIs24HourView(false);
         timePickerTo.setIs24HourView(false);
         fromBt.setOnClickListener(new View.OnClickListener() {

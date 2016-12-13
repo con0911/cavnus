@@ -36,7 +36,8 @@
         android:layout_below="@+id/layoutBtTimer"
         android:layout_centerHorizontal="true"
         android:timePickerMode="spinner"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:addStatesFromChildren="true"/>
 
     <TimePicker
         android:id="@+id/timerPickerTo"
@@ -45,6 +46,7 @@
         android:layout_below="@+id/layoutBtTimer"
         android:layout_centerHorizontal="true"
         android:timePickerMode="spinner"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:addStatesFromChildren="true"/>
 
 </RelativeLayout>
