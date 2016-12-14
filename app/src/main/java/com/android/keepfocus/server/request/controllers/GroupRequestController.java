@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.activity.LoginActivity;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
@@ -133,7 +134,7 @@ public class GroupRequestController {
 
     public String getListDevice() {
         Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
-        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server());
+        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_code());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetDevice, groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
@@ -289,12 +290,12 @@ public class GroupRequestController {
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
                     JSONArray data = jsonObj.getJSONArray("Data");
-                    ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
+                   // ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
 
                     if (description_result.equals("Success") && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject deviceItem = data.getJSONObject(i);
-                            boolean conflict = false;
+                            /*boolean conflict = false;
                             if (listDevice.size() > 0) {
                                 for (int j = 0; j < listDevice.size(); j++) {
                                     if (deviceItem.getInt("id") == listDevice.get(j).getId_member_server()) {
@@ -312,8 +313,39 @@ public class GroupRequestController {
                                 parentMemberItem.setId_member_server(deviceItem.getInt("id"));
                                 MainUtils.parentGroupItem.getListMember().add(parentMemberItem);
                                 mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
+                            }*/
+                            ParentMemberItem restoreDevice = new ParentMemberItem();
+                            String family_id = message.getString("FamilyID");
+                            if(family_id !=null) {
+                                MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
                             }
 
+                            //for test
+
+                            if (MainUtils.parentGroupItem == null) {
+                                MainUtils.parentGroupItem = mDataHelper.getAllGroupItemParent().get(0);//add to first
+                            }
+                            //ParentGroupItem joinToGroup = new ParentGroupItem();
+                            Log.d(TAG,"join To Group "+MainUtils.parentGroupItem.getGroup_name());
+                            //MainUtils.parentGroupItem = joinToGroup;
+
+                            int type;
+                            if(deviceItem.getString("device_mode").trim().equals(JoinGroupActivity.MANAGER)) {
+                                Log.d(TAG,"type manager " + deviceItem.getString("device_mode").trim());
+                                type = 1;
+                            } else{
+                                Log.d(TAG,"type child " + deviceItem.getString("device_mode").trim());
+                                type = 0;
+                            }
+
+                            restoreDevice.setId_member_server(deviceItem.getInt("id"));
+                            restoreDevice.setName_member(deviceItem.getString("device_name"));
+                            restoreDevice.setType_member(type);
+
+                            mDataHelper.addMemberItemParent(restoreDevice,MainUtils.parentGroupItem.getId_group());
+                            Log.e(TAG, "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
+                            MainUtils.parentGroupItem.getListMember().add(restoreDevice);
+                            mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
                         }
                         updateSuccess();
                     }

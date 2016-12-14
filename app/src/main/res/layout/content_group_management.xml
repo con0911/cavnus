@@ -38,14 +38,12 @@
         android:id="@+id/btn_restore"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="center"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="100dp"
         android:background="@drawable/btn_signup"
-        android:gravity="center"
         android:layout_below="@id/text_no_group"
-        android:text="Restore Schedule"
+        android:text="Restore"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/button_text_size" />
 

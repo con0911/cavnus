@@ -96,7 +96,9 @@ public class ParentTimeItem {
             hourString.append(" AM");
         }else {
             hourString = new StringBuilder();
-            hour = hour - 12;
+            if (hour > 12) {
+                hour = hour - 12;
+            }
             if (hour < 10) {
                 hourString.append("0" + hour);
             } else {

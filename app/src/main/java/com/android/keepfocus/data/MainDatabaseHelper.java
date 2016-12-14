@@ -300,6 +300,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         values2.put("minus_end", childTimeItem.getMinusEnd());
         int time_id = (int) dbMain.insert("tblTimeItem", null, values2);
         childTimeItem.setTimeId(time_id);
+        dbMain.close();
         return time_id;
     }
 
