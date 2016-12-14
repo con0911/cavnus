@@ -1,5 +1,8 @@
 package com.android.keepfocus.utils;
 
+import android.os.CountDownTimer;
+import android.widget.Toast;
+
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
@@ -54,4 +57,21 @@ public class MainUtils {
     public static String BLOCK_SETTINGS = "com.android.keepfocus.BLOCK_SETTINGS";
     public static String UN_BLOCK_SETTINGS = "com.android.keepfocus.UN_BLOCK_SETTINGS";
     public static String PACKAGE_UNINSTALL = "com.android.keepfocus.PACKAGE_UNINSTALL";
+    private static CountDownTimer mCDT = null;
+
+    public static void extendDisplayTimeOfToast(final Toast toast) {
+        if (mCDT == null) {
+            mCDT = new CountDownTimer(5000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    toast.show();
+                }
+
+                @Override
+                public void onFinish() {
+                    toast.show();
+                }
+            }.start();
+        }
+    }
 }

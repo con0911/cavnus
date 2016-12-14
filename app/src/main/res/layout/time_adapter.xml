@@ -5,39 +5,38 @@
     android:background="@drawable/layout_border"
     android:orientation="vertical">
 
-<!--    <ImageButton
-        android:id="@+id/btn_delete_schedule"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/icon_close"-->
- />
-
-    <Button
+    <!--    <ImageButton
             android:id="@+id/btn_delete_schedule"
-            android:layout_width="50dp"
-            android:layout_height="30dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/button_add"
-            android:text="DELETE"
-            android:textSize="12dp"
-            android:textColor="@color/color_text_button" />
+            android:background="@drawable/icon_close"-->
+    />
+
+    <Button
+        android:id="@+id/btn_delete_schedule"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/button_add"
+        android:text="DELETE"
+        android:textColor="@color/color_text_button"
+        android:textSize="12dp" />
 
     <Switch
         android:id="@+id/is_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
         android:layout_centerVertical="true"
-        />
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="5dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,8 +50,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="5dp"
-            android:paddingRight="0dp"
-            >
+            android:paddingRight="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -75,8 +73,8 @@
                     android:id="@+id/day_scheduler"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginTop="5dp"
                     android:text="@string/tap_to_edit"
                     android:textColor="@color/image_create_button_color" />
             </LinearLayout>
@@ -88,21 +86,20 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="13dp"
-                android:orientation="horizontal">
-            </LinearLayout>
+                android:orientation="horizontal"></LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" >
+                    android:layout_weight="1">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -116,7 +113,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" >
+                    android:layout_weight="1">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -129,7 +126,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" >
+                    android:layout_weight="1">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -142,7 +139,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" >
+                    android:layout_weight="1">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -155,7 +152,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" >
+                    android:layout_weight="1">
 
                     <TextView
                         android:layout_width="wrap_content"

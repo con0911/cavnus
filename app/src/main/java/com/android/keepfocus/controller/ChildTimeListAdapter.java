@@ -55,6 +55,9 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         statusTime = (LinearLayout) convertView.findViewById(R.id.statusBarTime);
         dayScheduler = (TextView) convertView.findViewById(R.id.day_scheduler);
         isActive = (Switch) convertView.findViewById(R.id.is_active);
+        isActive.setVisibility(View.GONE);
+        dayScheduler.setVisibility(View.VISIBLE);
+        titleTime.setVisibility(View.VISIBLE);
         btnDeleteSchedule = (Button) convertView.findViewById(R.id.btn_delete_schedule);
         btnDeleteSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,12 +72,13 @@ public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
         final ParentProfileItem item = getItem(mPosition);
         titleTime.setText(item.getName_profile());
         String day = item.getDay_profile();
-//        if(!day.equals("")) {
-//            dayScheduler.setText(item.getDay_profile());
-//            dayScheduler.setVisibility(View.VISIBLE);
-//        } else {
-//            dayScheduler.setVisibility(View.GONE);
-//        }
+        /*if(!day.equals("")) {
+            dayScheduler.setText(item.getDay_profile());
+            dayScheduler.setVisibility(View.VISIBLE);
+            titleTime.setVisibility(View.VISIBLE);
+        } else {
+            dayScheduler.setVisibility(View.GONE);
+        }*/
         isActive.setChecked(item.isActive());
         isActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

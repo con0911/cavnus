@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.keepfocus.activity.ChildSchedulerActivity;
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildTimeItem;
@@ -250,22 +251,29 @@ public class SchedulerRequestController {
                     String description_result = message.getString("Description");
                     int status = message.getInt("Status");
                     JSONArray data = jsonObj.getJSONArray("Data");
-                    ArrayList<ChildKeepFocusItem> listSchedule = mDataHelper.getAllKeepFocusFromDb();
+                    MainUtils.childKeepFocusItem = new ChildKeepFocusItem();
                     if(status == 1) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject scheduleItem = data.getJSONObject(i);
-                            if (listSchedule.size() > 0) {
-                                for (int j = 0; j < listSchedule.size(); j++) {
-                                    if (scheduleItem.getInt("id") == listSchedule.get(j).getId_profile_server()) {
-                                        //listSchedule.get(j).setId_profile_server(scheduleItem.getInt("id"));
-                                        listSchedule.get(j).setNameFocus(scheduleItem.getString("scheduler_name"));
-                                        listSchedule.get(j).setDayFocus(scheduleItem.getString("days"));
-                                        listSchedule.get(j).setActive(scheduleItem.getString("isActive").equals("1"));
-                                        //mDataHelper.updateFocusItem(listSchedule.get(j));
-                                        mDataHelper.addNewFocusItem(listSchedule.get(j));
-                                    }
-                                }
+                            MainUtils.childKeepFocusItem.setNameFocus(scheduleItem.getString("scheduler_name"));
+                            MainUtils.childKeepFocusItem.setDayFocus(scheduleItem.getString("days"));
+                            MainUtils.childKeepFocusItem.setActive(scheduleItem.getString("isActive").equals("1"));
+                            mDataHelper.addNewFocusItem(MainUtils.childKeepFocusItem);
+                            Log.e("vinh", "MainUtils.childKeepFocusItem.getKeepFocusId() : " + MainUtils.childKeepFocusItem.getKeepFocusId());
+                            JSONArray timeItems = scheduleItem.getJSONArray("timeitems");
+                            for (int j = 0; j < timeItems.length(); j++){
+                                JSONObject timeItem = timeItems.getJSONObject(j);
+                                Log.e("vinh", "timeItem : "+ timeItems.getJSONObject(j));
+                                ChildTimeItem childTimeItem = new ChildTimeItem();
+                                childTimeItem.setHourBegin(timeItem.getInt("start_hours"));
+                                childTimeItem.setMinusBegin(timeItem.getInt("start_minutes"));
+                                childTimeItem.setHourEnd(timeItem.getInt("end_hours"));
+                                childTimeItem.setMinusEnd(timeItem.getInt("end_minutes"));
+                                mDataHelper.addTimeItemToDb(childTimeItem, MainUtils.childKeepFocusItem.getKeepFocusId());
                             }
+                            //mDataHelper.addNewFocusItem(MainUtils.childKeepFocusItem);
+                            Intent schedule = new Intent(mContext, ChildSchedulerActivity.class);
+                            mContext.startActivity(schedule);
                         }
                         updateSuccess();
                     } else {

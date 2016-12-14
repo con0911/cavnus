@@ -278,7 +278,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                     Log.d(TAG, "There are no any child added in your group");
                     final Toast noChildToast = Toast.makeText(this, getResources().getString(R.string.error_no_child_add), Toast.LENGTH_LONG);
                     noChildToast.show();
-                    extendDisplayTimeOfToast(noChildToast);
+                    MainUtils.extendDisplayTimeOfToast(noChildToast);
                 }
                 break;
             case android.R.id.home:
@@ -1230,19 +1230,4 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         }
     }
 
-    private void extendDisplayTimeOfToast(final Toast toast) {
-        if (mCDT == null) {
-            mCDT = new CountDownTimer(5000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    toast.show();
-                }
-
-                @Override
-                public void onFinish() {
-                    toast.show();
-                }
-            }.start();
-        }
-    }
 }

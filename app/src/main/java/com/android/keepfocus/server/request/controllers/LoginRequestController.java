@@ -84,7 +84,7 @@ public class LoginRequestController {
                     String description_result = status.getString("Description");
                     if (description_result.equals("Success")) {
                         isSuccess = true;
-                        Toast.makeText(mContext, "Login successfully", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext, "Login successfully", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "current mode : " + SetupWizardActivity.getModeDevice(mContext));
 
                         //save email and pass
