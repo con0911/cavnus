@@ -435,8 +435,10 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                             //parentItem.setGroup_name(mEditText.getText().toString());
                             //mDataHelper.addGroupItemParent(parentItem);
                             if (isNameInValid(name)){
-                                mEditText.setError("This name is invalid because of containing space");
-                                Toast.makeText(FamilyManagerment.this, "This Family name is invalid because of containing space!", Toast.LENGTH_LONG).show();
+                                mEditText.setError("The Family name cannot contain space.");
+                                final Toast familyNameError = Toast.makeText(FamilyManagerment.this, "The Family name cannot contain space.", Toast.LENGTH_LONG);
+                                familyNameError.show();
+                                MainUtils.extendDisplayTimeOfToast(familyNameError);
                                 focusView = mEditText;
                                 focusView.requestFocus();
                             }else {
@@ -448,8 +450,11 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                             }
                         } else {
                             //dialog.cancel();
-                            mEditText.setError("This name is empty");
-                            Toast.makeText(FamilyManagerment.this, "This Family name is empty.Can not create!", Toast.LENGTH_LONG).show();
+                            mEditText.setError("The Family name cannot empty");
+                            Toast.makeText(FamilyManagerment.this, "The Family name cannot empty", Toast.LENGTH_LONG).show();
+                            final Toast familyNameError = Toast.makeText(FamilyManagerment.this, "The Family name cannot contain space.", Toast.LENGTH_LONG);
+                            familyNameError.show();
+                            MainUtils.extendDisplayTimeOfToast(familyNameError);
                             focusView = mEditText;
                             focusView.requestFocus();
                         }
@@ -549,6 +554,8 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             case R.id.action_update :
                 SetupWizardActivity.setTypeLogin(Constants.JoinSuccess, mContext);
                 groupRequestController.getGroupInServer();
+                Intent familyManagement = new Intent(mContext, FamilyManagerment.class);
+                startActivity(familyManagement);
                 break;
 
         }

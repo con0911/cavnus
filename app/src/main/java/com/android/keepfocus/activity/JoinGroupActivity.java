@@ -343,7 +343,9 @@ public class JoinGroupActivity extends Activity {
                             || mActiveCode.getText().toString().isEmpty())) {
                     if (isNameInValid(joinFamilyIDText.getText().toString()) || isNameInValid(nameDevice.getText().toString())
                             || isNameInValid(mActiveCode.getText().toString())){
-                        Toast.makeText(mContext, "This name, familyID or activation code is invalid because of containing space", Toast.LENGTH_SHORT).show();
+                        final Toast errorName = Toast.makeText(mContext, "The name, FamilyID or Activation code cannot contain space", Toast.LENGTH_SHORT);
+                        errorName.show();
+                        MainUtils.extendDisplayTimeOfToast(errorName);
                     }else {
                         JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                         joinAsyn.execute();
@@ -351,7 +353,9 @@ public class JoinGroupActivity extends Activity {
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager
                         && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty())) {
                     if (isNameInValid(joinFamilyIDText.getText().toString()) || isNameInValid(nameDevice.getText().toString())){
-                        Toast.makeText(mContext, "This name or familyID is invalid because of containing space", Toast.LENGTH_SHORT).show();
+                        final Toast errorInput = Toast.makeText(mContext, "The name or FamilyIDcannot contain space", Toast.LENGTH_SHORT);
+                        errorInput.show();
+                        MainUtils.extendDisplayTimeOfToast(errorInput);
                     }
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
@@ -666,7 +670,7 @@ public class JoinGroupActivity extends Activity {
                                 SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
                                 Log.e(TAG, "isJoinSuccess" + isJoinSuccess);
                                 groupRequestController.updateSuccess();
-                                //Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
                                 SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
                                 setBundle("join");
                                 Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
@@ -682,11 +686,11 @@ public class JoinGroupActivity extends Activity {
                         if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
                             final Toast wrongActiveCode = Toast.makeText(mContext, "The activation code is incorrect, please chec Activation code and try again.", Toast.LENGTH_SHORT);
                             wrongActiveCode.show();
-                            extendDisplayTimeOfToast(wrongActiveCode);
+                            MainUtils.extendDisplayTimeOfToast(wrongActiveCode);
                         }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
                             final Toast toastWrongFamilyID = Toast.makeText(mContext, "The Family ID entered is incorrect, please check the ID and try again.", Toast.LENGTH_SHORT);
                             toastWrongFamilyID.show();
-                            extendDisplayTimeOfToast(toastWrongFamilyID);
+                            MainUtils.extendDisplayTimeOfToast(toastWrongFamilyID);
                         }
                         Intent intent = new Intent(mContext, GcmIntentService.class);//send intent to get token
                         intent.putExtra("key", "register");
@@ -799,22 +803,6 @@ public class JoinGroupActivity extends Activity {
             mDialog.setInverseBackgroundForced(false);
             mDialog.setMessage("Request to server...");
             mDialog.show();
-        }
-    }
-
-    private void extendDisplayTimeOfToast(final Toast toast) {
-        if (mCDT == null) {
-            mCDT = new CountDownTimer(5000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    toast.show();
-                }
-
-                @Override
-                public void onFinish() {
-                    toast.show();
-                }
-            }.start();
         }
     }
 

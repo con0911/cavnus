@@ -20,15 +20,19 @@ public class Group {
 
     }
 
-    public Group(int id, String group_name) {
+    /*public Group(int id, String group_name) {
 
         this.id = id;
         this.group_name = group_name;
-    }
+    }*/
 
 
     public Group(int id) {
         this.id = id;
+    }
+    public Group(int id,String group_code) {
+        this.id = id;
+        this.group_code = group_code;
     }
 
     public Group(String create_by, String group_code) {
