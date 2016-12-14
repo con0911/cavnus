@@ -47,9 +47,6 @@ public class ChildSchedulerActivity extends Activity {
     private IntentFilter intentFilter;
     private SchedulerRequestController mSchedulerRequestController;
 
-    private MainDatabaseHelper keepData;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.activity.LoginActivity;
+import com.android.keepfocus.data.ChildKeepFocusItem;
+import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
@@ -295,33 +297,41 @@ public class GroupRequestController {
                     if (description_result.equals("Success") && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject deviceItem = data.getJSONObject(i);
-                            /*boolean conflict = false;
-                            if (listDevice.size() > 0) {
-                                for (int j = 0; j < listDevice.size(); j++) {
-                                    if (deviceItem.getInt("id") == listDevice.get(j).getId_member_server()) {
-                                        conflict = true;
-                                        listDevice.get(j).setImage_member(deviceItem.getString("device_model"));
-                                        listDevice.get(j).setName_member(deviceItem.getString("device_name"));
-                                        mDataHelper.updateMemberItem(listDevice.get(j));
+
+                            //restore schedule
+                            JSONArray groupUser = deviceItem.getJSONArray("group_user");
+                            for (int j = 0; j < groupUser.length(); j++) {
+                                JSONObject groupUserElement = groupUser.getJSONObject(j);
+                                JSONArray schedulersArray = groupUserElement.getJSONArray("schedulers");
+                                for (int k = 0; k < schedulersArray.length(); k++) {
+                                    JSONObject scheduleItem = schedulersArray.getJSONObject(k);
+                                    JSONArray timeItem = scheduleItem.getJSONArray("timeitems");
+                                    Log.d(TAG,"timeItem "+timeItem);
+                                    ChildKeepFocusItem childProfile = new ChildKeepFocusItem();
+                                    childProfile.setNameFocus(schedulersArray.getJSONObject(k).getString("scheduler_name"));
+                                    childProfile.setActive(isActive(schedulersArray.getJSONObject(k).getInt("isActive")));
+                                    childProfile.setDayFocus(schedulersArray.getJSONObject(k).getString("days"));
+                                    childProfile.setId_profile_server(schedulersArray.getJSONObject(k).getInt("id"));
+
+                                    ArrayList<ChildTimeItem> arrayList = new ArrayList(timeItem.length());
+                                    for(int ii=0;i < timeItem.length();i++){
+                                        ChildTimeItem item1 = new ChildTimeItem();
+                                        item1.setKeepFocusId(timeItem.getJSONObject(ii).getInt("scheduler_id"));
+                                        item1.setHourBegin(timeItem.getJSONObject(ii).getInt("start_hours"));
+                                        item1.setHourEnd(timeItem.getJSONObject(ii).getInt("end_hours"));
+                                        item1.setMinusBegin(timeItem.getJSONObject(ii).getInt("start_minutes"));
+                                        item1.setMinusEnd(timeItem.getJSONObject(ii).getInt("end_minutes"));
+                                        item1.setTimeId(timeItem.getJSONObject(ii).getInt("id"));
+                                        arrayList.add(item1);
                                     }
+
+                                    childProfile.setListTimeFocus(arrayList);
+
+                                    //childProfile = new ChildKeepFocusItem();
+                                    mDataHelper.addNewFocusItem(childProfile);
                                 }
                             }
-                            if (!conflict) {
-                                ParentMemberItem parentMemberItem = new ParentMemberItem();
-                                parentMemberItem.setImage_member(deviceItem.getString("device_model"));
-                                parentMemberItem.setName_member(deviceItem.getString("device_name"));
-                                parentMemberItem.setId_member_server(deviceItem.getInt("id"));
-                                MainUtils.parentGroupItem.getListMember().add(parentMemberItem);
-                                mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
-                            }*/
                             ParentMemberItem restoreDevice = new ParentMemberItem();
-                            String family_id = message.getString("FamilyID");
-                            if(family_id !=null) {
-                                MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
-                            }
-
-                            //for test
-
                             if (MainUtils.parentGroupItem == null) {
                                 MainUtils.parentGroupItem = mDataHelper.getAllGroupItemParent().get(0);//add to first
                             }
@@ -340,23 +350,39 @@ public class GroupRequestController {
 
                             restoreDevice.setId_member_server(deviceItem.getInt("id"));
                             restoreDevice.setName_member(deviceItem.getString("device_name"));
+                            restoreDevice.setImage_member(deviceItem.getString("device_model"));
                             restoreDevice.setType_member(type);
 
-                            mDataHelper.addMemberItemParent(restoreDevice,MainUtils.parentGroupItem.getId_group());
+                            //mDataHelper.addMemberItemParent(restoreDevice,MainUtils.parentGroupItem.getId_group());
                             Log.e(TAG, "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
                             MainUtils.parentGroupItem.getListMember().add(restoreDevice);
                             mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
+
                         }
                         updateSuccess();
+                        updateSchedule();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e(TAG, "GetListDeviceAsynTask e" +e.getMessage());
                     //Toast.makeText(mContext, "Error in database", Toast.LENGTH_SHORT).show();
                 }
             }
+
         }
     }
 
+    public void updateSchedule() {
+        Log.d(TAG,"send broadcast UpdateCheduler");
+        Intent intent = new Intent();
+        intent.setAction(MainUtils.UPDATE_SCHEDULER);
+        mContext.sendBroadcast(intent);
+    }
+
+    private boolean isActive(int state){
+        if(state == 1) return true;
+        else return false;
+    }
     //=====================Block code for update Family api==================================
 
 
