@@ -685,6 +685,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 }
             } while (cursor.moveToNext());
         }
+        dbMain.close();
         return listMember;
     }
 
