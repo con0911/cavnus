@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SetLimitz</string>
-    <string name="add_member_text">Open member device and enter this FamilyID to add member to this family.</string>
+    <string name="add_member_text">Open child device and enter this FamilyID to add Child to this family.</string>
     <string name="group_id">Group ID</string>
     <string name="add_member">Add device</string>
     <string name="add_member_qr_text_join">Enter Family ID and fill out device information to add this device to your family</string>
@@ -8,6 +8,9 @@
     <string name="device_type">Device Type</string>
     <string name="enter_device_name">Device Name</string>
     <string name="active_code">Activation code</string>
+    <string name="devices">Devices</string>
+    <string name="family_management">Family</string>
+    <string name="delete_device">Delete</string>
 
     <string name="scan_qr_checkbox">Use scan QR code</string>
 

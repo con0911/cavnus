@@ -25,6 +25,7 @@ import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlowAdapter;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.utils.Constants;
+import com.android.keepfocus.utils.MainUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -88,9 +89,9 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
         addmember = (TextView) convertView.findViewById(R.id.txt_center_side);
         detailGroup = (TextView) convertView.findViewById(R.id.txt_right_side);
         name = (TextView) convertView.findViewById(R.id.family_name);
-        deleteGroup.setText("Delete");
-        detailGroup.setText("Details");
-        addmember.setText("Add device");
+        deleteGroup.setText(R.string.delete_device);
+        detailGroup.setText(R.string.devices);
+        addmember.setText(R.string.add_member);
         name.setText(profileItem.getGroup_name());
         blockallLayout = (LinearLayout) convertView.findViewById(R.id.btn_left_side);
         allowallLayout = (LinearLayout) convertView.findViewById(R.id.btn_right_side);
@@ -185,10 +186,6 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
                         break;
                     case R.id.txt_right_side:
                         familyManagerment.showDetail(position);
-                        if (SetupWizardActivity.getTypeLogin(activity) == Constants.LoginSuccess) {
-                            groupRequestController = new GroupRequestController(activity);
-                            groupRequestController.updateListDevice();
-                        }
                         break;
                 }
 

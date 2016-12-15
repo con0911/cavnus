@@ -10,8 +10,8 @@ public class Constants {
 
     public static final int JoinSuccess = 1;
     public static final int JoinFail = 2;
-    public static final int LoginSuccess = 1;
-    public static final int LoginFail = 2;
+    public static final int RestoreFamilySuccess = 1;
+    public static final int RestoreFamilyFail = 2;
 
     public static final int RequestTypeGet = 2;
     public static final int RequestTypeUpdate = 1;

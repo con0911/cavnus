@@ -122,7 +122,7 @@ public class FamilyManagerment extends Activity{
         listTwoFamily = (HorizontalListView) findViewById(R.id.listTwoFamily);
         listTwoFamily.setVisibility(View.GONE);
 
-        setTitle("Family management");
+        setTitle(R.string.family_management);
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
         mTextNoGroup = (TextView) findViewById(R.id.text_no_group);
         detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
@@ -148,18 +148,7 @@ public class FamilyManagerment extends Activity{
                 Log.d("thong.nv", " position : " + position);
                 lable[position] = true;
                 MainUtils.parentGroupItem = adapterGroup.getItem(position);
-                nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
-                ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
-                if (listDevice.size() > 0) {
-                    String listDeviceText = " ";
-                    for (int i =0; i < listDevice.size(); i++){
-                        listDeviceText += listDevice.get(i).getName_member() + ", ";
-                    }
-                    listDeviceText = listDeviceText.substring(0,listDeviceText.length()-2);
-                    listDeviceName.setText(listDeviceText);
-                } else {
-                    listDeviceName.setText(" ");
-                }
+                showTextOfChild();
                 showAddMember(position);
             }
 
@@ -169,6 +158,24 @@ public class FamilyManagerment extends Activity{
             }
         });
 
+    }
+
+    private void showTextOfChild() {
+        if (MainUtils.parentGroupItem == null) {
+            return;
+        }
+        nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
+        ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
+        if (listDevice.size() > 0) {
+            String listDeviceText = " ";
+            for (int i =0; i < listDevice.size(); i++){
+                listDeviceText += listDevice.get(i).getName_member() + ", ";
+            }
+            listDeviceText = listDeviceText.substring(0,listDeviceText.length()-2);
+            listDeviceName.setText(listDeviceText);
+        } else {
+            listDeviceName.setText(" ");
+        }
     }
 
     private void initFontStyle() {
@@ -320,9 +327,11 @@ public class FamilyManagerment extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
+        showTextOfChild();
         //displayProfile();
         registerReceiver(getDatabaseReceiver, intentFilter);
         //groupRequestController.getGroupInServer();
+
     }
 
     @Override
@@ -410,6 +419,12 @@ public class FamilyManagerment extends Activity{
 
 
     public void showDetail(int position) {
+        if (MainUtils.parentGroupItem.getIs_restore() == 1) {
+           // groupRequestController = new GroupRequestController(activity);
+            groupRequestController.updateListDevice();
+            MainUtils.parentGroupItem.setIs_restore(0);
+            mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
+        }
         MainUtils.parentGroupItem = adapterGroup.getItem(position);
         Intent intent = new Intent(this, DeviceMemberManagerment.class);
         startActivity(intent);
@@ -461,7 +476,7 @@ public class FamilyManagerment extends Activity{
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.global, menu);
-        if (SetupWizardActivity.getTypeLogin(mContext) == Constants.LoginSuccess){
+        if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
             menu.getItem(2).setVisible(false);
         }
         return true;
@@ -477,7 +492,8 @@ public class FamilyManagerment extends Activity{
                 renameGroup();
                 break;
             case R.id.action_update :
-                SetupWizardActivity.setTypeLogin(Constants.JoinSuccess, mContext);
+                SetupWizardActivity.setTypeRestoreFamily(Constants.RestoreFamilySuccess, mContext);
+                item.setVisible(false);
                 groupRequestController.getGroupInServer();
                 break;
 

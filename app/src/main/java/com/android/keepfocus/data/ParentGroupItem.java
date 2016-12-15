@@ -18,6 +18,7 @@ public class ParentGroupItem {
     private String group_code;
     private String create_date;
     private int id_group_server;
+    private int is_restore;
 
 
     private String icon_uri;
@@ -30,6 +31,7 @@ public class ParentGroupItem {
         this.create_date = "";
         this.id_group_server = -1;
         this.icon_uri = "";
+        this.is_restore = 1;
         listMember = new ArrayList<ParentMemberItem>();
     }
 
@@ -104,5 +106,13 @@ public class ParentGroupItem {
 
     public void setId_group_server(int id_group_server) {
         this.id_group_server = id_group_server;
+    }
+
+    public int getIs_restore() {
+        return is_restore;
+    }
+
+    public void setIs_restore(int is_restore) {
+        this.is_restore = is_restore;
     }
 }

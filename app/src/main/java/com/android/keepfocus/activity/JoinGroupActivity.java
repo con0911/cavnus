@@ -28,12 +28,15 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +65,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-public class JoinGroupActivity extends Activity {
+public class JoinGroupActivity extends Activity implements CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "JoinGroupActivity";
     private Button btnImageDone;
     private String[] listMemberType;
@@ -83,6 +86,7 @@ public class JoinGroupActivity extends Activity {
     private static boolean checkValidID, checkValidActiveCode, checkValidName;
     private LinearLayout layoutChooseMode;
     private RadioButton mRBtnManage, mRBtnChild;
+    private RadioButton mRBtnUse, mRBtnUnUse;
     public String deviceCode;
     private GroupRequestController groupRequestController;
     private MainDatabaseHelper mDataHelper;
@@ -105,6 +109,7 @@ public class JoinGroupActivity extends Activity {
     private CountDownTimer mCDT = null;
 
     private ArrayList<License> listLicenses;
+    private ArrayAdapter licenseAdapter;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -129,6 +134,14 @@ public class JoinGroupActivity extends Activity {
         layoutChooseMode.setEnabled(false);
         mRBtnManage = (RadioButton) findViewById(R.id.rbtn_manage);
         mRBtnChild = (RadioButton) findViewById(R.id.rbtn_child);
+        //Add code for license
+        mRBtnUse = (RadioButton) findViewById(R.id.license_used);
+        mRBtnUnUse = (RadioButton) findViewById(R.id.license_not_used);
+        mRBtnUse.setChecked(false);
+        mRBtnUnUse.setChecked(false);
+        mRBtnUse.setOnCheckedChangeListener(this);
+        mRBtnUnUse.setOnCheckedChangeListener(this);
+
 /*        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_ADDITION_PARENT){
             Intent familyManagement = new Intent(JoinGroupActivity.this, FamilyManagerment.class);
             startActivity(familyManagement);
@@ -638,6 +651,22 @@ public class JoinGroupActivity extends Activity {
         return jsonRequest;
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.license_used :
+                mRBtnUnUse.setChecked(false);
+                //get data license not used
+                groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUnUsed);
+                break;
+            case R.id.license_not_used :
+                mRBtnUse.setChecked(false);
+                //get data license  used
+                groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUsed);
+                break;
+        }
+    }
+
 
     private class JoinGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         ProgressDialog mDialog;
@@ -810,6 +839,11 @@ public class JoinGroupActivity extends Activity {
 
     public void setLicenseList(ArrayList<License> list){
         listLicenses = list;
+        ArrayAdapter licenseAdapter = new ArrayAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                listLicenses);
+        mActiveCode.setAdapter(licenseAdapter);
+
     }
 
 }

@@ -31,7 +31,7 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
     private static final String TAG = "SetupWizardActivity";
     private Button btnNext;
     private SharedPreferences agreePref;
-    private static SharedPreferences modeDevice, typeJoin, typeLogin, nameDevice;
+    private static SharedPreferences modeDevice, typeJoin, typeRestore, nameDevice;
     private CheckBox mCheckboxTerm;
     private Button btnParent, btnChild, btnAddParent;
 
@@ -163,9 +163,9 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         editor.commit();
     }
 
-    public static void setTypeLogin(int type, Context context){
-        typeLogin = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = typeLogin.edit();
+    public static void setTypeRestoreFamily(int type, Context context){
+        typeRestore = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = typeRestore.edit();
         editor.putInt(MainUtils.TYPE_LOGIN, type);
         editor.commit();
     }
@@ -189,9 +189,9 @@ public class SetupWizardActivity extends Activity implements View.OnClickListene
         return typeJoin.getInt(MainUtils.TYPE_JOIN, 0);
     }
 
-    public static int getTypeLogin(Context context){
-        typeLogin = PreferenceManager.getDefaultSharedPreferences(context);
-        return typeLogin.getInt(MainUtils.TYPE_LOGIN, 0);
+    public static int getTypeRestoreFamily(Context context){
+        typeRestore = PreferenceManager.getDefaultSharedPreferences(context);
+        return typeRestore.getInt(MainUtils.TYPE_LOGIN, 0);
     }
 
     public static String getNameDevice(Context context){

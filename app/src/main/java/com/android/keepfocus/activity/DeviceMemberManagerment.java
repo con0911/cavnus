@@ -57,13 +57,12 @@ import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
-
-import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
+import java.util.Calendar;
 
 /**
  * Created by Sion on 11/8/2016.
  */
-public class DeviceMemberManagerment extends Activity implements View.OnClickListener{
+public class DeviceMemberManagerment extends Activity implements View.OnClickListener {
     private HorizontalListView listProperties;
     private LinearLayout headerView;
     //private ImageView mFABBtnCreate;
@@ -77,7 +76,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private TimeListAdapter mTimeListAdapter;
     private AlertDialog mAlertDialog;
     private TextView mTextMsg;
-    private GroupRequestController groupRequestController;
+
     private DeviceRequestController deviceRequestController;
     private IntentFilter intentFilter;
     private ArrayList<ParentProfileItem> listProfileItem;
@@ -123,18 +122,19 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private final static String TAG = "DeviceMemberManagerment";
     private static int positionNow = 0;
     private static int PICK_IMAGE = 1;
-    private CountDownTimer mCDT = null;
+    private static int mCurrentHourOfDayFrom;
+    private static int mCurrentMinuteFrom;
 
 
-    private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver(){
+    private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (MainUtils.UPDATE_FAMILY_GROUP.equals(action)) {
                 displayMember();
-                setTitle(MainUtils.parentGroupItem.getGroup_name());
-            }else if (MainUtils.UPDATE_CHILD_DEVICE.equals(action)){
+                setTitle(MainUtils.parentGroupItem.getGroup_name() + "'s Family");
+            } else if (MainUtils.UPDATE_CHILD_DEVICE.equals(action)) {
                 displayMember();
                 //setTitle(MainUtils.parentGroupItem.getGroup_name());
             } else if (MainUtils.UPDATE_SCHEDULER.equals(action)) {
@@ -176,13 +176,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         listProperties.setVisibility(View.GONE);
         //Fix issue FC sometime
         if (MainUtils.parentGroupItem != null) {
-            setTitle(MainUtils.parentGroupItem.getGroup_name()+ "'s Family");
-        }else {
+            setTitle(MainUtils.parentGroupItem.getGroup_name() + "'s Family");
+        } else {
             setTitle("Unknown Family");
         }
         mDataHelper = new MainDatabaseHelper(mContext);
-        groupRequestController = new GroupRequestController(this);
-        groupRequestController.updateListDevice();
+
         schedulerRequestController = new SchedulerRequestController(this);
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
         nameDevice = (TextView) findViewById(R.id.nameFamily);
@@ -201,6 +200,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         deviceRequestController = new DeviceRequestController(this);
         btnAddSchedule = (Button) findViewById(R.id.btn_add_schedule);
         btnAddSchedule.setOnClickListener(this);
+
     }
 
     private void creatIntentForBroastcast() {
@@ -233,6 +233,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 nameDevice.setText(MainUtils.memberItem.getName_member());
 
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -240,7 +241,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         });
     }
 
-    public void createDefault(){
+    public void createDefault() {
         ParentMemberItem defaultDevice = new ParentMemberItem();
         defaultDevice.setName_member("Default");//care null parent
         listDefault = new ArrayList<ParentMemberItem>(1);
@@ -256,7 +257,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     protected void onResume() {
         //updateTimerList();
         super.onResume();
-      //  displayMember();
+        //  displayMember();
         registerReceiver(getDatabaseReceiver, intentFilter);
     }
 
@@ -283,15 +284,16 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 break;
             case android.R.id.home:
                 finish();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void schedulerChecked(boolean isChecked, int position) {
         MainUtils.parentProfile = timeListAdapter.getItem(position);
-        if (isChecked){
+        if (isChecked) {
             MainUtils.parentProfile.setActive(true);
-        }else {
+        } else {
             MainUtils.parentProfile.setActive(false);
         }
         schedulerRequestController.updateScheduler();
@@ -303,12 +305,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
         formatStringDayBlock(dayBlock);
         if (MainUtils.parentProfile != null) {
-            MainUtils.parentProfile.setDay_profile(dayBlock);
-            MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
-            keepData.updateProfileItem(MainUtils.parentProfile);
+            //MainUtils.parentProfile.setDay_profile(dayBlock);
+            //MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
+            //keepData.updateProfileItem(MainUtils.parentProfile);
         }
         unregisterReceiver(getDatabaseReceiver);
-        if(detailLayout.getVisibility() == View.VISIBLE) {
+        if (detailLayout.getVisibility() == View.VISIBLE) {
             //hideKeyboard();
             //detailLayout.startAnimation(bottomDown);
             //detailLayout.setVisibility(View.GONE);
@@ -336,7 +338,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }*/
 
-   public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
+    public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
         boolean chooseList[] = new boolean[145];
         // init
         for (int i = 0; i < 144; i++) {
@@ -380,12 +382,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     }
 
-    public boolean checkExistDaySchedule(String dayBlock){
+    public boolean checkExistDaySchedule(String dayBlock) {
 
         return false;
     }
 
-    public void createNewSchedule(){
+    public void createNewSchedule() {
         mView = getLayoutInflater().inflate(R.layout.scheduler_edit, null);
         MainUtils.parentProfile = new ParentProfileItem();
         MainUtils.parentProfile.setDay_profile("");
@@ -413,7 +415,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mAlertDialog.show();
     }
 
-    public void editSchedule(){
+    public void editSchedule() {
         mView = getLayoutInflater().inflate(R.layout.scheduler_edit, null);
         displayScreen(); // setup Button, image,...
         loadDayButton(); // status of day button
@@ -559,7 +561,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     public String setTitleDayBlock(String day) { // sort day block
         titleDayBlock = "";
-        if (day == null){
+        if (day == null) {
             return "";
         }
         if (day.contains("Sun"))
@@ -611,7 +613,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     public void formatStringDayBlock(String day) { // sort day block
         dayBlock = "";
-        if (day == null){
+        if (day == null) {
             return;
         }
         if (day.contains("Sun"))
@@ -660,121 +662,14 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         }
     }
 
-
-//    private FeatureCoverFlow.OnItemSelectedListener onItemSelectedListener() {
-//        return new FeatureCoverFlow.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Log.d("trungdh", "view : " + view + " pos : " + i + " id : " + l);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        };
-//    }
-//
-//    private FeatureCoverFlow.OnScrollPositionListener onScrollListener() {
-//        return new FeatureCoverFlow.OnScrollPositionListener() {
-//            @Override
-//            public void onScrolledToPosition(int position) {
-//                Log.v("MainActivity", "position: " + position);
-//                View currentView = coverFlow.findViewWithTag(String.valueOf(position));
-//                if (currentView != null) {
-//                    lable[position] = true;
-//                    MainUtils.memberItem = adapterMember.getItem(position);
-//                    onMainButtonClicked(currentView);
-//                    showDetail(position);
-//                    nameDevice.setText(MainUtils.memberItem.getName_member());
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onScrolling() {
-//                Log.i("MainActivity", "scrolling");
-//            }
-//        };
-//    }
-
     private View getItemId(int position) {
         return adapterMember.getView(position, null, null);
     }
 
-    View preView;
-
-    public void onMainButtonClicked(View btn) {
-        btnGreen = (LinearLayout) btn.findViewById(R.id.btn_left_side);
-        btnOrange = (LinearLayout) btn.findViewById(R.id.btn_right_side);
-        btnYellow = (LinearLayout) btn.findViewById(R.id.btn_center_side);
-        textName = (TextView) btn.findViewById(R.id.family_name);
-
-        if (btnGreen.getVisibility() != View.VISIBLE && btnOrange.getVisibility() != View.VISIBLE && btnYellow.getVisibility() != View.VISIBLE) {
-            show(btnYellow, 1, 0);
-            show(btnGreen, 2, 0);
-            show(btnOrange, 3, 0);
-            btn.playSoundEffect(SoundEffectConstants.CLICK);
-            textName.setVisibility(View.GONE);
-        }
-
-        if (preView != null && preView != btn) {
-            btnGreen = (LinearLayout) preView.findViewById(R.id.btn_left_side);
-            btnOrange = (LinearLayout) preView.findViewById(R.id.btn_right_side);
-            btnYellow = (LinearLayout) preView.findViewById(R.id.btn_center_side);
-            textName = (TextView) preView.findViewById(R.id.family_name);
-            hide(btnOrange);
-            hide(btnYellow);
-            hide(btnGreen);
-            textName.setVisibility(View.VISIBLE);
-        }
-        preView = btn;
-    }
-
-    private final void hide(final View child) {
-        child.animate()
-                .setDuration(DURATION_SHORT)
-                .translationX(0)
-                .translationY(0)
-                .start();
-        child.setVisibility(View.INVISIBLE);
-    }
-
-    private final void show(final View child, final int position, final int radius) {
-        float angleDeg = 180.f;
-        int dist = radius;
-        switch (position) {
-            case 1:
-                angleDeg += 0.f;
-                child.setVisibility(View.VISIBLE);
-                break;
-            case 2:
-                angleDeg += 90.f;
-                child.setVisibility(View.VISIBLE);
-                break;
-            case 3:
-                angleDeg += 180.f;
-                child.setVisibility(View.VISIBLE);
-                break;
-        }
-
-        final float angleRad = (float) (angleDeg * Math.PI / 180.f);
-
-        final Float x = dist * (float) Math.cos(angleRad);
-        final Float y = dist * (float) Math.sin(angleRad);
-        child.animate()
-                .setDuration(DURATION_SHORT)
-                .translationX(x)
-                .translationY(y)
-                .start();
-    }
-
-
     public void addNewMember() {
         mView = getLayoutInflater().inflate(R.layout.add_member_layout, null);
         mIDText = (TextView) mView.findViewById(R.id.add_member_ID);
-        mIDText.setText("ID Family : "+MainUtils.parentGroupItem.getGroup_code());
+        mIDText.setText("ID Family : " + MainUtils.parentGroupItem.getGroup_code());
         mTextMsg = (TextView) mView.findViewById(R.id.add_member_text);
         mTextMsg.setText(getResources().getString(R.string.add_member_text));
 
@@ -803,14 +698,14 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     public void displayMember() {
         mDataHelper.makeListMemberInGroup(MainUtils.parentGroupItem);
         listBlockPropertiesArr = MainUtils.parentGroupItem.getListMember();
-        if (listBlockPropertiesArr.size() == 0){
-            Log.e("vinh", "listBlockPropertiesArr.size() = 0");
+        if (listBlockPropertiesArr.size() == 0) {
+            Log.e(TAG, "listBlockPropertiesArr.size() = 0");
             mTextNoGroup.setText(R.string.text_no_group);
             adapterMember = new CircleMemberAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listProperties.setVisibility(View.GONE);
-        } else  {
-            Log.e("vinh", "listBlockPropertiesArr.size() != 0");
+        } else {
+            Log.e(TAG, "listBlockPropertiesArr.size() != 0");
             mTextNoGroup.setText(" ");
             listProperties.setVisibility(View.GONE);
             layoutList.setVisibility(View.VISIBLE);
@@ -821,7 +716,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     }
 
-    public void displayDetailTime(){
+    public void displayDetailTime() {
         Log.e(TAG, "displayDetailTime ");
         mDataHelper.makeDetailOneMemberItemParent(MainUtils.memberItem);
         listProfileItem = MainUtils.memberItem.getListProfile();
@@ -829,7 +724,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         listTime.setAdapter(timeListAdapter);
     }
 
-    public void goToScheduler(int position){
+    public void goToScheduler(int position) {
         MainUtils.parentProfile = timeListAdapter.getItem(position);
         //Intent intent = new Intent(DeviceMemberManagerment.this, SchedulerConfigActivity.class);
         //startActivity(intent);
@@ -839,29 +734,16 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     public void changeIcon(int position) {
         MainUtils.memberItem = adapterMember.getItem(position);
         Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         positionNow = position;
         startActivityForResult(i, PICK_IMAGE);
     }
 
-    public void onItemClick(int position) {
-        //MainUtils.memberItem = adapter.getItem(position);
-        //Intent intent = new Intent(DeviceMemberManagerment.this, ParentSchedulerActivity.class);
-        //startActivity(intent);
-        //editSchedule();
-    }
-
-    public void listScheduler(int position) {
-        MainUtils.memberItem = adapterMember.getItem(position);
-        //Intent intent = new Intent(DeviceMemberManagerment.this, ParentSchedulerActivity.class);
-        //startActivity(intent);
-        editSchedule();
-    }
 
     public void showDetail(int position) {
         MainUtils.memberItem = adapterMember.getItem(position);
         //editName.setText(MainUtils.memberItem.getName_member().toString());
-        if(detailLayout.getVisibility() == View.GONE) {
+        if (detailLayout.getVisibility() == View.GONE) {
             //detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
         } else {
@@ -877,7 +759,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         switch (v.getId()) {
 
             case R.id.layoutClose:
-                if(detailLayout.getVisibility() == View.VISIBLE) {
+                if (detailLayout.getVisibility() == View.VISIBLE) {
                     hideKeyboard();
                     detailLayout.startAnimation(bottomDown);
                     detailLayout.setVisibility(View.GONE);
@@ -888,7 +770,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 MainUtils.memberItem.setName_member(name);
                 mDataHelper.updateMemberItem(MainUtils.memberItem);
                 displayMember();
-                if(detailLayout.getVisibility() == View.VISIBLE) {
+                if (detailLayout.getVisibility() == View.VISIBLE) {
                     hideKeyboard();
                     detailLayout.startAnimation(bottomDown);
                     detailLayout.setVisibility(View.GONE);
@@ -968,7 +850,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                 break;
 
             case R.id.details_time_add:
-                showDetailsTime(new ParentTimeItem());
+                showDetailsTime(new ParentTimeItem(), false);
                 break;
 
             default:
@@ -979,27 +861,24 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("vinh","onActivityResult= " + data);
-        if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data!=null) {
+        Log.d(TAG, "onActivityResult= " + data);
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             boolean success = true;
             Bitmap bitmap = null;
-            try
-            {
+            try {
                 success = true;
-                bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver() , selectedImage);
-            }
-            catch (Exception e)
-            {
+                bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), selectedImage);
+            } catch (Exception e) {
                 success = false;
             }
-            if(success) {
+            if (success) {
                 MainUtils.memberItem.setImage_member(selectedImage.toString());
                 mDataHelper.updateMemberItem(MainUtils.memberItem);
             }
             //familyIconEdit.setImageBitmap(bitmap);
-            if(MainUtils.memberItem!=null){
-               // coverFlow.scrollToPosition(positionNow);
+            if (MainUtils.memberItem != null) {
+                // coverFlow.scrollToPosition(positionNow);
             }
             //displayMember();
             adapterMember.notifyDataSetChanged();
@@ -1007,7 +886,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         }
     }
 
-    private void showDetailsTime(final ParentTimeItem timeItem) {
+    private void showDetailsTime(final ParentTimeItem timeItem, boolean isEdit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         // Get the layout inflater
         LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
@@ -1019,10 +898,26 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         fromBt = (Button) view.findViewById(R.id.fromBt);
         toBt = (Button) view.findViewById(R.id.toBt);
         // Get data TimeItems
-        timePickerFrom.setCurrentHour(timeItem.getHourBegin());
-        timePickerFrom.setCurrentMinute(timeItem.getMinusBegin());
-        timePickerTo.setCurrentHour(timeItem.getHourEnd());
-        timePickerTo.setCurrentMinute(timeItem.getMinusEnd());
+        Calendar now = Calendar.getInstance();
+        if (!isEdit) {
+            timePickerFrom.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
+            timePickerFrom.setCurrentMinute(now.get(Calendar.MINUTE));
+
+            timePickerFrom.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                @Override
+                public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                    mCurrentHourOfDayFrom = hourOfDay;
+                    mCurrentMinuteFrom = minute;
+                    timePickerTo.setCurrentHour(mCurrentHourOfDayFrom);
+                    timePickerTo.setCurrentMinute(mCurrentMinuteFrom);
+                }
+            });
+        } else {
+            timePickerFrom.setCurrentHour(timeItem.getHourBegin());
+            timePickerFrom.setCurrentMinute(timeItem.getMinusBegin());
+            timePickerTo.setCurrentHour(timeItem.getHourEnd());
+            timePickerTo.setCurrentMinute(timeItem.getMinusEnd());
+        }
         timePickerFrom.setIs24HourView(false);
         timePickerTo.setIs24HourView(false);
         fromBt.setOnClickListener(new View.OnClickListener() {
@@ -1076,12 +971,11 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                         updateStatusTime(MainUtils.parentProfile.getListTimer());
                     }
                 })
-                .setNegativeButton("CANCEL",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //
-                            }
-                        });
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
         builder.create().show();
     }
 
@@ -1145,8 +1039,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mDeleteDialog.show();
     }
 
-    private void hideKeyboard(){
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editName.getWindowToken(), 0);
     }
 
@@ -1217,13 +1111,13 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             String textBegin, textEnd;
             textBegin = item.getStringHour(item.getHourBegin(), item.getMinusBegin());
             textEnd = item.getStringHour(item.getHourEnd(), item.getMinusEnd());
-            timerDetail.setText(textBegin +" - "+textEnd);
+            timerDetail.setText(textBegin + " - " + textEnd);
             timerIcon.setImageResource(R.drawable.ic_clock);
             convertView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    showDetailsTime(item);
+                    showDetailsTime(item, true);
                 }
             });
             return convertView;
