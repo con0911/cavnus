@@ -117,7 +117,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private MainDatabaseHelper keepData;
     private SchedulerRequestController schedulerRequestController;
     private TextView nameDevice;
-    private TextView listScheduler;
+    //private TextView listScheduler;
     private TextView textName;
     private final static String TAG = "DeviceMemberManagerment";
     private static int positionNow = 0;
@@ -185,18 +185,19 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         schedulerRequestController = new SchedulerRequestController(this);
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
         nameDevice = (TextView) findViewById(R.id.nameFamily);
-        listScheduler = (TextView) findViewById(R.id.listDeviceName);
+        //listScheduler = (TextView) findViewById(R.id.listDeviceName);
         detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
         //editName = (EditText) findViewById(R.id.editMemberName);
         //doneEdit = (ImageButton) findViewById(R.id.layoutEditDone);
         //doneEdit.setOnClickListener(this);
         listTime = (ListView) findViewById(R.id.listTime);
-        detailLayout.setVisibility(View.GONE);
+        //detailLayout.setVisibility(View.GONE);
         //layoutClose = (ImageButton) findViewById(R.id.layoutClose);
         //layoutClose.setOnClickListener(this);
         bottomUp = AnimationUtils.loadAnimation(this, R.anim.bottom_up);
         bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
         displayMember();
+        displayDetailTime();
         deviceRequestController = new DeviceRequestController(this);
         btnAddSchedule = (Button) findViewById(R.id.btn_add_schedule);
         btnAddSchedule.setOnClickListener(this);
@@ -227,7 +228,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         fancyCoverFlowMember.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                Log.d("thong.nv", " position : " + position);
+                Log.d(TAG, " position : " + position);
                 MainUtils.memberItem = adapterMember.getItem(position);
                 // showDetail(position);
                 nameDevice.setText(MainUtils.memberItem.getName_member());
@@ -316,27 +317,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             //detailLayout.setVisibility(View.GONE);
         }
     }
-//Create default devices to test circle layout
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.add, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        switch (item.getItemId()) {
-            case R.id.add :
-                addNewMember();
-                break;
-            case R.id.rename :
-                //renameGroup();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 
     public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
         boolean chooseList[] = new boolean[145];
@@ -500,10 +480,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
             textItem.setLayoutParams(param);
             textItem.setBackgroundColor(Color.parseColor("#ee5c42"));
-            //
             listStatus.add(textItem);
-            //statusBarTime.addView(textItem);
-            //
         }
     }
 
@@ -696,6 +673,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     public void displayMember() {
+        if (MainUtils.parentGroupItem == null) {
+            return;
+        }
         mDataHelper.makeListMemberInGroup(MainUtils.parentGroupItem);
         listBlockPropertiesArr = MainUtils.parentGroupItem.getListMember();
         if (listBlockPropertiesArr.size() == 0) {
@@ -717,6 +697,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     public void displayDetailTime() {
+        if (MainUtils.memberItem == null) {
+            return;
+        }
         Log.e(TAG, "displayDetailTime ");
         mDataHelper.makeDetailOneMemberItemParent(MainUtils.memberItem);
         listProfileItem = MainUtils.memberItem.getListProfile();
@@ -726,8 +709,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
     public void goToScheduler(int position) {
         MainUtils.parentProfile = timeListAdapter.getItem(position);
-        //Intent intent = new Intent(DeviceMemberManagerment.this, SchedulerConfigActivity.class);
-        //startActivity(intent);
         editSchedule();
     }
 
