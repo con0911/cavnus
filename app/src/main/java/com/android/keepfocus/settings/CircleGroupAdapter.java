@@ -19,9 +19,12 @@ import android.widget.TextView;
 import com.android.keepfocus.R;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.activity.FamilyManagerment;
+import com.android.keepfocus.activity.SetupWizardActivity;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlowAdapter;
+import com.android.keepfocus.server.request.controllers.GroupRequestController;
+import com.android.keepfocus.utils.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +37,7 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
 
     private ArrayList<ParentGroupItem> data;
     private Activity activity;
+    private GroupRequestController groupRequestController;
 
     public CircleGroupAdapter(Activity activity, ArrayList<ParentGroupItem> objects) {
         this.activity = activity;
@@ -181,6 +185,10 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
                         break;
                     case R.id.txt_right_side:
                         familyManagerment.showDetail(position);
+                        if (SetupWizardActivity.getTypeLogin(activity) == Constants.LoginSuccess) {
+                            groupRequestController = new GroupRequestController(activity);
+                            groupRequestController.updateListDevice();
+                        }
                         break;
                 }
 

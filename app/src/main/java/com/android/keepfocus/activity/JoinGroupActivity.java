@@ -27,13 +27,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -50,13 +46,13 @@ import com.android.keepfocus.receive.DevicePolicyReceiver;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
 import com.android.keepfocus.server.model.GroupUser;
+import com.android.keepfocus.server.model.License;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.model.JoinGroupRequest;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -81,7 +77,8 @@ public class JoinGroupActivity extends Activity {
     private String token = "";
     private SharedPreferences joinPref;
     private static SharedPreferences childServerId;
-    private EditText joinFamilyIDText, mActiveCode,nameDevice;
+    private EditText joinFamilyIDText, nameDevice;
+    private Spinner mActiveCode;
     private static boolean checkValidID, checkValidActiveCode, checkValidName;
     private RelativeLayout layoutChooseMode;
     private RadioButton mRBtnManage, mRBtnChild;
@@ -106,6 +103,8 @@ public class JoinGroupActivity extends Activity {
     public static Bundle bundle;
     private CountDownTimer mCDT = null;
 
+    private ArrayList<License> listLicenses;
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +116,7 @@ public class JoinGroupActivity extends Activity {
 
 
         joinFamilyIDText = (EditText) findViewById(R.id.familyId);
-        mActiveCode = (EditText) findViewById(R.id.activeCode);
+        mActiveCode = (Spinner) findViewById(R.id.activeCode);
         nameDevice = (EditText) findViewById(R.id.deviceName);
         btnImageDone = (Button) findViewById(R.id.doneImageBtn);
         layoutChooseMode = (RelativeLayout) findViewById(R.id.layout_choose_mode);
@@ -186,7 +185,7 @@ public class JoinGroupActivity extends Activity {
                 if (s.length() > 0){
                     //checkValidID = true;
                     if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
-                        if (!nameDevice.getText().toString().isEmpty() && !mActiveCode.getText().toString().isEmpty()) {
+                        if (!nameDevice.getText().toString().isEmpty() && !mActiveCode.getSelectedItem().toString().isEmpty()) {
                             btnImageDone.setClickable(true);
                             btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
                             btnImageDone.setTextColor(Color.parseColor("#fafafa"));
@@ -230,7 +229,7 @@ public class JoinGroupActivity extends Activity {
                 if (s.length() > 0){
                     //checkValidName = true;
                     if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
-                        if (!joinFamilyIDText.getText().toString().isEmpty() && !mActiveCode.getText().toString().isEmpty()) {
+                        if (!joinFamilyIDText.getText().toString().isEmpty() && !mActiveCode.getSelectedItem().toString().isEmpty()) {
                             btnImageDone.setClickable(true);
                             btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
                             btnImageDone.setTextColor(Color.parseColor("#fafafa"));
@@ -262,7 +261,7 @@ public class JoinGroupActivity extends Activity {
 
             }
         });
-        mActiveCode.addTextChangedListener(new TextWatcher() {
+/*        mActiveCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -292,7 +291,7 @@ public class JoinGroupActivity extends Activity {
             public void afterTextChanged(Editable s) {
 
             }
-        });
+        });*/
 
         joinPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -340,13 +339,14 @@ public class JoinGroupActivity extends Activity {
                     Toast.makeText(JoinGroupActivity.this, "Please check the internet connection!", Toast.LENGTH_LONG).show();
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children
                         && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty()
-                            || mActiveCode.getText().toString().isEmpty())) {
+                            || !mActiveCode.getSelectedItem().toString().isEmpty())) {
                     if (isNameInValid(joinFamilyIDText.getText().toString()) || isNameInValid(nameDevice.getText().toString())
-                            || isNameInValid(mActiveCode.getText().toString())){
+                            || isNameInValid(mActiveCode.getSelectedItem().toString())){
                         final Toast errorName = Toast.makeText(mContext, "The name, FamilyID or Activation code cannot contain space", Toast.LENGTH_SHORT);
                         errorName.show();
                         MainUtils.extendDisplayTimeOfToast(errorName);
                     }else {
+                        typeJoin = 0;
                         JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                         joinAsyn.execute();
                     }
@@ -357,6 +357,7 @@ public class JoinGroupActivity extends Activity {
                         errorInput.show();
                         MainUtils.extendDisplayTimeOfToast(errorInput);
                     }
+                    typeJoin = 1;
                     JoinGroupAsynTask joinAsyn = new JoinGroupAsynTask();
                     joinAsyn.execute();
                 }
@@ -569,7 +570,7 @@ public class JoinGroupActivity extends Activity {
 
     @SuppressLint("NewApi")
     private boolean isOnUsageAccess() {
-        UsageStatsManager usm = (UsageStatsManager) getSystemService("usagestats");
+        UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
         Calendar calendar = Calendar.getInstance();
         long toTime = calendar.getTimeInMillis();
         calendar.add(Calendar.YEAR, -1);
@@ -615,7 +616,7 @@ public class JoinGroupActivity extends Activity {
         //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
         Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "", checkType());
-        GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getText().toString());
+        GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getSelectedItem().toString());
         JoinGroupRequest joinGroupRequest = new JoinGroupRequest(3, groupItem, deviceItem, groupUser);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
@@ -628,7 +629,7 @@ public class JoinGroupActivity extends Activity {
         //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
         Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "", checkType());
-        GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getText().toString());
+        GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getSelectedItem().toString());
         JoinGroupRequest joinGroupRequest = new JoinGroupRequest(4, groupItem, deviceItem, groupUser);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
@@ -804,6 +805,10 @@ public class JoinGroupActivity extends Activity {
             mDialog.setMessage("Request to server...");
             mDialog.show();
         }
+    }
+
+    public void setLicenseList(ArrayList<License> list){
+        listLicenses = list;
     }
 
 }

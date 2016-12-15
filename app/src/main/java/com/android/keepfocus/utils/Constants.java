@@ -23,4 +23,7 @@ public class Constants {
     public static final int ActionTypeDelete = 3;
     public static final int ActionTypeGetDevice = 7;
     public static final int ActionTypeGetList = 8;
+
+    public static final int ActionTypeGetLicenseUsed = 15;
+    public static final int ActionTypeGetLicenseUnUsed = 16;
 }

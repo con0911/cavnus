@@ -44,12 +44,7 @@ import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
 
-import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
-
-/**
- * Created by sev_user on 11/7/2016.
- */
-public class FamilyManagerment extends Activity implements View.OnClickListener{
+public class FamilyManagerment extends Activity{
 
     private static final String TAG = FamilyManagerment.class.getSimpleName();
     private CircleGroupAdapter adapterGroup;
@@ -147,7 +142,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
 
-        //
         fancyCoverFlowGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
@@ -182,54 +176,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
         mTextFamilyIDFace = Typeface.createFromAsset(getAssets(),
                 "fonts/DroidSerif-Bold.ttf");
     }
-//    private FeatureCoverFlow.OnScrollPositionListener onScrollListener() {
-//        return new FeatureCoverFlow.OnScrollPositionListener() {
-//            @Override
-//            public void onScrolledToPosition(int position) {
-//                Log.v(TAG, "position: " + position);
-//                View currentView = coverFlow.findViewWithTag(String.valueOf(position));
-//                if (currentView != null) {
-//                    lable[position] = true;
-//                    onMainButtonClicked(currentView);
-//                    MainUtils.parentGroupItem = adapter.getItem(position);
-//                    nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
-//                    ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
-//                    if (listDevice.size() > 0) {
-//                        String listDeviceText = " ";
-//                        for (int i =0; i < listDevice.size(); i++){
-//                            listDeviceText += listDevice.get(i).getName_member() + ", ";
-//                        }
-//                        listDeviceText = listDeviceText.substring(0,listDeviceText.length()-2);
-//                        listDeviceName.setText(listDeviceText);
-//                    } else {
-//                        listDeviceName.setText(" ");
-//                    }
-//                    showAddMember(position);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onScrolling() {
-//                Log.i(TAG, "scrolling");
-//            }
-//        };
-//    }
-//
-//    private FeatureCoverFlow.OnItemSelectedListener onItemSelectedListener() {
-//        return new FeatureCoverFlow.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Log.d(TAG, "view : " + view + " pos : " + i + " id : " + l);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        };
-//    }
-
 
     public void displayProfile() {
         listFamily = mDataHelper.getAllGroupItemParent();
@@ -336,25 +282,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
                 .start();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-
-            /*case R.id.editFamilyIcon:
-                Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
-                *//*Intent intent = new Intent();
-                intent.setType("image*//**//*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);*//*
-                Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, PICK_IMAGE);*/
-
-            default:
-                break;
-        }
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -413,7 +340,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
     protected void onPause() {
         super.onPause();
         unregisterReceiver(getDatabaseReceiver);
-
     }
 
     public void createNewGroup() {
@@ -543,7 +469,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
         switch (item.getItemId()) {
             case R.id.action_add :
                 createNewGroup();
@@ -554,8 +479,6 @@ public class FamilyManagerment extends Activity implements View.OnClickListener{
             case R.id.action_update :
                 SetupWizardActivity.setTypeLogin(Constants.JoinSuccess, mContext);
                 groupRequestController.getGroupInServer();
-                Intent familyManagement = new Intent(mContext, FamilyManagerment.class);
-                startActivity(familyManagement);
                 break;
 
         }

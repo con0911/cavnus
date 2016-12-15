@@ -59,12 +59,13 @@
         android:id="@+id/layout_choose_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/rbtn_manage"
             style="@style/textStyle"
-            android:layout_alignParentLeft="true"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Parent"
@@ -73,23 +74,50 @@
         <RadioButton
             android:id="@+id/rbtn_child"
             style="@style/textStyle"
-            android:layout_alignParentRight="true"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Child"
+            android:text="Children"
             android:checked="true"
             />
-
-
     </RelativeLayout>
-    <!--<CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/scan_qr_checkbox"/>-->
 
-    <EditText
+        <TextView
+            style="@style/textStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="License type"
+            android:textStyle="bold"/>
+        <RelativeLayout
+            android:id="@+id/layout_choose_license"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/license_used"
+                style="@style/textStyle"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Used"
+                />
+
+            <RadioButton
+                android:id="@+id/license_not_used"
+                style="@style/textStyle"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Not used"
+                android:checked="true"
+                />
+
+
+        </RelativeLayout>
+
+    <Spinner
         style="@style/textStyle"
         android:id="@+id/activeCode"
         android:layout_width="match_parent"
