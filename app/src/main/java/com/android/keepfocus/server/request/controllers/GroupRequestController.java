@@ -12,16 +12,11 @@ import android.widget.Toast;
 
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.activity.LoginActivity;
-import com.android.keepfocus.data.ChildKeepFocusItem;
-import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
-import com.android.keepfocus.data.ParentProfileItem;
-import com.android.keepfocus.data.ParentTimeItem;
 import com.android.keepfocus.server.model.Group;
 import com.android.keepfocus.server.model.Header;
-import com.android.keepfocus.server.model.License;
 import com.android.keepfocus.server.request.model.GroupRequest;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
@@ -141,15 +136,6 @@ public class GroupRequestController {
         Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_code());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetDevice, groupItem);
-        Gson gson = new Gson();
-        String jsonRequest = gson.toJson(groupRequest);
-        Log.d(TAG, "jsonRequest: " + jsonRequest);
-        return jsonRequest;
-    }
-
-    public String getListLicenseUsed(){
-        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetDevice);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -309,13 +295,39 @@ public class GroupRequestController {
                     if (description_result.equals("Success") && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject deviceItem = data.getJSONObject(i);
-                            //restore schedule
-                            JSONArray groupUser = deviceItem.getJSONArray("group_user");
+                            /*boolean conflict = false;
+                            if (listDevice.size() > 0) {
+                                for (int j = 0; j < listDevice.size(); j++) {
+                                    if (deviceItem.getInt("id") == listDevice.get(j).getId_member_server()) {
+                                        conflict = true;
+                                        listDevice.get(j).setImage_member(deviceItem.getString("device_model"));
+                                        listDevice.get(j).setName_member(deviceItem.getString("device_name"));
+                                        mDataHelper.updateMemberItem(listDevice.get(j));
+                                    }
+                                }
+                            }
+                            if (!conflict) {
+                                ParentMemberItem parentMemberItem = new ParentMemberItem();
+                                parentMemberItem.setImage_member(deviceItem.getString("device_model"));
+                                parentMemberItem.setName_member(deviceItem.getString("device_name"));
+                                parentMemberItem.setId_member_server(deviceItem.getInt("id"));
+                                MainUtils.parentGroupItem.getListMember().add(parentMemberItem);
+                                mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
+                            }*/
                             ParentMemberItem restoreDevice = new ParentMemberItem();
+                            String family_id = message.getString("FamilyID");
+                            if(family_id !=null) {
+                                MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
+                            }
+
+                            //for test
+
                             if (MainUtils.parentGroupItem == null) {
                                 MainUtils.parentGroupItem = mDataHelper.getAllGroupItemParent().get(0);//add to first
                             }
+                            //ParentGroupItem joinToGroup = new ParentGroupItem();
                             Log.d(TAG,"join To Group "+MainUtils.parentGroupItem.getGroup_name());
+                            //MainUtils.parentGroupItem = joinToGroup;
 
                             int type;
                             if(deviceItem.getString("device_mode").trim().equals(JoinGroupActivity.MANAGER)) {
@@ -328,42 +340,12 @@ public class GroupRequestController {
 
                             restoreDevice.setId_member_server(deviceItem.getInt("id"));
                             restoreDevice.setName_member(deviceItem.getString("device_name"));
-                            restoreDevice.setImage_member(deviceItem.getString("device_model"));
                             restoreDevice.setType_member(type);
 
+                            mDataHelper.addMemberItemParent(restoreDevice,MainUtils.parentGroupItem.getId_group());
                             Log.e(TAG, "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
                             MainUtils.parentGroupItem.getListMember().add(restoreDevice);
-                            int idMember = mDataHelper.addMemberItemParent(restoreDevice,  MainUtils.parentGroupItem.getId_group());
-                            for (int j = 0; j < groupUser.length(); j++) {
-                                JSONObject groupUserElement = groupUser.getJSONObject(j);
-                                JSONArray schedulersArray = groupUserElement.getJSONArray("schedulers");
-
-                                for (int k = 0; k < schedulersArray.length(); k++) {
-                                    JSONObject scheduleItem = schedulersArray.getJSONObject(k);
-                                    JSONArray timeItem = scheduleItem.getJSONArray("timeitems");
-                                    Log.d(TAG,"timeItem "+timeItem);
-                                    ParentProfileItem parentProfileItem = new ParentProfileItem();
-
-                                    parentProfileItem.setName_profile(schedulersArray.getJSONObject(k).getString("scheduler_name"));
-                                    parentProfileItem.setActive(isActive(schedulersArray.getJSONObject(k).getInt("isActive")));
-                                    parentProfileItem.setDay_profile(schedulersArray.getJSONObject(k).getString("days"));
-                                    parentProfileItem.setId_profile_server(schedulersArray.getJSONObject(k).getInt("id"));
-                                    int idProfile = mDataHelper.addProfileItemParent(parentProfileItem, idMember);
-                                    ArrayList<ParentTimeItem> arrayList = new ArrayList(timeItem.length());
-                                    for(int ii=0;i < timeItem.length();i++){
-                                        ParentTimeItem item1 = new ParentTimeItem();
-                                        item1.setId_profile(timeItem.getJSONObject(ii).getInt("scheduler_id"));
-                                        item1.setHourBegin(timeItem.getJSONObject(ii).getInt("start_hours"));
-                                        item1.setHourEnd(timeItem.getJSONObject(ii).getInt("end_hours"));
-                                        item1.setMinusBegin(timeItem.getJSONObject(ii).getInt("start_minutes"));
-                                        item1.setMinusEnd(timeItem.getJSONObject(ii).getInt("end_minutes"));
-                                        item1.setId_time_server(timeItem.getJSONObject(ii).getInt("id"));
-                                        arrayList.add(item1);
-                                        mDataHelper.addTimeItemParent(item1, idProfile);
-                                    }
-                                    parentProfileItem.setListTimer(arrayList);
-                                }
-                            }
+                            mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
                         }
                         updateSuccess();
                     }
@@ -375,10 +357,6 @@ public class GroupRequestController {
         }
     }
 
-    private boolean isActive(int state){
-        if(state == 1) return true;
-        else return false;
-    }
     //=====================Block code for update Family api==================================
 
 
@@ -539,83 +517,6 @@ public class GroupRequestController {
         }
     }
 
-    //=====================Get List device==================================
-
-    private class GetListLicenseAsynTask extends AsyncTask<License, Void, String> {
-        ProgressDialog mDialog;
-        String request = "";
-        int typeRequest = 0;
-        ArrayList<License> listLicense = null;
-        GetListLicenseAsynTask(int type){
-            this.typeRequest = type;
-            if (type == Constants.ActionTypeGetLicenseUsed){
-                request = getListLicenseUsed();
-            } else if (type == Constants.ActionTypeGetLicenseUnUsed){
-                request = getListLicenseUsed();
-            }
-        }
-
-        public ArrayList<License> getListLicense(){
-            return listLicense;
-        }
-
-
-        @Override
-        protected String doInBackground(License... params) {
-            String result = "";
-            String link;
-            link = BASE_URL + request;
-            Log.d(TAG, "link: " + link);
-            result = connectToServer(link);
-            //result = serverUtils.postData(BASE_URL,getListGroup());
-            return result;
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            String jsonStr = result;
-            Log.d(TAG,"onPostExecute"+result);
-            if (jsonStr != null) {
-                try {
-                    JSONObject jsonObj = new JSONObject(jsonStr);
-                    JSONObject message = jsonObj.getJSONObject("Message");
-                    int status = message.getInt("Status");
-                    Log.d(TAG,"status1 = "+status);
-                    //JSONObject data = jsonObj.getJSONObject("Data");
-                    if(status == 1) {
-                        JSONArray data = jsonObj.getJSONArray("Data");
-                        listLicense = new ArrayList(data.length());
-                        for(int i=0;i < data.length();i++){
-                            License licenseItem = new License();
-                            licenseItem.setLicense_key(data.getJSONObject(i).getString("license_key"));
-                            licenseItem.setId_groupuser(data.getJSONObject(i).getInt("id_groupuser"));
-                            licenseItem.setIs_use(data.getJSONObject(i).getInt("is_use"));
-                            listLicense.add(licenseItem);
-                        }
-                        JoinGroupActivity joinGroupActivity = (JoinGroupActivity) mContext;
-                        joinGroupActivity.setLicenseList(listLicense);
-                    } else {
-                        Toast.makeText(mContext, "Error in server", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(mContext, "Can't create new scheduler! Error in database", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
-            }
-            mDialog.dismiss();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mDialog = new ProgressDialog(mContext);
-            mDialog.setCancelable(false);
-            mDialog.setInverseBackgroundForced(false);
-            mDialog.setMessage("Request to server...");
-            mDialog.show();
-        }
-    }
 
     //=======================================================================================
 

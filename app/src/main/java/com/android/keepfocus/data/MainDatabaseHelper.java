@@ -671,9 +671,9 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<ParentMemberItem> getListMember(int idGroup) {
         ArrayList<ParentMemberItem> listMember = new ArrayList<ParentMemberItem>();
-      //  if (dbMain == null) {
+        if (dbMain == null) {
             dbMain = this.getWritableDatabase();
-     //   }
+        }
         String selectQuery = "SELECT * FROM tblGroupMemberParent WHERE id_group = "
                 + idGroup;
         Cursor cursor = dbMain.rawQuery(selectQuery, null);
@@ -686,16 +686,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 }
             } while (cursor.moveToNext());
         }
-        dbMain.close();
-     //   dbMain = null;
         return listMember;
     }
 
     public ParentMemberItem getMemberItemById(int id_member) {
         ParentMemberItem memberItem = new ParentMemberItem();
-   //     if (dbMain == null) {
+        if (dbMain == null) {
             dbMain = this.getWritableDatabase();
-  //      }
+        }
         String selectQuery = "SELECT * FROM tblMemberParent WHERE id_member = " + id_member;
         Cursor cursor = dbMain.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
@@ -716,8 +714,6 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             memberItem.setIs_blocksettings(is_blocksettings);
             return memberItem;
         }
-        dbMain.close();
-   //     dbMain = null;
         return null;
     }
 
@@ -738,9 +734,9 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 
     private ArrayList<ParentProfileItem> getListProfileMember(int idMember) {
         ArrayList<ParentProfileItem> listProfile = new ArrayList<ParentProfileItem>();
-      //  if (dbMain == null) {
+        if (dbMain == null) {
             dbMain = this.getWritableDatabase();
-   //     }
+        }
         String selectQuery = "SELECT * FROM tblMemberProfileParent WHERE id_member = "
                 + idMember;
         Cursor cursor = dbMain.rawQuery(selectQuery, null);
@@ -753,15 +749,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 }
             } while (cursor.moveToNext());
         }
-        dbMain.close();
         return listProfile;
     }
 
     private ParentProfileItem getProfileItemById(int id_profile) {
         ParentProfileItem profileItem = new ParentProfileItem();
-     //   if (dbMain == null) {
+        if (dbMain == null) {
             dbMain = this.getWritableDatabase();
-      //  }
+        }
         String selectQuery = "SELECT * FROM tblProfileParent WHERE id_profile = " + id_profile;
         Cursor cursor = dbMain.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
@@ -780,7 +775,6 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             profileItem.setId_profile_server(id_profile_server);
             return profileItem;
         }
-        dbMain.close();
         return null;
     }
 
@@ -798,9 +792,9 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 
     private ArrayList<ParentAppItem> getListAppParent(int id_profile) {
         ArrayList<ParentAppItem> listAppParent = new ArrayList<ParentAppItem>();
-    //    if (dbMain == null) {
+        if (dbMain == null) {
             dbMain = this.getWritableDatabase();
-       // }
+        }
         String selectQuery = "SELECT * FROM tblProfileAppParent WHERE id_profile = "
                 + id_profile;
         Cursor cursor = dbMain.rawQuery(selectQuery, null);
@@ -813,15 +807,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 }
             } while (cursor.moveToNext());
         }
-        dbMain.close();
         return listAppParent;
     }
 
     private ParentAppItem getAppParentItemById(int id_app_parent) {
         ParentAppItem appParentItem = new ParentAppItem();
-       // if (dbMain == null) {
+        if (dbMain == null) {
             dbMain = this.getWritableDatabase();
-      //  }
+        }
         String selectQuery = "SELECT * FROM tblAppParent WHERE id_app_parent = " + id_app_parent;
         Cursor cursor = dbMain.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
@@ -834,15 +827,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             appParentItem.setIconApp(image_app);
             return appParentItem;
         }
-        dbMain.close();
         return null;
     }
 
     private ArrayList<ParentTimeItem> getListTimeParentById(int id_profile) {
         ArrayList<ParentTimeItem> listTime = new ArrayList<ParentTimeItem>();
-    //    if (dbMain == null) {
+        if (dbMain == null) {
             dbMain = this.getWritableDatabase();
-    //    }
+        }
         String selectQuery = "SELECT * FROM tblTimeParent WHERE id_profile = "
                 + id_profile;
         Cursor cursor = dbMain.rawQuery(selectQuery, null);
@@ -866,7 +858,6 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 listTime.add(parentTimeItem);
             } while (cursor.moveToNext());
         }
-        dbMain.close();
         return listTime;
     }
 
