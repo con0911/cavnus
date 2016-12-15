@@ -36,8 +36,6 @@ import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.settings.CircleGroupAdapter;
-import com.android.keepfocus.settings.CoverFlowAdapter;
-import com.android.keepfocus.settings.CoverFlowAdapter2;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
