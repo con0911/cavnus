@@ -18,6 +18,12 @@ public class GroupRequest {
         Action = action;
     }
 
+    public GroupRequest(Group group, int type, int action) {
+        this.Group = group;
+        Type = type;
+        Action = action;
+    }
+
     public GroupRequest(Header header, int type, int action, Group group) {
         this.Header = header;
         Type = type;

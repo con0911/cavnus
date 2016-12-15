@@ -48,19 +48,20 @@
             android:hint="@string/enter_device_name" />
     </LinearLayout>
 
-    <TextView
-        style="@style/textStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/device_type"
-        android:textStyle="bold"/>
 
     <LinearLayout
         android:id="@+id/layout_choose_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2"
+        android:weightSum="3"
         android:orientation="horizontal">
+        <TextView
+            style="@style/textStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/device_type"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
 
         <RadioButton
             android:id="@+id/rbtn_manage"
@@ -82,18 +83,19 @@
             />
     </LinearLayout>
 
-        <TextView
-            style="@style/textStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="License type"
-            android:textStyle="bold"/>
         <LinearLayout
             android:id="@+id/layout_choose_license"
-            android:weightSum="2"
+            android:weightSum="3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+            <TextView
+                style="@style/textStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="License type"
+                android:layout_weight="1"
+                android:textStyle="bold"/>
 
             <RadioButton
                 android:id="@+id/license_used"
@@ -118,11 +120,11 @@
         </LinearLayout>
 
     <Spinner
-        style="@style/textStyle"
         android:id="@+id/activeCode"
+        android:layout_marginLeft="100dp"
+        android:layout_alignParentRight="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/active_code" />
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/doneImageBtn"

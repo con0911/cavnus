@@ -28,6 +28,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -108,7 +109,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
     public static Bundle bundle;
     private CountDownTimer mCDT = null;
 
-    private ArrayList<License> listLicenses;
+    private ArrayList<String> listLicenses;
     private ArrayAdapter licenseAdapter;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -141,6 +142,21 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         mRBtnUnUse.setChecked(false);
         mRBtnUse.setOnCheckedChangeListener(this);
         mRBtnUnUse.setOnCheckedChangeListener(this);
+
+        createTestSpinner();
+
+        mActiveCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
 
 /*        if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_ADDITION_PARENT){
             Intent familyManagement = new Intent(JoinGroupActivity.this, FamilyManagerment.class);
@@ -199,7 +215,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                 if (s.length() > 0){
                     //checkValidID = true;
                     if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
-                        if (!nameDevice.getText().toString().isEmpty() && !mActiveCode.getSelectedItem().toString().isEmpty()) {
+                        if (!nameDevice.getText().toString().isEmpty() && mActiveCode.getSelectedItem()!=null) {
                             btnImageDone.setClickable(true);
                             btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
                             btnImageDone.setTextColor(Color.parseColor("#fafafa"));
@@ -243,7 +259,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                 if (s.length() > 0){
                     //checkValidName = true;
                     if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
-                        if (!joinFamilyIDText.getText().toString().isEmpty() && !mActiveCode.getSelectedItem().toString().isEmpty()) {
+                        if (!joinFamilyIDText.getText().toString().isEmpty() && mActiveCode.getSelectedItem()!=null) {
                             btnImageDone.setClickable(true);
                             btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
                             btnImageDone.setTextColor(Color.parseColor("#fafafa"));
@@ -353,7 +369,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                     Toast.makeText(JoinGroupActivity.this, "Please check the internet connection!", Toast.LENGTH_LONG).show();
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children
                         && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty()
-                            || !mActiveCode.getSelectedItem().toString().isEmpty())) {
+                            || mActiveCode.getSelectedItem().toString().equals(" "))) {
                     if (isNameInValid(joinFamilyIDText.getText().toString()) || isNameInValid(nameDevice.getText().toString())
                             || isNameInValid(mActiveCode.getSelectedItem().toString())){
                         final Toast errorName = Toast.makeText(mContext, "The name, FamilyID or Activation code cannot contain space", Toast.LENGTH_SHORT);
@@ -652,17 +668,22 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {//license
         switch (buttonView.getId()) {
             case R.id.license_used :
-                mRBtnUnUse.setChecked(false);
-                //get data license not used
-                groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUnUsed);
+                if(isChecked) {
+                    mRBtnUnUse.setChecked(false);
+                    //get data license not used
+                    //groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUsed, joinFamilyIDText.getText().toString());
+                }
                 break;
             case R.id.license_not_used :
-                mRBtnUse.setChecked(false);
-                //get data license  used
-                groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUsed);
+                if(isChecked) {
+                    mRBtnUse.setChecked(false);
+                    //get data license  used
+                    //groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUnUsed, joinFamilyIDText.getText().toString());
+                }
+
                 break;
         }
     }
@@ -837,13 +858,27 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         }
     }
 
-    public void setLicenseList(ArrayList<License> list){
+    public void setLicenseList(ArrayList<String> list){
+        Log.d(GroupRequestController.class.getName(),"setLicenseList");
         listLicenses = list;
         ArrayAdapter licenseAdapter = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 listLicenses);
+        licenseAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mActiveCode.setAdapter(licenseAdapter);
 
+    }
+
+    private void createTestSpinner(){
+        ArrayList <String> list = new ArrayList<String>();
+        for (int i=0; i < 100; i++) {
+            list.add(i+"");
+        }
+        ArrayAdapter licenseAdapter = new ArrayAdapter(this,
+                android.R.layout.simple_spinner_item,
+                list);
+        licenseAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        mActiveCode.setAdapter(licenseAdapter);
     }
 
 }

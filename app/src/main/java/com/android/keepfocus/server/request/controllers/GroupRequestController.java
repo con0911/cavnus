@@ -97,8 +97,8 @@ public class GroupRequestController {
         updateAsyn.execute();
     }
 
-    public void getListLicense(int type) {
-        GetListLicenseAsynTask listLicenseAsynTask = new GetListLicenseAsynTask(type);
+    public void getListLicense(int type, String groupID) {
+        GetListLicenseAsynTask listLicenseAsynTask = new GetListLicenseAsynTask(type, groupID);
         listLicenseAsynTask.execute();
     }
 
@@ -143,7 +143,7 @@ public class GroupRequestController {
     }
 
     public String getListDevice() {
-        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
+        Header headerItem = new Header("", deviceCode, registationId, testPass);
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_code());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetDevice, groupItem);
         Gson gson = new Gson();
@@ -152,9 +152,18 @@ public class GroupRequestController {
         return jsonRequest;
     }
 
-    public String getListLicenseUsed(){
-        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetDevice);
+    public String getListLicenseUsed(String groupId){
+        Group groupItem = new Group(0, groupId);
+        groupRequest = new GroupRequest(groupItem, Constants.RequestTypeGet, Constants.ActionTypeGetLicenseUsed);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(groupRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    public String getListLicenseUnUsed(String groupId){
+        Group groupItem = new Group(0, groupId);
+        groupRequest = new GroupRequest(groupItem, Constants.RequestTypeGet, Constants.ActionTypeGetLicenseUnUsed);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -544,29 +553,74 @@ public class GroupRequestController {
         }
     }
 
+/*    String test = "{\n" +
+            "  \"Message\": {\n" +
+            "    \"Status\": 1,\n" +
+            "    \"Description\": \"Success\"\n" +
+            "  },\n" +
+            "  \"Data\": [\n" +
+            "    {\n" +
+            "      \"group_user\": null,\n" +
+            "      \"id\": 1,\n" +
+            "      \"license_key\": \"CVNSb09712c2-77b9-4d76-85c5-c1df4ce1c920\",\n" +
+            "      \"activation_email\": \"conandoye@gmail.com\",\n" +
+            "      \"create_date\": \"2016-12-12T10:42:48\",\n" +
+            "      \"id_groupuser\": null,\n" +
+            "      \"is_use\": 0\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"group_user\": null,\n" +
+            "      \"id\": 2,\n" +
+            "      \"license_key\": \"CVNS3206f71c-1978-4313-bb13-220321f895f1\",\n" +
+            "      \"activation_email\": \"conandoye@gmail.com\",\n" +
+            "      \"create_date\": \"2016-12-12T10:42:48\",\n" +
+            "      \"id_groupuser\": null,\n" +
+            "      \"is_use\": 0\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"group_user\": null,\n" +
+            "      \"id\": 3,\n" +
+            "      \"license_key\": \"CVNS3a4e0223-7159-4e4c-a19b-197b8f351f5d\",\n" +
+            "      \"activation_email\": \"conandoye@gmail.com\",\n" +
+            "      \"create_date\": \"2016-12-12T10:42:48\",\n" +
+            "      \"id_groupuser\": null,\n" +
+            "      \"is_use\": 0\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"group_user\": null,\n" +
+            "      \"id\": 4,\n" +
+            "      \"license_key\": \"CVNSb12ed19a-c0d2-4c2c-a5f2-d4a43351616d\",\n" +
+            "      \"activation_email\": \"conandoye@gmail.com\",\n" +
+            "      \"create_date\": \"2016-12-12T10:42:48\",\n" +
+            "      \"id_groupuser\": null,\n" +
+            "      \"is_use\": 0\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";*/
+
     //=====================Get List device==================================
 
-    private class GetListLicenseAsynTask extends AsyncTask<License, Void, String> {
+    private class GetListLicenseAsynTask extends AsyncTask<String, Void, String> {
         ProgressDialog mDialog;
         String request = "";
         int typeRequest = 0;
-        ArrayList<License> listLicense = null;
-        GetListLicenseAsynTask(int type){
+        ArrayList<String> listLicense = null;
+        GetListLicenseAsynTask(int type, String groupId){
             this.typeRequest = type;
             if (type == Constants.ActionTypeGetLicenseUsed){
-                request = getListLicenseUsed();
+                request = getListLicenseUsed(groupId);
             } else if (type == Constants.ActionTypeGetLicenseUnUsed){
-                request = getListLicenseUsed();
+                request = getListLicenseUnUsed(groupId);
             }
         }
 
-        public ArrayList<License> getListLicense(){
+        public ArrayList<String> getListLicense(){
             return listLicense;
         }
 
 
         @Override
-        protected String doInBackground(License... params) {
+        protected String doInBackground(String... params) {
             String result = "";
             String link;
             link = BASE_URL + request;
@@ -590,10 +644,7 @@ public class GroupRequestController {
                         JSONArray data = jsonObj.getJSONArray("Data");
                         listLicense = new ArrayList(data.length());
                         for(int i=0;i < data.length();i++){
-                            License licenseItem = new License();
-                            licenseItem.setLicense_key(data.getJSONObject(i).getString("license_key"));
-                            licenseItem.setId_groupuser(data.getJSONObject(i).getInt("id_groupuser"));
-                            licenseItem.setIs_use(data.getJSONObject(i).getInt("is_use"));
+                            String licenseItem = data.getJSONObject(i).getString("license_key");
                             listLicense.add(licenseItem);
                         }
                         JoinGroupActivity joinGroupActivity = (JoinGroupActivity) mContext;
