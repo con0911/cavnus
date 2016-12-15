@@ -191,12 +191,13 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         //doneEdit = (ImageButton) findViewById(R.id.layoutEditDone);
         //doneEdit.setOnClickListener(this);
         listTime = (ListView) findViewById(R.id.listTime);
-        detailLayout.setVisibility(View.GONE);
+        //detailLayout.setVisibility(View.GONE);
         //layoutClose = (ImageButton) findViewById(R.id.layoutClose);
         //layoutClose.setOnClickListener(this);
         bottomUp = AnimationUtils.loadAnimation(this, R.anim.bottom_up);
         bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
         displayMember();
+        displayDetailTime();
         deviceRequestController = new DeviceRequestController(this);
         btnAddSchedule = (Button) findViewById(R.id.btn_add_schedule);
         btnAddSchedule.setOnClickListener(this);
