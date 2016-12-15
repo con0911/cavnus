@@ -55,11 +55,11 @@
         android:text="@string/device_type"
         android:textStyle="bold"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/layout_choose_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:weightSum="2"
         android:orientation="horizontal">
 
         <RadioButton
@@ -80,7 +80,7 @@
             android:text="Children"
             android:checked="true"
             />
-    </RelativeLayout>
+    </LinearLayout>
 
         <TextView
             style="@style/textStyle"
@@ -88,9 +88,9 @@
             android:layout_height="wrap_content"
             android:text="License type"
             android:textStyle="bold"/>
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/layout_choose_license"
-            android:layout_weight="2"
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -115,7 +115,7 @@
                 />
 
 
-        </RelativeLayout>
+        </LinearLayout>
 
     <Spinner
         style="@style/textStyle"

@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -80,7 +81,7 @@ public class JoinGroupActivity extends Activity {
     private EditText joinFamilyIDText, nameDevice;
     private Spinner mActiveCode;
     private static boolean checkValidID, checkValidActiveCode, checkValidName;
-    private RelativeLayout layoutChooseMode;
+    private LinearLayout layoutChooseMode;
     private RadioButton mRBtnManage, mRBtnChild;
     public String deviceCode;
     private GroupRequestController groupRequestController;
@@ -119,7 +120,7 @@ public class JoinGroupActivity extends Activity {
         mActiveCode = (Spinner) findViewById(R.id.activeCode);
         nameDevice = (EditText) findViewById(R.id.deviceName);
         btnImageDone = (Button) findViewById(R.id.doneImageBtn);
-        layoutChooseMode = (RelativeLayout) findViewById(R.id.layout_choose_mode);
+        layoutChooseMode = (LinearLayout) findViewById(R.id.layout_choose_mode);
         btnImageDone.setClickable(false);
         btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
         btnImageDone.setTextColor(Color.parseColor("#808080"));
