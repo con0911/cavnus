@@ -23,9 +23,6 @@ import com.android.keepfocus.data.ParentTimeItem;
 
 import java.util.ArrayList;
 
-/**
- * Created by sev_user on 10/14/2016.
- */
 public class ChildTimeListAdapter extends ArrayAdapter<ParentProfileItem> {
     MainDatabaseHelper kFDHelper = new MainDatabaseHelper(
             getContext());

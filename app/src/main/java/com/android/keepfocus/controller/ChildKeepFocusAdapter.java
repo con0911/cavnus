@@ -23,9 +23,6 @@ import com.android.keepfocus.data.ParentTimeItem;
 
 import java.util.ArrayList;
 
-/**
- * Created by sev_user on 10/14/2016.
- */
 public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
     MainDatabaseHelper kFDHelper = new MainDatabaseHelper(
             getContext());
@@ -56,7 +53,7 @@ public class ChildKeepFocusAdapter extends ArrayAdapter<ChildKeepFocusItem> {
         dayScheduler = (TextView) convertView.findViewById(R.id.day_scheduler);
         isActive = (Switch) convertView.findViewById(R.id.is_active);
         isActive.setVisibility(View.GONE);
-        dayScheduler.setVisibility(View.VISIBLE);
+        dayScheduler.setVisibility(View.GONE);
         titleTime.setVisibility(View.VISIBLE);
         btnDeleteSchedule = (Button) convertView.findViewById(R.id.btn_delete_schedule);
         btnDeleteSchedule.setVisibility(View.GONE);
