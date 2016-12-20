@@ -3,6 +3,7 @@ package com.android.keepfocus.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -675,66 +676,59 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
             case R.id.details_day_monday:
                 if (!dayBlock.contains("Mon")) {
-                    dayBlock = dayBlock + "Mon";
-                    loadDayButton();
+                    showDialogConfirm(1);
                 } else {
                     dayBlock = dayBlock.replace("Mon", "");
-                    loadDayButton();
                 }
+                loadDayButton();
                 break;
             case R.id.details_day_tuesday:
                 if (!dayBlock.contains("Tue")) {
-                    dayBlock = dayBlock + "Tue";
-                    loadDayButton();
+                    showDialogConfirm(2);
                 } else {
                     dayBlock = dayBlock.replace("Tue", "");
-                    loadDayButton();
                 }
+                loadDayButton();
                 break;
             case R.id.details_day_wednesday:
                 if (!dayBlock.contains("Wed")) {
-                    dayBlock = dayBlock + "Wed";
-                    loadDayButton();
+                    showDialogConfirm(3);
                 } else {
                     dayBlock = dayBlock.replace("Wed", "");
-                    loadDayButton();
                 }
+                loadDayButton();
                 break;
             case R.id.details_day_thursday:
                 if (!dayBlock.contains("Thu")) {
-                    dayBlock = dayBlock + "Thu";
-                    loadDayButton();
+                    showDialogConfirm(4);
                 } else {
                     dayBlock = dayBlock.replace("Thu", "");
-                    loadDayButton();
                 }
+                loadDayButton();
                 break;
             case R.id.details_day_friday:
                 if (!dayBlock.contains("Fri")) {
-                    dayBlock = dayBlock + "Fri";
-                    loadDayButton();
+                    showDialogConfirm(5);
                 } else {
                     dayBlock = dayBlock.replace("Fri", "");
-                    loadDayButton();
                 }
+                loadDayButton();
                 break;
             case R.id.details_day_saturday:
                 if (!dayBlock.contains("Sat")) {
-                    dayBlock = dayBlock + "Sat";
-                    loadDayButton();
+                    showDialogConfirm(6);
                 } else {
                     dayBlock = dayBlock.replace("Sat", "");
-                    loadDayButton();
                 }
+                loadDayButton();
                 break;
             case R.id.details_day_sunday:
                 if (!dayBlock.contains("Sun")) {
-                    dayBlock = dayBlock + "Sun";
-                    loadDayButton();
+                    showDialogConfirm(0);
                 } else {
                     dayBlock = dayBlock.replace("Sun", "");
-                    loadDayButton();
                 }
+                loadDayButton();
                 break;
 
             case R.id.details_time_add:
@@ -743,6 +737,29 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
             default:
                 break;
+        }
+    }
+
+    private void showDialogConfirm(int day) {
+        final String strDayWeek = MainUtils.DAY_OF_WEEK[day];
+        if (MainUtils.memberItem.checkIsContainDay(day)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("You have already included this day in another schedule.");
+            builder.setTitle("Are you sure you want to continue?");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dayBlock = dayBlock + strDayWeek;
+                    loadDayButton();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            dayBlock = dayBlock + strDayWeek;
         }
     }
 
