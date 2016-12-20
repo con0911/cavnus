@@ -53,9 +53,6 @@ import com.android.keepfocus.utils.MainUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-/**
- * Created by Sion on 11/8/2016.
- */
 public class DeviceMemberManagerment extends Activity implements View.OnClickListener {
 
     private HorizontalListView listProperties;
@@ -232,12 +229,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         registerReceiver(getDatabaseReceiver, intentFilter);
     }
 
-    private void hideKeyboard(View view) {
-        Log.d(TAG, "hideKeyboard() mImm.isInputMethodShown() " + mImm.isInputMethodShown());
+    /*private void hideKeyboard(View view) {
+        Log.d(TAG, "hideKeyboard() mImm.isInputMethodShown() " + mImm.isActive());
         if (mImm != null && mImm.isInputMethodShown()) {
             mImm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -818,7 +815,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
             @Override
             public void onClick(View v) {
-                hideKeyboard(timePickerFrom);
+                //hideKeyboard(timePickerFrom);
                 fromBt.setBackgroundColor(Color.parseColor("#3B5998"));
                 fromBt.setTextColor(Color.parseColor("#FFFFFF"));
                 toBt.setTextColor(Color.parseColor("#000000"));
@@ -831,7 +828,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
             @Override
             public void onClick(View v) {
-                hideKeyboard(timePickerTo);
+                //hideKeyboard(timePickerTo);
                 toBt.setBackgroundColor(Color.parseColor("#3B5998"));
                 fromBt.setBackgroundColor(Color.TRANSPARENT);
                 toBt.setTextColor(Color.parseColor("#FFFFFF"));
