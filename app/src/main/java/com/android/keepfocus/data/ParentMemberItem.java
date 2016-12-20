@@ -1,5 +1,9 @@
 package com.android.keepfocus.data;
 
+import android.util.Log;
+
+import com.android.keepfocus.utils.MainUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -15,6 +19,7 @@ public class ParentMemberItem {
     private int is_alowall;
     private int is_blocksettings;
     private ArrayList<ParentProfileItem> listProfile;
+    private static final String TAG = "ParentMemberItem";
 
     public ParentMemberItem() {
         this.id_member = -1;
@@ -98,5 +103,18 @@ public class ParentMemberItem {
 
     public void setIs_blocksettings(int is_blocksettings) {
         this.is_blocksettings = is_blocksettings;
+    }
+
+    public boolean checkIsContainDay(int day) {
+        if (day < 0 || day > 6) {
+            Log.e(TAG, "Out of index MainUtils.DAY_OF_WEEK " + day);
+            return false;
+        }
+        for (int i = 0; i < listProfile.size(); i++) {
+           if (listProfile.get(i).checkIsContainDay(day)) {
+               return true;
+           }
+        }
+        return false;
     }
 }
