@@ -13,15 +13,12 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.provider.MediaStore;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -31,7 +28,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -48,11 +44,9 @@ import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
 import com.android.keepfocus.server.request.controllers.DeviceRequestController;
-import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.settings.CircleMemberAdapter;
 import com.android.keepfocus.settings.CustomListView;
-import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
@@ -63,16 +57,14 @@ import java.util.Calendar;
  * Created by Sion on 11/8/2016.
  */
 public class DeviceMemberManagerment extends Activity implements View.OnClickListener {
+
     private HorizontalListView listProperties;
-    private LinearLayout headerView;
-    //private ImageView mFABBtnCreate;
     private TextView mTextNoGroup;
     public ArrayList<ParentMemberItem> listBlockPropertiesArr;
     private MainDatabaseHelper mDataHelper;
     private Context mContext;
     private View mView;
     private TextView mIDText;
-    private EditText mEditText;
     private TimeListAdapter mTimeListAdapter;
     private AlertDialog mAlertDialog;
     private TextView mTextMsg;
@@ -84,13 +76,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private CustomListView listTimer;
     private ChildTimeListAdapter timeListAdapter;
 
-
     private LinearLayout detailLayout;
-    private ImageButton layoutClose;
     private Animation bottomUp;
-    private Animation bottomDown;
-    private EditText editName;
-    private ImageButton doneEdit;
 
     private ArrayList<TextView> listStatus;
     private RelativeLayout layoutList;
@@ -99,16 +86,11 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private FancyCoverFlow fancyCoverFlowMember;
     private boolean lable[];
     private final static long DURATION_SHORT = 200;
-    private LinearLayout btnOrange;
-    private LinearLayout btnYellow;
-    private LinearLayout btnGreen;
 
     private Button btnAddSchedule;
     private Button btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday,
             btnSaturday, btnSunday;
     private LinearLayout layoutTextHours;
-    private EditText mEditScheduleName;
-    private LinearLayout statusBarTime, emptyTimeView;
     private String dayBlock;
     private String titleDayBlock;
     private Button mBtnAddTime;
@@ -117,14 +99,12 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     private MainDatabaseHelper keepData;
     private SchedulerRequestController schedulerRequestController;
     private TextView nameDevice;
-    //private TextView listScheduler;
-    private TextView textName;
     private final static String TAG = "DeviceMemberManagerment";
     private static int positionNow = 0;
     private static int PICK_IMAGE = 1;
     private static int mCurrentHourOfDayFrom;
     private static int mCurrentMinuteFrom;
-
+    private InputMethodManager mImm;
 
     private BroadcastReceiver getDatabaseReceiver = new BroadcastReceiver() {
 
@@ -185,23 +165,15 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         schedulerRequestController = new SchedulerRequestController(this);
         layoutList = (RelativeLayout) findViewById(R.id.layout_list);
         nameDevice = (TextView) findViewById(R.id.nameFamily);
-        //listScheduler = (TextView) findViewById(R.id.listDeviceName);
         detailLayout = (LinearLayout) findViewById(R.id.bottom_layout);
-        //editName = (EditText) findViewById(R.id.editMemberName);
-        //doneEdit = (ImageButton) findViewById(R.id.layoutEditDone);
-        //doneEdit.setOnClickListener(this);
         listTime = (ListView) findViewById(R.id.listTime);
-        detailLayout.setVisibility(View.GONE);
-        //layoutClose = (ImageButton) findViewById(R.id.layoutClose);
-        //layoutClose.setOnClickListener(this);
+        //detailLayout.setVisibility(View.GONE);
         bottomUp = AnimationUtils.loadAnimation(this, R.anim.bottom_up);
-        bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
         displayMember();
-        //displayDetailTime();
         deviceRequestController = new DeviceRequestController(this);
         btnAddSchedule = (Button) findViewById(R.id.btn_add_schedule);
         btnAddSchedule.setOnClickListener(this);
-
+        mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     private void creatIntentForBroastcast() {
@@ -230,9 +202,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 Log.d(TAG, " position : " + position);
                 MainUtils.memberItem = adapterMember.getItem(position);
-                // showDetail(position);
-                nameDevice.setText(MainUtils.memberItem.getName_member());
-
+                showDetail(position);
             }
 
             @Override
@@ -260,6 +230,13 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         super.onResume();
         //  displayMember();
         registerReceiver(getDatabaseReceiver, intentFilter);
+    }
+
+    private void hideKeyboard(View view) {
+        Log.d(TAG, "hideKeyboard() mImm.isInputMethodShown() " + mImm.isInputMethodShown());
+        if (mImm != null && mImm.isInputMethodShown()) {
+            mImm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -303,19 +280,8 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     @Override
     protected void onPause() {
         super.onPause();
-
         formatStringDayBlock(dayBlock);
-        if (MainUtils.parentProfile != null) {
-            //MainUtils.parentProfile.setDay_profile(dayBlock);
-            //MainUtils.parentProfile.setName_profile(setTitleDayBlock(dayBlock));
-            //keepData.updateProfileItem(MainUtils.parentProfile);
-        }
         unregisterReceiver(getDatabaseReceiver);
-        if (detailLayout.getVisibility() == View.VISIBLE) {
-            //hideKeyboard();
-            //detailLayout.startAnimation(bottomDown);
-            //detailLayout.setVisibility(View.GONE);
-        }
     }
 
     public void updateStatusTime(ArrayList<ParentTimeItem> listTime) {
@@ -428,11 +394,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         mTimeListAdapter = new TimeListAdapter(this, R.layout.show_block_app,
                 0, MainUtils.parentProfile.getListTimer());
         listTimer.setAdapter(mTimeListAdapter);
-/*        if (MainUtils.parentProfile.getListTimer().size() == 0) {
-            emptyTimeView.setVisibility(View.VISIBLE);
-        } else {
-            emptyTimeView.setVisibility(View.GONE);
-        }*/
     }
 
     public void displayScreen() {
@@ -449,10 +410,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         //emptyTimeView = (LinearLayout) mView.findViewById(R.id.empyTimeView);
         listTimer = (CustomListView) mView.findViewById(R.id.time_listview);
         listTimer.setFocusable(false);
-        //mEditScheduleName = (EditText) mView.findViewById(R.id.editScheduleName);
-//        if (MainUtils.parentProfile != null){
-//            mEditScheduleName.setText(MainUtils.parentProfile.getName_profile());
-//        }
         addItemStatusTime();
 
         btnMonday.setOnClickListener(this);
@@ -463,7 +420,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         btnSaturday.setOnClickListener(this);
         btnSunday.setOnClickListener(this);
         if (MainUtils.parentProfile == null) return;
-        //getActionBar().setTitle(MainUtils.parentProfile.getName_profile() + " schedule detail");
         dayBlock = MainUtils.parentProfile.getDay_profile();
         titleDayBlock = MainUtils.parentProfile.getName_profile();
 
@@ -643,35 +599,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         return adapterMember.getView(position, null, null);
     }
 
-    public void addNewMember() {
-        mView = getLayoutInflater().inflate(R.layout.add_member_layout, null);
-        mIDText = (TextView) mView.findViewById(R.id.add_member_ID);
-        mIDText.setText("ID Family : " + MainUtils.parentGroupItem.getGroup_code());
-        mTextMsg = (TextView) mView.findViewById(R.id.add_member_text);
-        mTextMsg.setText(getResources().getString(R.string.add_member_text));
-
-        mAlertDialog = new AlertDialog.Builder(this).setView(mView).setCancelable(false)
-                .setTitle("Add new device")
-                .setPositiveButton("Create Test", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        ParentMemberItem childItem = new ParentMemberItem();
-                        childItem.setName_member("Test device");
-                        childItem.setType_member(0);
-                        childItem.setId_member(mDataHelper.addMemberItemParent(childItem, MainUtils.parentGroupItem.getId_group()));
-                        MainUtils.parentGroupItem.getListMember().add(childItem);
-                        displayMember();
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                }).create();
-        mAlertDialog.show();
-    }
-
     public void displayMember() {
         if (MainUtils.parentGroupItem == null) {
             return;
@@ -722,45 +649,28 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
 
     public void showDetail(int position) {
+        if (MainUtils.memberItem == null) {
+            return;
+        }
         MainUtils.memberItem = adapterMember.getItem(position);
-        //editName.setText(MainUtils.memberItem.getName_member().toString());
-        if (detailLayout.getVisibility() == View.GONE) {
-            //detailLayout.startAnimation(bottomUp);
+
+        if (nameDevice != null) {
+            nameDevice.setText(MainUtils.memberItem.getName_member());
+        }
+        /*if (detailLayout.getVisibility() == View.GONE) {
+            detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
         } else {
             detailLayout.setVisibility(View.GONE);
-            //detailLayout.startAnimation(bottomUp);
+            detailLayout.startAnimation(bottomUp);
             detailLayout.setVisibility(View.VISIBLE);
-        }
+        }*/
         displayDetailTime();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-            case R.id.layoutClose:
-                if (detailLayout.getVisibility() == View.VISIBLE) {
-                    hideKeyboard();
-                    detailLayout.startAnimation(bottomDown);
-                    detailLayout.setVisibility(View.GONE);
-                }
-
-            case R.id.layoutEditDone:
-                String name = editName.getText().toString();
-                MainUtils.memberItem.setName_member(name);
-                mDataHelper.updateMemberItem(MainUtils.memberItem);
-                displayMember();
-                if (detailLayout.getVisibility() == View.VISIBLE) {
-                    hideKeyboard();
-                    detailLayout.startAnimation(bottomDown);
-                    detailLayout.setVisibility(View.GONE);
-                }
-
-                break;
-            case R.id.editFamilyName:
-                //Toast.makeText(this, "Change avatar", Toast.LENGTH_SHORT).show();
-                break;
 
             case R.id.btn_add_schedule:
                 createNewSchedule();
@@ -879,6 +789,9 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         fromBt = (Button) view.findViewById(R.id.fromBt);
         toBt = (Button) view.findViewById(R.id.toBt);
         // Get data TimeItems
+
+        timePickerFrom.clearFocus();
+        timePickerTo.clearFocus();
         Calendar now = Calendar.getInstance();
         if (!isEdit) {
             timePickerFrom.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
@@ -905,6 +818,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
             @Override
             public void onClick(View v) {
+                hideKeyboard(timePickerFrom);
                 fromBt.setBackgroundColor(Color.parseColor("#3B5998"));
                 fromBt.setTextColor(Color.parseColor("#FFFFFF"));
                 toBt.setTextColor(Color.parseColor("#000000"));
@@ -917,6 +831,7 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
 
             @Override
             public void onClick(View v) {
+                hideKeyboard(timePickerTo);
                 toBt.setBackgroundColor(Color.parseColor("#3B5998"));
                 fromBt.setBackgroundColor(Color.TRANSPARENT);
                 toBt.setTextColor(Color.parseColor("#FFFFFF"));
@@ -1018,11 +933,6 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
                             }
                         }).create();
         mDeleteDialog.show();
-    }
-
-    private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editName.getWindowToken(), 0);
     }
 
     public boolean blockAll(int positionMember) {

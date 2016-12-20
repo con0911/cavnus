@@ -17,7 +17,6 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
-import com.android.keepfocus.receive.ChildProfileReceiver;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Scheduler;
 import com.android.keepfocus.server.model.TimeItems;
@@ -39,9 +38,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-/**
- * Created by sev_user on 11/12/2016.
- */
 public class SchedulerRequestController {
     public static final String BASE_URL = "http://45.32.103.87/api/scheduler?pRequest=";
     private static final int NET_READ_TIMEOUT_MILLIS = 10000;
@@ -259,11 +255,11 @@ public class SchedulerRequestController {
                             MainUtils.childKeepFocusItem.setDayFocus(scheduleItem.getString("days"));
                             MainUtils.childKeepFocusItem.setActive(scheduleItem.getString("isActive").equals("1"));
                             mDataHelper.addNewFocusItem(MainUtils.childKeepFocusItem);
-                            Log.e("vinh", "MainUtils.childKeepFocusItem.getKeepFocusId() : " + MainUtils.childKeepFocusItem.getKeepFocusId());
+                            Log.e(TAG, "MainUtils.childKeepFocusItem.getKeepFocusId() : " + MainUtils.childKeepFocusItem.getKeepFocusId());
                             JSONArray timeItems = scheduleItem.getJSONArray("timeitems");
                             for (int j = 0; j < timeItems.length(); j++){
                                 JSONObject timeItem = timeItems.getJSONObject(j);
-                                Log.e("vinh", "timeItem : "+ timeItems.getJSONObject(j));
+                                Log.e(TAG, "timeItem : "+ timeItems.getJSONObject(j));
                                 ChildTimeItem childTimeItem = new ChildTimeItem();
                                 childTimeItem.setHourBegin(timeItem.getInt("start_hours"));
                                 childTimeItem.setMinusBegin(timeItem.getInt("start_minutes"));
@@ -273,6 +269,7 @@ public class SchedulerRequestController {
                             }
                             //mDataHelper.addNewFocusItem(MainUtils.childKeepFocusItem);
                             Intent schedule = new Intent(mContext, ChildSchedulerActivity.class);
+                            schedule.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                             mContext.startActivity(schedule);
                         }
                         updateSuccess();
@@ -281,10 +278,10 @@ public class SchedulerRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }
@@ -482,10 +479,10 @@ public class SchedulerRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }
@@ -535,10 +532,10 @@ public class SchedulerRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }
@@ -588,10 +585,10 @@ public class SchedulerRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }
@@ -641,10 +638,10 @@ public class SchedulerRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }
@@ -695,10 +692,10 @@ public class SchedulerRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }
@@ -749,10 +746,10 @@ public class SchedulerRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Please check internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please check the internet connection", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
             mDialog.dismiss();
         }

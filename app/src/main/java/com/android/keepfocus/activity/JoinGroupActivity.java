@@ -35,9 +35,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +49,6 @@ import com.android.keepfocus.receive.DevicePolicyReceiver;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
 import com.android.keepfocus.server.model.GroupUser;
-import com.android.keepfocus.server.model.License;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.model.JoinGroupRequest;
 import com.android.keepfocus.utils.Constants;
@@ -173,6 +170,8 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
             mActiveCode.setVisibility(View.GONE);
             mRBtnManage.setChecked(true);
             mRBtnChild.setChecked(false);
+            mRBtnUse.setVisibility(View.GONE);
+            mRBtnUnUse.setVisibility(View.GONE);
         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
             mRBtnManage.setChecked(false);
             mRBtnChild.setChecked(true);
@@ -722,21 +721,23 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                                 SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, mContext);
                                 Log.e(TAG, "isJoinSuccess" + isJoinSuccess);
                                 groupRequestController.updateSuccess();
-                                Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(JoinGroupActivity.this, "Success join", Toast.LENGTH_SHORT).show();
                                 SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
                                 setBundle("join");
                                 Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
+                                childSchedule.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(childSchedule);
                             }
                         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager) {
                             Log.e(TAG, "isJoinSuccess Manager" + isJoinSuccess);
+                            //Additional Parent
                             Intent familyManagement = new Intent(JoinGroupActivity.this, FamilyManagerment.class);
                             startActivity(familyManagement);
                         }
 
                     } else if (status_result.equals("2")) {
                         if(SetupWizardActivity.getModeDevice(mContext) == Constants.Children) {
-                            final Toast wrongActiveCode = Toast.makeText(mContext, "The activation code is incorrect, please chec Activation code and try again.", Toast.LENGTH_SHORT);
+                            final Toast wrongActiveCode = Toast.makeText(mContext, "The activation code is incorrect, please check Activation code and try again.", Toast.LENGTH_SHORT);
                             wrongActiveCode.show();
                             MainUtils.extendDisplayTimeOfToast(wrongActiveCode);
                         }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
@@ -824,7 +825,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                     String status_result = message.getString("Status");
                     JSONObject data = jsonObj.getJSONObject("Data");
                     int id_profile_server = data.getInt("id");
-                    Log.e("vinh", "id_profile_server : "+id_profile_server);
+                    Log.e(TAG, "id_profile_server : "+id_profile_server);
                     //ArrayList<ChildKeepFocusItem> listChild =  mDataHelper.getAllKeepFocusFromDb();
                     //MainUtils.childKeepFocusItem.setId_profile_server(id_profile_server);
                     //mDataHelper.updateFocusItem(MainUtils.childKeepFocusItem);
@@ -836,6 +837,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                         SetupWizardActivity.setNameDevice(nameDevice.getText().toString(), mContext);
                         setBundle("replace");
                         Intent childSchedule = new Intent(JoinGroupActivity.this, ChildSchedulerActivity.class);
+                        childSchedule.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(childSchedule);
                     } else {
                         Toast.makeText(mContext, "Replace device failure", Toast.LENGTH_SHORT).show();

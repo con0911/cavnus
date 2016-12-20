@@ -443,8 +443,14 @@ public class FamilyManagerment extends Activity{
 
 
     public void onItemLongClick(int position) {
-        deleteProfile(position);
+        if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin) {
+            deleteProfile(position);
+        } else {
+            Toast.makeText(mContext, "You don't have delete permission.", Toast.LENGTH_SHORT).show();
+        }
     }
+
+
 
     public void deleteProfile(final int position) {
         final int mPosition = position;
@@ -482,21 +488,25 @@ public class FamilyManagerment extends Activity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add :
-                createNewGroup();
-                break;
-            case R.id.rename:
-                renameGroup();
-                break;
-            case R.id.action_update :
-                SetupWizardActivity.setTypeRestoreFamily(Constants.RestoreFamilySuccess, mContext);
-                item.setVisible(false);
-                groupRequestController.getGroupInServer();
-                break;
-
+        if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin) {
+            switch (item.getItemId()) {
+                case R.id.action_add :
+                    createNewGroup();
+                    break;
+                case R.id.rename:
+                    renameGroup();
+                    break;
+                case R.id.action_update :
+                    SetupWizardActivity.setTypeRestoreFamily(Constants.RestoreFamilySuccess, mContext);
+                    item.setVisible(false);
+                    groupRequestController.getGroupInServer();
+                    break;
+            }
+            return super.onOptionsItemSelected(item);
+        } else {
+            Toast.makeText(mContext, "You don't have this permission.", Toast.LENGTH_SHORT).show();
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     public void addNewMember(int position) {

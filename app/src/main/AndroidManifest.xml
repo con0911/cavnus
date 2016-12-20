@@ -181,6 +181,7 @@
         </service>
 
         <activity android:name=".gcm.MainGcmActivity"/>
+        <receiver android:name=".gcm.MyGcmPushReceiver$NotificationButtonListener" />
 
     </application>
 

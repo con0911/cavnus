@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="button_choose_mode_margin_top">90dp</dimen>
+    <dimen name="button_height">75dp</dimen>
+    <dimen name="term_condition_margin_top">150dp</dimen>
+    <dimen name="form_login_margin">75dp</dimen>
+    <dimen name="button_login_margin_top">50dp</dimen>
+    <dimen name="button_space_padding">70dp</dimen>
+
+</resources>

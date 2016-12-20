@@ -12,17 +12,16 @@ import android.widget.Toast;
 
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.activity.LoginActivity;
-import com.android.keepfocus.data.ChildKeepFocusItem;
-import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
+import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
 import com.android.keepfocus.server.model.Header;
-import com.android.keepfocus.server.model.License;
 import com.android.keepfocus.server.request.model.GroupRequest;
+import com.android.keepfocus.server.request.model.JoinGroupRequest;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.android.keepfocus.utils.ServerUtils;
@@ -102,6 +101,11 @@ public class GroupRequestController {
         listLicenseAsynTask.execute();
     }
 
+    public void managerJoinGroup(String device, String group, int type) {
+        ManagerJoinGroupAsynTask managerJoinGroupAsynTask = new ManagerJoinGroupAsynTask(device, group, type);
+        managerJoinGroupAsynTask.execute();
+    }
+
 
     public String createGroup() {
         Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
@@ -170,6 +174,29 @@ public class GroupRequestController {
         return jsonRequest;
     }
 
+    public String confirmManagerJoinGroup(String device, String group) throws JSONException {
+        JSONObject groupObject = new JSONObject(group);
+        JSONObject deviceObject = new JSONObject(device);
+        Group groupItem = new Group(0, groupObject.getString("group_code"));
+        Device deviceItem = new Device(0, deviceObject.getString("device_name"),
+                deviceObject.getString("device_model"), deviceObject.getString("device_type"),
+                deviceObject.getString("registation_id"),
+                deviceObject.getString("device_code"), deviceObject.getString("device_mode"));
+        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(Constants.ActionTypeManagerJoin, groupItem, deviceItem);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(joinGroupRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    public String rejectManagerJoinGroup() {
+        //JoinGroupRequest joinGroupRequest = new JoinGroupRequest(Constants.ActionTypeManagerReject, null, null);
+        //Gson gson = new Gson();
+        //String jsonRequest = gson.toJson(joinGroupRequest);
+        String jsonRequest = "{\"Group\":null, \"Device\":null, \"Type\":6}";
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
 
     //=====================Block code for create new Family api==================================
 
@@ -329,7 +356,7 @@ public class GroupRequestController {
                             if (MainUtils.parentGroupItem == null) {
                                 MainUtils.parentGroupItem = mDataHelper.getAllGroupItemParent().get(0);//add to first
                             }
-                            Log.d(TAG,"join To Group "+MainUtils.parentGroupItem.getGroup_name());
+                            Log.d(TAG,"restore info of Group "+MainUtils.parentGroupItem.getGroup_name());
 
                             int type;
                             if(deviceItem.getString("device_mode").trim().equals(JoinGroupActivity.MANAGER)) {
@@ -364,7 +391,7 @@ public class GroupRequestController {
                                     parentProfileItem.setId_profile_server(schedulersArray.getJSONObject(k).getInt("id"));
                                     int idProfile = mDataHelper.addProfileItemParent(parentProfileItem, idMember);
                                     ArrayList<ParentTimeItem> arrayList = new ArrayList(timeItem.length());
-                                    for(int ii=0;i < timeItem.length();i++){
+                                    for(int ii=0;ii < timeItem.length();ii++){
                                         ParentTimeItem item1 = new ParentTimeItem();
                                         item1.setId_profile(timeItem.getJSONObject(ii).getInt("scheduler_id"));
                                         item1.setHourBegin(timeItem.getJSONObject(ii).getInt("start_hours"));
@@ -503,14 +530,29 @@ public class GroupRequestController {
 
     //=======================================================================================
 
-    private class JoinGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
-        ProgressDialog mDialog;
+    private class ManagerJoinGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
+        String deviceObject = "";
+        String groupObject = "";
+        int type = 1;
+        ManagerJoinGroupAsynTask(String device, String group, int type){
+            this.deviceObject = device;
+            this.groupObject = group;
+            this.type = type;
+        }
 
         @Override
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
-            String link;
-            link = BASE_URL + deleteGroup();
+            String link = null;
+            try {
+                if(type == 0) {
+                    link = BASE_URL + confirmManagerJoinGroup(deviceObject, groupObject);
+                }else if (type == 1) {
+                    link = BASE_URL + rejectManagerJoinGroup();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             Log.d(TAG, "link: " + link);
             result = connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
@@ -526,30 +568,19 @@ public class GroupRequestController {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
-                    if (description_result.equals("Success")) {
-                        mDataHelper.deleteGroupItemById(MainUtils.parentGroupItem.getId_group());
-                        updateSuccess();
-                    } else {
-                        Toast.makeText(mContext, "Error in server", Toast.LENGTH_SHORT).show();
+                    int status = message.getInt("Status");
+                    Log.d(TAG,"status1 = "+status);
+                    //JSONObject data = jsonObj.getJSONObject("Data");
+                    if(status == 1) {
+                        //success
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Can't create new family! Error in database", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Error in database", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mDialog = new ProgressDialog(mContext);
-            mDialog.setCancelable(false);
-            mDialog.setInverseBackgroundForced(false);
-            mDialog.setMessage("Request to server...");
-            mDialog.show();
         }
     }
 
@@ -654,7 +685,7 @@ public class GroupRequestController {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(mContext, "Can't create new scheduler! Error in database", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Can't get list license! Error in database", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();

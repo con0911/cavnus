@@ -21,6 +21,8 @@ public class Constants {
     public static final int ActionTypeCreate = 1;
     public static final int ActionTypeUpdate = 2;
     public static final int ActionTypeDelete = 3;
+    public static final int ActionTypeManagerJoin = 5;
+    public static final int ActionTypeManagerReject = 6;
     public static final int ActionTypeGetDevice = 7;
     public static final int ActionTypeGetList = 8;
 

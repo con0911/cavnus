@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#3B5998"
-    android:gravity="center_horizontal"
     android:orientation="vertical"
     android:weightSum="15"
     tools:context="com.android.keepfocus.activity.LoginActivity">
@@ -11,10 +10,9 @@
     <ImageView
         android:id="@+id/img_cavnus"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/image_cavnus_height"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:layout_weight="1"
         android:background="@drawable/cavnus_bg" />
 
     <!-- Login progress -->
@@ -29,7 +27,7 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="5"
         android:paddingLeft="@dimen/form_login_margin"
         android:paddingRight="@dimen/form_login_margin"
@@ -114,8 +112,8 @@
                 android:id="@+id/email_sign_in_button"
                 style="@style/button_text_style"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginTop="@dimen/button_login_margin_top"
                 android:background="@drawable/btn_border"
                 android:gravity="center"
                 android:layout_below="@+id/layout_password"
@@ -148,7 +146,7 @@
                     android:id="@+id/register_button"
                     style="@style/button_text_style"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/button_height"
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="@dimen/button_margin_bottom"
                     android:background="@drawable/btn_signup"

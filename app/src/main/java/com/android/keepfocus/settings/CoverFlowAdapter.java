@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.android.keepfocus.R;
 import com.android.keepfocus.activity.FamilyManagerment;
 import com.android.keepfocus.data.ParentGroupItem;
+import com.android.keepfocus.server.request.controllers.GroupRequestController;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -190,16 +191,6 @@ public class CoverFlowAdapter extends BaseAdapter {
                         parent3.setPressed(true);
                         familyManagerment.showDetail(position);
                         break;
-
-                    /*case R.id.btn_yellow:
-                        familyManagerment.addNewMember(position);
-                        break;
-                    case R.id.btn_orange:
-                        familyManagerment.showDetail(position);
-                        break;
-                    case R.id.btn_green:
-                        familyManagerment.onItemLongClick(position);
-                        break;*/
                 }
 
             }

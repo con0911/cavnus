@@ -3,6 +3,7 @@ package com.android.keepfocus.gcm;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
+import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.NotificationController;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.android.gms.gcm.GcmListenerService;
@@ -40,6 +42,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static final String CREATE_NOTI = "create";
     public static final String UPDATE_NOTI = "update";
     public static final String JOIN_GROUP = "join";
+    public static final String MANAGER_JOIN_GROUP = "managerjoin";
     public static final String MANAGER = "manager";
     public static final String CHILDREN = "child";
     public static final String REPLACE_DEVICE = "replace";
@@ -228,6 +231,19 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     SharedPreferences.Editor editor6 = prefs.edit();
                     editor6.putBoolean(MainUtils.IS_BLOCK_SETTINGS, false);
                     editor6.commit();
+                    break;
+                case MANAGER_JOIN_GROUP:
+                    //manager join group
+                    Log.e(TAG, "MANAGER_JOIN_GROUP");
+                    //JSONObject messageObject = new JSONObject(message);
+                    //JSONArray jsonMessage = messageObject.getJSONArray("message");
+                    //JSONObject jsonDevice = jsonMessage.getJSONObject(0);
+                    //JSONObject jsonGroup = jsonMessage.getJSONObject(1);
+
+                    sendNotificationConfirm("... want to join your family as a manager.",
+                            "You have a manager request",
+                            "",//jsonDevice.toString(),
+                            "");//jsonGroup.toString());
                     break;
 
                 default:
@@ -496,7 +512,6 @@ public class MyGcmPushReceiver extends GcmListenerService {
     private void sendNotificationNoPressAction(String message, String title) {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.icon_app)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
@@ -507,6 +522,65 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, noti);
+    }
+
+    private void sendNotificationConfirm(String message, String title, String deviceObject, String familyObject) {
+
+        //int time = (int)System.currentTimeMillis();
+
+        Intent intentAccept = new Intent(this, NotificationButtonListener.class);
+        intentAccept.putExtra("Confirm",true);
+        intentAccept.putExtra("Device",deviceObject);
+        intentAccept.putExtra("Group",familyObject);
+        //intentAccept.putExtra("ID",time);
+        PendingIntent pendingIntentAccept = PendingIntent.getBroadcast(this, 0 /* Request code */, intentAccept,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        //
+        Intent intentDeny = new Intent(this, NotificationButtonListener.class);
+        intentDeny.putExtra("Confirm",false);
+        //intentDeny.putExtra("ID",time);
+        PendingIntent pendingIntentDeny = PendingIntent.getBroadcast(this, 1 /* Request code */, intentDeny,
+                PendingIntent.FLAG_NO_CREATE);
+        //
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.icon_app)
+                .setContentTitle(title)
+                .setContentText(message)
+                .addAction(R.color.transparent,"Accept",pendingIntentAccept)
+                .addAction(R.color.transparent,"Reject",pendingIntentDeny)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri);
+        Notification noti = notificationBuilder.build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        noti.flags |= Notification.FLAG_NO_CLEAR;
+        notificationManager.notify(11, noti);
+    }
+
+    public static class NotificationButtonListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, "NotificationButtonListener onReceive " + intent);
+            boolean confirm = intent.getBooleanExtra("Confirm", false);
+            //int idNoti = intent.getIntExtra("ID", 0);
+            Log.e(TAG, "confirm " + confirm);
+            if (confirm) {
+                String device = intent.getStringExtra("Device");
+                String group = intent.getStringExtra("Group");
+                //GroupRequestController groupRequestController = new GroupRequestController(context);
+                //groupRequestController.managerJoinGroup(device,group);
+            } else {
+                GroupRequestController groupRequestController = new GroupRequestController(context);
+                groupRequestController.managerJoinGroup("","",1);
+            }
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(11);
+        }
+
     }
 }
 

@@ -87,7 +87,7 @@
     <LinearLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="@dimen/bottom_family_layout_height"
         android:layout_alignParentBottom="true"
         android:background="@drawable/button_white_color"
         android:orientation="vertical">

@@ -2,11 +2,13 @@ package com.android.keepfocus.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,7 +24,6 @@ import com.android.keepfocus.controller.ChildKeepFocusAdapter;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildNotificationItemMissHistory;
 import com.android.keepfocus.data.MainDatabaseHelper;
-import com.android.keepfocus.receive.ChildProfileReceiver;
 import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.service.KeepFocusMainService;
 import com.android.keepfocus.service.ServiceBlockApp;
@@ -31,6 +32,7 @@ import com.android.keepfocus.utils.MainUtils;
 import java.util.ArrayList;
 
 public class ChildSchedulerActivity extends Activity {
+    private static final String TAG = "ChildSchedulerActivity";
     private ListView listProperties;
     private LinearLayout headerView;
     private TextView mTextNoGroup;
@@ -43,7 +45,6 @@ public class ChildSchedulerActivity extends Activity {
     static int mNotifCount = 0;
     static Button notifCount;
     private DialogNotificationHistory mDialogNotiHistory;
-    private ChildProfileReceiver myReceiver;
     private IntentFilter intentFilter;
     private SchedulerRequestController mSchedulerRequestController;
 
@@ -58,6 +59,7 @@ public class ChildSchedulerActivity extends Activity {
         mBtnRestore = (Button) findViewById(R.id.btn_restore);
         mContext = this;
         setTitle(SetupWizardActivity.getNameDevice(mContext));
+        initIntentFilter();
         //keepData = new MainDatabaseHelper(this);
         listProperties = (ListView) findViewById(R.id.listP);
         headerView = (LinearLayout) getLayoutInflater().inflate(R.layout.header_view_profile, null);
@@ -71,16 +73,6 @@ public class ChildSchedulerActivity extends Activity {
             startService(new Intent(this, KeepFocusMainService.class));
         }
         startService(new Intent(this, ServiceBlockApp.class));
-
-        myReceiver = new ChildProfileReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                super.onReceive(context, intent);
-                displayProfile();
-            }
-        };
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(MainUtils.UPDATE_CHILD_SCHEDULER);
 
         String bundle = JoinGroupActivity.getBundleString();
         if (bundle != null && bundle.equals("replace") && listBlockPropertiesArr.size() == 0){
@@ -96,6 +88,26 @@ public class ChildSchedulerActivity extends Activity {
         });
     }
 
+    private void initIntentFilter() {
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+    }
+
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            Log.d(TAG, "onReceive" + action);
+            if (intent == null) {
+                return;
+            }
+
+            if (MainUtils.UPDATE_CHILD_SCHEDULER.equals(action)) {
+                displayProfile();
+            }
+        }
+    };
+
     @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title +"'s schedule");
@@ -103,9 +115,11 @@ public class ChildSchedulerActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-        //finishAffinity();
-        moveTaskToBack(true);
+        super.onBackPressed();
+        finishAffinity();
+        //moveTaskToBack(true);
+        //finish();
+        Log.d(TAG, "onBackPressed");
     }
 
     @Override
