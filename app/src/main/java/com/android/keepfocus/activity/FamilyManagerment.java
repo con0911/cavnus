@@ -342,6 +342,10 @@ public class FamilyManagerment extends Activity{
         }
     }
 
+    public void getAllGroupInServer(){
+        groupRequestController.getGroupInServer();
+    }
+
 
     @Override
     protected void onPause() {

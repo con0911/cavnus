@@ -233,10 +233,10 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
     }
 
     private void hideKeyboard(View view) {
-        Log.d(TAG, "hideKeyboard() mImm.isInputMethodShown() " + mImm.isInputMethodShown());
-        if (mImm != null && mImm.isInputMethodShown()) {
-            mImm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
+        //Log.d(TAG, "hideKeyboard() mImm.isInputMethodShown() " + mImm.isInputMethodShown());
+        //if (mImm != null && mImm.isInputMethodShown()) {
+            //mImm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        //}
     }
 
     @Override

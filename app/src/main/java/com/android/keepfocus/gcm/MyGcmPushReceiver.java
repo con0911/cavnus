@@ -16,6 +16,7 @@ import android.util.Log;
 import com.android.keepfocus.R;
 import com.android.keepfocus.activity.ChildSchedulerActivity;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
+import com.android.keepfocus.activity.FamilyManagerment;
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildTimeItem;
@@ -43,6 +44,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static final String UPDATE_NOTI = "update";
     public static final String JOIN_GROUP = "join";
     public static final String MANAGER_JOIN_GROUP = "managerjoin";
+    public static final String ACCEPT_MANAGER_JOIN = "acceptjoin";
     public static final String MANAGER = "manager";
     public static final String CHILDREN = "child";
     public static final String REPLACE_DEVICE = "replace";
@@ -235,15 +237,23 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 case MANAGER_JOIN_GROUP:
                     //manager join group
                     Log.e(TAG, "MANAGER_JOIN_GROUP");
-                    //JSONObject messageObject = new JSONObject(message);
-                    //JSONArray jsonMessage = messageObject.getJSONArray("message");
-                    //JSONObject jsonDevice = jsonMessage.getJSONObject(0);
-                    //JSONObject jsonGroup = jsonMessage.getJSONObject(1);
+                    JSONObject messageObject = new JSONObject(message);
+                    JSONObject jsonMessage = messageObject.getJSONObject("message");
+                    JSONObject jsonDevice = jsonMessage.getJSONObject("Device");
+                    String deviceName = jsonDevice.getString("device_name");
+                    JSONObject jsonGroup = jsonMessage.getJSONObject("Group");
 
-                    sendNotificationConfirm("... want to join your family as a manager.",
+                    sendNotificationConfirm(deviceName+" want to join your family as a manager.",
                             "You have a manager request",
-                            "",//jsonDevice.toString(),
-                            "");//jsonGroup.toString());
+                            jsonDevice.toString(),
+                            jsonGroup.toString());
+                    break;
+                case ACCEPT_MANAGER_JOIN:
+                    //update manager device when join group
+                    Log.e(TAG, "ACCEPT_MANAGER_JOIN");
+                    FamilyManagerment familyManagerment = (FamilyManagerment)getApplicationContext() ;
+                    familyManagerment.getAllGroupInServer();
+                    sendNotificationAccept("Press here to manager family","You've accepted to become manager");
                     break;
 
                 default:
@@ -509,6 +519,28 @@ public class MyGcmPushReceiver extends GcmListenerService {
         notificationManager.notify(0 /* ID of notification */, noti);
     }
 
+    private void sendNotificationAccept(String message, String title) {
+        Intent intent = new Intent(this, FamilyManagerment.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.icon_app)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+        Notification noti = notificationBuilder.build();
+        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0 /* ID of notification */, noti);
+    }
+
     private void sendNotificationNoPressAction(String message, String title) {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -534,13 +566,13 @@ public class MyGcmPushReceiver extends GcmListenerService {
         intentAccept.putExtra("Group",familyObject);
         //intentAccept.putExtra("ID",time);
         PendingIntent pendingIntentAccept = PendingIntent.getBroadcast(this, 0 /* Request code */, intentAccept,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.FLAG_ONE_SHOT);
         //
         Intent intentDeny = new Intent(this, NotificationButtonListener.class);
         intentDeny.putExtra("Confirm",false);
         //intentDeny.putExtra("ID",time);
         PendingIntent pendingIntentDeny = PendingIntent.getBroadcast(this, 1 /* Request code */, intentDeny,
-                PendingIntent.FLAG_NO_CREATE);
+                PendingIntent.FLAG_ONE_SHOT);
         //
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -570,8 +602,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
             if (confirm) {
                 String device = intent.getStringExtra("Device");
                 String group = intent.getStringExtra("Group");
-                //GroupRequestController groupRequestController = new GroupRequestController(context);
-                //groupRequestController.managerJoinGroup(device,group);
+                GroupRequestController groupRequestController = new GroupRequestController(context);
+                groupRequestController.managerJoinGroup(device,group,0);
             } else {
                 GroupRequestController groupRequestController = new GroupRequestController(context);
                 groupRequestController.managerJoinGroup("","",1);
