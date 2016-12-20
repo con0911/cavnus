@@ -479,14 +479,30 @@ public class FamilyManagerment extends Activity{
         mDeleteDialog.show();
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
+            menu.getItem(2).setVisible(false);
+        }
+        Log.d(TAG, "onPrepareOptionsMenu listFamily.size() " + listFamily.size());
+        if (listFamily.size() == 0) {
+            menu.getItem(1).setVisible(false);
+        }
+        invalidateOptionsMenu();
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.global, menu);
-        if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
+       /* if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
             menu.getItem(2).setVisible(false);
         }
+        Log.d(TAG, "onCreateOptionsMenu listFamily.size() " + listFamily.size());
+        if (listFamily.size() == 0) {
+            menu.getItem(1).setVisible(false);
+        }*/
         return true;
     }
 
