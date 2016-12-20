@@ -483,6 +483,9 @@ public class FamilyManagerment extends Activity{
         if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
             menu.getItem(2).setVisible(false);
         }
+        if (listFamily.size() == 0) {
+            menu.getItem(1).setVisible(false);
+        }
         return true;
     }
 
