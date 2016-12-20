@@ -45,6 +45,7 @@ public class MainUtils {
     public static final String IS_ALLOW_ALL = "is_allow_all";
     public static final String IS_BLOCK_SETTINGS = "is_block_settings";
     public static final String EXTRA_NOTI_CONTENT = "android.text";
+    public static final String GROUP_ID = "GROUP_ID";
 
     public static String UPDATE_CHILD_SCHEDULER = "com.android.keepfocus.UPDATE_CHILD_SCHEDULER";
     public static String UPDATE_CHILD_DEVICE = "com.android.keepfocus.UPDATE_CHILD_DEVICE";

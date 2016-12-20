@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.activity.LoginActivity;
+import com.android.keepfocus.activity.SetupWizardActivity;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
@@ -146,6 +147,17 @@ public class GroupRequestController {
         return jsonRequest;
     }
 
+    public String managerGetListGroup() {
+        String group_Id = joinPref.getString(MainUtils.GROUP_ID,"");
+        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
+        Group groupItem = new Group(0, group_Id);
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetList, groupItem);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(groupRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        return jsonRequest;
+    }
+
     public String getListDevice() {
         Header headerItem = new Header("", deviceCode, registationId, testPass);
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_code());
@@ -266,7 +278,7 @@ public class GroupRequestController {
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
-            link = BASE_URL + getListGroup();
+            link = BASE_URL + managerGetListGroup();
             Log.d(TAG, "link: " + link);
             result = connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
@@ -331,7 +343,6 @@ public class GroupRequestController {
             link = BASE_URL + getListDevice();
             Log.d(TAG, "link: " + link);
             result = connectToServer(link);
-            //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
 
@@ -487,7 +498,6 @@ public class GroupRequestController {
             link = BASE_URL + deleteGroup();
             Log.d(TAG, "link: " + link);
             result = connectToServer(link);
-            //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
 
@@ -555,7 +565,6 @@ public class GroupRequestController {
             }
             Log.d(TAG, "link: " + link);
             result = connectToServer(link);
-            //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
 
@@ -657,7 +666,6 @@ public class GroupRequestController {
             link = BASE_URL + request;
             Log.d(TAG, "link: " + link);
             result = connectToServer(link);
-            //result = serverUtils.postData(BASE_URL,getListGroup());
             return result;
         }
         @Override

@@ -18,12 +18,14 @@ import com.android.keepfocus.activity.ChildSchedulerActivity;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.activity.FamilyManagerment;
 import com.android.keepfocus.activity.JoinGroupActivity;
+import com.android.keepfocus.activity.SetupWizardActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.NotificationController;
+import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.android.gms.gcm.GcmListenerService;
 
@@ -253,6 +255,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     Log.e(TAG, "ACCEPT_MANAGER_JOIN");
                     //FamilyManagerment familyManagerment = new FamilyManagerment() ;
                     //familyManagerment.getAllGroupInServer();
+                    SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, getApplicationContext());
                     sendNotificationAccept("Press here to manager family","You've accepted to become manager");
                     break;
 

@@ -83,6 +83,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
     private Spinner mActiveCode;
     private static boolean checkValidID, checkValidActiveCode, checkValidName;
     private LinearLayout layoutChooseMode;
+    private LinearLayout layoutChooseLicense;
     private RadioButton mRBtnManage, mRBtnChild;
     private RadioButton mRBtnUse, mRBtnUnUse;
     public String deviceCode;
@@ -124,6 +125,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         nameDevice = (EditText) findViewById(R.id.deviceName);
         btnImageDone = (Button) findViewById(R.id.doneImageBtn);
         layoutChooseMode = (LinearLayout) findViewById(R.id.layout_choose_mode);
+        layoutChooseLicense = (LinearLayout) findViewById(R.id.layout_choose_license);
         btnImageDone.setClickable(false);
         btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"));
         btnImageDone.setTextColor(Color.parseColor("#808080"));
@@ -170,8 +172,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
             mActiveCode.setVisibility(View.GONE);
             mRBtnManage.setChecked(true);
             mRBtnChild.setChecked(false);
-            mRBtnUse.setVisibility(View.GONE);
-            mRBtnUnUse.setVisibility(View.GONE);
+            layoutChooseLicense.setVisibility(View.GONE);
         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
             mRBtnManage.setChecked(false);
             mRBtnChild.setChecked(true);
@@ -650,6 +651,9 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
+        SharedPreferences.Editor editor = joinPref.edit();
+        editor.putString(MainUtils.GROUP_ID, joinFamilyIDText.getText().toString());
+        editor.commit();
         return jsonRequest;
     }
 
@@ -663,6 +667,9 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
+        SharedPreferences.Editor editor = joinPref.edit();
+        editor.putString(MainUtils.GROUP_ID, joinFamilyIDText.getText().toString());
+        editor.commit();
         return jsonRequest;
     }
 
