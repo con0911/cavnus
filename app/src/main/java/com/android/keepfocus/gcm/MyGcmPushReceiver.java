@@ -251,8 +251,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 case ACCEPT_MANAGER_JOIN:
                     //update manager device when join group
                     Log.e(TAG, "ACCEPT_MANAGER_JOIN");
-                    FamilyManagerment familyManagerment = (FamilyManagerment)getApplicationContext() ;
-                    familyManagerment.getAllGroupInServer();
+                    //FamilyManagerment familyManagerment = new FamilyManagerment() ;
+                    //familyManagerment.getAllGroupInServer();
                     sendNotificationAccept("Press here to manager family","You've accepted to become manager");
                     break;
 
@@ -521,6 +521,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
     private void sendNotificationAccept(String message, String title) {
         Intent intent = new Intent(this, FamilyManagerment.class);
+        intent.putExtra("NotificationAccept",true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

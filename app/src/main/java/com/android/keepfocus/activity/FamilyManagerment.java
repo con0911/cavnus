@@ -329,6 +329,9 @@ public class FamilyManagerment extends Activity{
         //displayProfile();
         registerReceiver(getDatabaseReceiver, intentFilter);
         //groupRequestController.getGroupInServer();
+        if (getIntent().getBooleanExtra("NotificationAccept",false)) {
+            getAllGroupInServer();
+        }
 
     }
 
