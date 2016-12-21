@@ -31,7 +31,7 @@ public class ParentGroupItem {
         this.create_date = "";
         this.id_group_server = -1;
         this.icon_uri = "";
-        this.is_restore = 1;
+        this.is_restore = -1;
         listMember = new ArrayList<ParentMemberItem>();
     }
 

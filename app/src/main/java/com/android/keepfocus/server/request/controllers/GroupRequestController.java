@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.activity.LoginActivity;
-import com.android.keepfocus.activity.SetupWizardActivity;
 import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
@@ -201,11 +200,17 @@ public class GroupRequestController {
         return jsonRequest;
     }
 
-    public String rejectManagerJoinGroup() {
-        //JoinGroupRequest joinGroupRequest = new JoinGroupRequest(Constants.ActionTypeManagerReject, null, null);
-        //Gson gson = new Gson();
-        //String jsonRequest = gson.toJson(joinGroupRequest);
-        String jsonRequest = "{\"Group\":null, \"Device\":null, \"Type\":6}";
+    public String rejectManagerJoinGroup(String device, String group) throws JSONException {
+        JSONObject groupObject = new JSONObject(group);
+        JSONObject deviceObject = new JSONObject(device);
+        Group groupItem = new Group(0, groupObject.getString("group_code"));
+        Device deviceItem = new Device(0, deviceObject.getString("device_name"),
+                deviceObject.getString("device_model"), deviceObject.getString("device_type"),
+                deviceObject.getString("registation_id"),
+                deviceObject.getString("device_code"), deviceObject.getString("device_mode"));
+        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(Constants.ActionTypeManagerReject, groupItem, deviceItem);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
     }
@@ -257,7 +262,9 @@ public class GroupRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
 
         @Override
@@ -320,6 +327,7 @@ public class GroupRequestController {
                                 parentGroupItem.setGroup_code(groupItem.getString("group_code"));
                                 parentGroupItem.setCreate_date(groupItem.getString("create_date"));
                                 parentGroupItem.setId_group_server(groupItem.getInt("id"));
+                                parentGroupItem.setIs_restore(1);
                                 mDataHelper.addGroupItemParent(parentGroupItem);
                             }
 
@@ -361,14 +369,6 @@ public class GroupRequestController {
                     if (description_result.equals("Success") && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject deviceItem = data.getJSONObject(i);
-                            //restore schedule
-                            JSONArray groupUser = deviceItem.getJSONArray("group_user");
-                            ParentMemberItem restoreDevice = new ParentMemberItem();
-                            if (MainUtils.parentGroupItem == null) {
-                                MainUtils.parentGroupItem = mDataHelper.getAllGroupItemParent().get(0);//add to first
-                            }
-                            Log.d(TAG,"restore info of Group "+MainUtils.parentGroupItem.getGroup_name());
-
                             int type;
                             if(deviceItem.getString("device_mode").trim().equals(JoinGroupActivity.MANAGER)) {
                                 Log.d(TAG,"type manager " + deviceItem.getString("device_mode").trim());
@@ -378,44 +378,54 @@ public class GroupRequestController {
                                 type = 0;
                             }
 
-                            restoreDevice.setId_member_server(deviceItem.getInt("id"));
-                            restoreDevice.setName_member(deviceItem.getString("device_name"));
-                            restoreDevice.setImage_member(deviceItem.getString("device_model"));
-                            restoreDevice.setType_member(type);
+                            if(type == 0) {
+                                //restore schedule
+                                JSONArray groupUser = deviceItem.getJSONArray("group_user");
+                                ParentMemberItem restoreDevice = new ParentMemberItem();
+                                if (MainUtils.parentGroupItem == null) {
+                                    MainUtils.parentGroupItem = mDataHelper.getAllGroupItemParent().get(0);//add to first
+                                }
+                                Log.d(TAG,"restore info of Group "+MainUtils.parentGroupItem.getGroup_name());
+                                restoreDevice.setId_member_server(deviceItem.getInt("id"));
+                                restoreDevice.setName_member(deviceItem.getString("device_name"));
+                                restoreDevice.setImage_member(deviceItem.getString("device_model"));
+                                restoreDevice.setType_member(type);
 
-                            Log.e(TAG, "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
-                            MainUtils.parentGroupItem.getListMember().add(restoreDevice);
-                            int idMember = mDataHelper.addMemberItemParent(restoreDevice,  MainUtils.parentGroupItem.getId_group());
-                            for (int j = 0; j < groupUser.length(); j++) {
-                                JSONObject groupUserElement = groupUser.getJSONObject(j);
-                                JSONArray schedulersArray = groupUserElement.getJSONArray("schedulers");
+                                Log.e(TAG, "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
+                                MainUtils.parentGroupItem.getListMember().add(restoreDevice);
+                                int idMember = mDataHelper.addMemberItemParent(restoreDevice,  MainUtils.parentGroupItem.getId_group());
+                                for (int j = 0; j < groupUser.length(); j++) {
+                                    JSONObject groupUserElement = groupUser.getJSONObject(j);
+                                    JSONArray schedulersArray = groupUserElement.getJSONArray("schedulers");
 
-                                for (int k = 0; k < schedulersArray.length(); k++) {
-                                    JSONObject scheduleItem = schedulersArray.getJSONObject(k);
-                                    JSONArray timeItem = scheduleItem.getJSONArray("timeitems");
-                                    Log.d(TAG,"timeItem "+timeItem);
-                                    ParentProfileItem parentProfileItem = new ParentProfileItem();
+                                    for (int k = 0; k < schedulersArray.length(); k++) {
+                                        JSONObject scheduleItem = schedulersArray.getJSONObject(k);
+                                        JSONArray timeItem = scheduleItem.getJSONArray("timeitems");
+                                        Log.d(TAG,"timeItem "+timeItem);
+                                        ParentProfileItem parentProfileItem = new ParentProfileItem();
 
-                                    parentProfileItem.setName_profile(schedulersArray.getJSONObject(k).getString("scheduler_name"));
-                                    parentProfileItem.setActive(isActive(schedulersArray.getJSONObject(k).getInt("isActive")));
-                                    parentProfileItem.setDay_profile(schedulersArray.getJSONObject(k).getString("days"));
-                                    parentProfileItem.setId_profile_server(schedulersArray.getJSONObject(k).getInt("id"));
-                                    int idProfile = mDataHelper.addProfileItemParent(parentProfileItem, idMember);
-                                    ArrayList<ParentTimeItem> arrayList = new ArrayList(timeItem.length());
-                                    for(int ii=0;ii < timeItem.length();ii++){
-                                        ParentTimeItem item1 = new ParentTimeItem();
-                                        item1.setId_profile(timeItem.getJSONObject(ii).getInt("scheduler_id"));
-                                        item1.setHourBegin(timeItem.getJSONObject(ii).getInt("start_hours"));
-                                        item1.setHourEnd(timeItem.getJSONObject(ii).getInt("end_hours"));
-                                        item1.setMinusBegin(timeItem.getJSONObject(ii).getInt("start_minutes"));
-                                        item1.setMinusEnd(timeItem.getJSONObject(ii).getInt("end_minutes"));
-                                        item1.setId_time_server(timeItem.getJSONObject(ii).getInt("id"));
-                                        arrayList.add(item1);
-                                        mDataHelper.addTimeItemParent(item1, idProfile);
+                                        parentProfileItem.setName_profile(schedulersArray.getJSONObject(k).getString("scheduler_name"));
+                                        parentProfileItem.setActive(isActive(schedulersArray.getJSONObject(k).getInt("isActive")));
+                                        parentProfileItem.setDay_profile(schedulersArray.getJSONObject(k).getString("days"));
+                                        parentProfileItem.setId_profile_server(schedulersArray.getJSONObject(k).getInt("id"));
+                                        int idProfile = mDataHelper.addProfileItemParent(parentProfileItem, idMember);
+                                        ArrayList<ParentTimeItem> arrayList = new ArrayList(timeItem.length());
+                                        for(int ii=0;ii < timeItem.length();ii++){
+                                            ParentTimeItem item1 = new ParentTimeItem();
+                                            item1.setId_profile(timeItem.getJSONObject(ii).getInt("scheduler_id"));
+                                            item1.setHourBegin(timeItem.getJSONObject(ii).getInt("start_hours"));
+                                            item1.setHourEnd(timeItem.getJSONObject(ii).getInt("end_hours"));
+                                            item1.setMinusBegin(timeItem.getJSONObject(ii).getInt("start_minutes"));
+                                            item1.setMinusEnd(timeItem.getJSONObject(ii).getInt("end_minutes"));
+                                            item1.setId_time_server(timeItem.getJSONObject(ii).getInt("id"));
+                                            arrayList.add(item1);
+                                            mDataHelper.addTimeItemParent(item1, idProfile);
+                                        }
+                                        parentProfileItem.setListTimer(arrayList);
                                     }
-                                    parentProfileItem.setListTimer(arrayList);
                                 }
                             }
+
                         }
                         updateSuccess();
                     }
@@ -473,7 +483,9 @@ public class GroupRequestController {
                 MainUtils.mIsEditNameGroup = false;
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
 
         @Override
@@ -524,7 +536,9 @@ public class GroupRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
 
         @Override
@@ -558,7 +572,7 @@ public class GroupRequestController {
                 if(type == 0) {
                     link = BASE_URL + confirmManagerJoinGroup(deviceObject, groupObject);
                 }else if (type == 1) {
-                    link = BASE_URL + rejectManagerJoinGroup();
+                    link = BASE_URL + rejectManagerJoinGroup(deviceObject, groupObject);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -698,7 +712,9 @@ public class GroupRequestController {
             } else {
                 Toast.makeText(mContext, "Please check internet!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
 
         @Override

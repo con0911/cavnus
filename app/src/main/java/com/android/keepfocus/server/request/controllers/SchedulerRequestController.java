@@ -283,7 +283,9 @@ public class SchedulerRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
         @Override
         protected void onPreExecute() {
@@ -484,7 +486,9 @@ public class SchedulerRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
         @Override
         protected void onPreExecute() {
@@ -537,7 +541,9 @@ public class SchedulerRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
         @Override
         protected void onPreExecute() {
@@ -590,7 +596,9 @@ public class SchedulerRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
         @Override
         protected void onPreExecute() {
@@ -643,7 +651,9 @@ public class SchedulerRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
         @Override
         protected void onPreExecute() {
@@ -697,7 +707,9 @@ public class SchedulerRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
         @Override
         protected void onPreExecute() {
@@ -751,7 +763,9 @@ public class SchedulerRequestController {
             } else {
                 Toast.makeText(mContext, "Please check the internet connection!", Toast.LENGTH_SHORT).show();
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
         @Override
         protected void onPreExecute() {

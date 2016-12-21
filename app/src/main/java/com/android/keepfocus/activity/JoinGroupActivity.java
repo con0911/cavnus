@@ -764,7 +764,9 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                     e.printStackTrace();
                 }
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
 
         @Override
@@ -880,7 +882,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
 
     private void createTestSpinner(){
         ArrayList <String> list = new ArrayList<String>();
-        for (int i=0; i < 100; i++) {
+        for (int i=0; i < 1000; i++) {
             list.add(i+"");
         }
         ArrayAdapter licenseAdapter = new ArrayAdapter(this,

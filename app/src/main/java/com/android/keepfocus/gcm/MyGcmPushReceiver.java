@@ -47,6 +47,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static final String JOIN_GROUP = "join";
     public static final String MANAGER_JOIN_GROUP = "managerjoin";
     public static final String ACCEPT_MANAGER_JOIN = "acceptjoin";
+    public static final String REJECT_MANAGER_JOIN = "rejectjoin";
     public static final String MANAGER = "manager";
     public static final String CHILDREN = "child";
     public static final String REPLACE_DEVICE = "replace";
@@ -80,6 +81,12 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public void onMessageReceived(String from, Bundle bundle) {
         String message = bundle.getString("message");
         String title = bundle.getString("tickerText");
+
+
+
+
+
+
 
         if(title.equals("")) {
             title = bundle.getString("title");
@@ -253,10 +260,14 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 case ACCEPT_MANAGER_JOIN:
                     //update manager device when join group
                     Log.e(TAG, "ACCEPT_MANAGER_JOIN");
-                    //FamilyManagerment familyManagerment = new FamilyManagerment() ;
-                    //familyManagerment.getAllGroupInServer();
                     SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, getApplicationContext());
-                    sendNotificationAccept("Press here to manager family","You've accepted to become manager");
+                    sendNotificationAccept("Press here to manager family.","You've accepted to become manager.");
+                    break;
+                case REJECT_MANAGER_JOIN:
+                    //update manager device when join group
+                    Log.e(TAG, "REJECT_MANAGER_JOIN");
+                    SetupWizardActivity.setTypeJoin(Constants.JoinFail, getApplicationContext());
+                    sendNotificationReject("Press here to request again.","Your request have been rejected.");
                     break;
 
                 default:
@@ -325,8 +336,6 @@ public class MyGcmPushReceiver extends GcmListenerService {
         getApplicationContext().sendBroadcast(intent);
         sendNotificationCreate("", "New schedule has been created");
     }
-
-
 
     public void updateScheduler(String message) throws JSONException {
         JSONObject data = new JSONObject(message);
@@ -545,9 +554,33 @@ public class MyGcmPushReceiver extends GcmListenerService {
         notificationManager.notify(0 /* ID of notification */, noti);
     }
 
+    private void sendNotificationReject(String message, String title) {
+        Intent intent = new Intent(this, SetupWizardActivity.class);
+        intent.putExtra("NotificationAccept",true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.icon_app)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+        Notification noti = notificationBuilder.build();
+        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(3 /* ID of notification */, noti);
+    }
+
     private void sendNotificationNoPressAction(String message, String title) {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.icon_app)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
@@ -574,6 +607,8 @@ public class MyGcmPushReceiver extends GcmListenerService {
         //
         Intent intentDeny = new Intent(this, NotificationButtonListener.class);
         intentDeny.putExtra("Confirm",false);
+        intentDeny.putExtra("Device",deviceObject);
+        intentDeny.putExtra("Group",familyObject);
         //intentDeny.putExtra("ID",time);
         PendingIntent pendingIntentDeny = PendingIntent.getBroadcast(this, 1 /* Request code */, intentDeny,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -603,14 +638,13 @@ public class MyGcmPushReceiver extends GcmListenerService {
             boolean confirm = intent.getBooleanExtra("Confirm", false);
             //int idNoti = intent.getIntExtra("ID", 0);
             Log.e(TAG, "confirm " + confirm);
+            String device = intent.getStringExtra("Device");
+            String group = intent.getStringExtra("Group");
+            GroupRequestController groupRequestController = new GroupRequestController(context);
             if (confirm) {
-                String device = intent.getStringExtra("Device");
-                String group = intent.getStringExtra("Group");
-                GroupRequestController groupRequestController = new GroupRequestController(context);
                 groupRequestController.managerJoinGroup(device,group,0);
             } else {
-                GroupRequestController groupRequestController = new GroupRequestController(context);
-                groupRequestController.managerJoinGroup("","",1);
+                groupRequestController.managerJoinGroup(device,group,1);
             }
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

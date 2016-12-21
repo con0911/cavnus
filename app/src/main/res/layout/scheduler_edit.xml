@@ -122,8 +122,8 @@
 
                 <Button
                     android:id="@+id/details_time_add"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="@dimen/size_button_add_times"
+                    android:layout_height="@dimen/size_button_add_times"
                     android:layout_gravity="right"
                     android:background="@drawable/icon_add" />
             </LinearLayout>

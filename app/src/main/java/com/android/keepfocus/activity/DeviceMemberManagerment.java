@@ -612,11 +612,13 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             adapterMember = new CircleMemberAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listProperties.setVisibility(View.GONE);
+            detailLayout.setVisibility(View.GONE);
         } else {
             Log.e(TAG, "listBlockPropertiesArr.size() != 0");
             mTextNoGroup.setText(" ");
             listProperties.setVisibility(View.GONE);
             layoutList.setVisibility(View.VISIBLE);
+            detailLayout.setVisibility(View.VISIBLE);
             adapterMember = new CircleMemberAdapter(this, listBlockPropertiesArr);
         }
         fancyCoverFlowMember.setAdapter(adapterMember);

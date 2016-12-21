@@ -185,13 +185,17 @@ public class FamilyManagerment extends Activity{
     public void displayProfile() {
         listFamily = mDataHelper.getAllGroupItemParent();
         if (listFamily.size() == 0){
-            if (nameFamily != null) {
-                nameFamily.setVisibility(View.GONE);
-            }
             if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin && !isFirstTime){
                 isFirstTime = true;
                 createNewGroup();
             }
+            if (nameFamily != null && nameFamily.getVisibility() == View.VISIBLE) {
+                nameFamily.setVisibility(View.GONE);
+            }
+            if (listDeviceName != null && listDeviceName.getVisibility() == View.VISIBLE) {
+                listDeviceName.setVisibility(View.GONE);
+            }
+
             mTextNoGroup.setText(R.string.tap_add_to_begin_setup);
             adapterGroup = new CircleGroupAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
@@ -203,6 +207,9 @@ public class FamilyManagerment extends Activity{
         } else {
             if (nameFamily != null) {
                 nameFamily.setVisibility(View.VISIBLE);
+            }
+            if (listDeviceName != null && listDeviceName.getVisibility() == View.GONE) {
+                listDeviceName.setVisibility(View.VISIBLE);
             }
             mTextNoGroup.setText(" ");
             listTwoFamily.setVisibility(View.GONE);
@@ -328,18 +335,24 @@ public class FamilyManagerment extends Activity{
         showTextOfChild();
         //displayProfile();
         registerReceiver(getDatabaseReceiver, intentFilter);
-        //groupRequestController.getGroupInServer();
-        if (getIntent().getBooleanExtra("NotificationAccept",false)) {
+        if (!isFirstTime &&
+                (getIntent().getBooleanExtra("NotificationAccept",false) ||// manager click notification
+                (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager &&//manager first resume
+                SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinSuccess))) {
+            isFirstTime = true;
             getAllGroupInServer();
         }
-
     }
 
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
         if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
-            super.onBackPressed();
+            if(SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinSuccess) {
+                finishAffinity();
+            } else {
+                super.onBackPressed();
+            }
         }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin) {
             finishAffinity();
         }

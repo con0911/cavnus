@@ -7,5 +7,11 @@
     <dimen name="button_space_padding">50dp</dimen>
     <dimen name="image_cavnus_height">360dp</dimen>
     <dimen name="bottom_family_layout_height">500dp</dimen>
+    <dimen name="height_button_days">50dp</dimen>
+    <dimen name="weight_button_days">50dp</dimen>
+    <dimen name="horizontal_button_margin">16dp</dimen>
+    <dimen name="size_button_add_times">50dp</dimen>
+    <dimen name="size_button_add_schedule">55dp</dimen>
+    <dimen name="margin_device_radial">60dp</dimen>
 
 </resources>

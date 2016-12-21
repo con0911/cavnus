@@ -5,5 +5,13 @@
     <dimen name="form_login_margin">75dp</dimen>
     <dimen name="button_login_margin_top">50dp</dimen>
     <dimen name="button_space_padding">70dp</dimen>
+    <dimen name="bottom_family_layout_height">650dp</dimen>
+    <dimen name="height_button_days">50dp</dimen>
+    <dimen name="weight_button_days">50dp</dimen>
+    <dimen name="horizontal_button_margin">16dp</dimen>
+    <dimen name="size_button_add_times">50dp</dimen>
+    <dimen name="size_button_add_schedule">55dp</dimen>
+    <dimen name="margin_device_radial">100dp</dimen>
+
 
 </resources>

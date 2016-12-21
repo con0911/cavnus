@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_margin="@dimen/margin_device_radial"
-    android:paddingTop="0dp"
+    android:layout_margin="100dp"
+    android:padding="0dp"
     android:layout_width="match_parent"
     android:animateLayoutChanges="true"
     android:layout_height="match_parent">
@@ -21,14 +21,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textStyle="bold"
             android:minWidth="50dp"
             android:minHeight="100dp"
-            android:gravity="center"
             android:clickable="true"
+            android:gravity="center"
             android:layout_marginTop="25dp"
-            android:layout_marginLeft="90dp"
-            android:rotation="-65"
+            android:layout_marginLeft="70dp"
+            android:textSize="12.5dp"
+            android:rotation="-68"
             android:layout_weight="0.22" />
     </LinearLayout>
     <LinearLayout
@@ -46,9 +46,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textStyle="bold"
             android:minHeight="45dp"
             android:minWidth="80dp"
+            android:textSize="12.5dp"
             android:gravity="center_horizontal"
             android:paddingTop="8dp"
             android:clickable="true"
@@ -68,24 +68,24 @@
         <TextView
             android:id="@+id/txt_left_side"
             android:textColor="@color/white"
-            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="98dp"
             android:clickable="true"
+            android:textSize="12.5dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_marginRight="90dp"
-            android:rotation="65"
+            android:layout_marginRight="92dp"
+            android:rotation="68"
             android:layout_weight="0.6" />
     </LinearLayout>
 
 
     <com.android.keepfocus.settings.CircleImageView
         android:id="@+id/img_center_child"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_gravity="center"
         android:gravity="center"/>
 

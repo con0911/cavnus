@@ -169,6 +169,7 @@ public class LoginRequestController {
             String streamToString = convertStreamToString(is);
             return streamToString;
         } catch (Exception e) {
+            Log.e(TAG, " exception " + e.toString());
             e.printStackTrace();
             return null;
         }

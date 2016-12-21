@@ -112,8 +112,8 @@
 
             <Button
                 android:id="@+id/btn_add_schedule"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="@dimen/size_button_add_schedule"
+                android:layout_height="@dimen/size_button_add_schedule"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="6dp"
                 android:layout_marginTop="8dp"
