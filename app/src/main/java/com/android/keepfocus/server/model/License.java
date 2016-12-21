@@ -11,6 +11,9 @@ public class License {
     public License() {
     }
 
+    public License(String license_key) {
+        this.license_key = license_key;
+    }
     public License(String license_key, int id_groupuser, int is_use) {
         this.license_key = license_key;
         this.id_groupuser = id_groupuser;
