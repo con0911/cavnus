@@ -39,4 +39,10 @@ public class Group {
         this.create_by = create_by;
         this.group_code = group_code;
     }
+
+    public Group(int id, String group_name, String group_code) {
+        this.group_name = group_name;
+        this.group_code = group_code;
+        this.id = id;
+    }
 }

@@ -1,5 +1,6 @@
 package com.android.keepfocus.gcm;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -34,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -57,6 +59,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static final String UNALLOWALL = "unallowall";
     public static final String BLOCK_SETTINGS = "blocksettings";
     public static final String UN_BLOCK_SETTINGS = "unblocksettings";
+    public static final String DELETE_GROUP = "deletegroup";
     private ChildKeepFocusItem childProfile;
     private String family_id;
 
@@ -269,6 +272,18 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     SetupWizardActivity.setTypeJoin(Constants.JoinFail, getApplicationContext());
                     sendNotificationReject("Press here to request again.","Your request have been rejected.");
                     break;
+                case DELETE_GROUP:
+                    //update manager device when join group
+                    Log.e(TAG, "DELETE_GROUP");
+                    SetupWizardActivity.setTypeJoin(Constants.JoinFail, getApplicationContext());
+                    clearChildData();
+                    //if(isActivityRunning(ChildSchedulerActivity.class)) {
+                        //Intent intent = new Intent(this, SetupWizardActivity.class);
+                        //startActivity(intent);
+                    //}
+                    sendNotificationReject("Press here to join again.","Your family group has been deleted");
+
+                    break;
 
                 default:
                     Log.d(TAG,"title not match : " + titleText);
@@ -298,6 +313,28 @@ public class MyGcmPushReceiver extends GcmListenerService {
     private boolean isActive(int state){
         if(state == 1) return true;
         else return false;
+    }
+
+    protected Boolean isActivityRunning(Class activityClass)
+    {
+        ActivityManager activityManager = (ActivityManager) getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+
+        for (ActivityManager.RunningTaskInfo task : tasks) {
+            if (activityClass.getCanonicalName().equalsIgnoreCase(task.baseActivity.getClassName()))
+                return true;
+        }
+
+        return false;
+    }
+
+    public void clearChildData(){
+        ArrayList<ChildKeepFocusItem> chilList = mDataHelper.getAllKeepFocusFromDb();
+        if(chilList!=null) {
+            for (int i = 0; i < chilList.size(); i++) {
+                mDataHelper.deleteFocusItemById(chilList.get(i).getKeepFocusId());
+            }
+        }
     }
 
 

@@ -142,7 +142,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         mRBtnUse.setOnCheckedChangeListener(this);
         mRBtnUnUse.setOnCheckedChangeListener(this);
 
-        createTestSpinner();
+        //createTestSpinner();
 
         mActiveCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -680,14 +680,14 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                 if(isChecked) {
                     mRBtnUnUse.setChecked(false);
                     //get data license not used
-                    //groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUsed, joinFamilyIDText.getText().toString());
+                    groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUsed, joinFamilyIDText.getText().toString());
                 }
                 break;
             case R.id.license_not_used :
                 if(isChecked) {
                     mRBtnUse.setChecked(false);
                     //get data license  used
-                    //groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUnUsed, joinFamilyIDText.getText().toString());
+                    groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUnUsed, joinFamilyIDText.getText().toString());
                 }
 
                 break;

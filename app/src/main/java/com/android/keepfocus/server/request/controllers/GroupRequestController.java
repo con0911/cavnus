@@ -120,7 +120,7 @@ public class GroupRequestController {
 
     public String updateGroup() {
         Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);//add data via contructor
-        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name());
+        Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_name(), MainUtils.parentGroupItem.getGroup_code());
         groupRequest = new GroupRequest(headerItem, Constants.RequestTypeUpdate, Constants.ActionTypeUpdate, groupItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
