@@ -63,7 +63,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-public class JoinGroupActivity extends Activity implements CompoundButton.OnCheckedChangeListener {
+public class JoinGroupActivity extends Activity implements CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener {
     private static final String TAG = "JoinGroupActivity";
     private Button btnImageDone;
     private String[] listMemberType;
@@ -395,6 +395,8 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
             }
         });
 
+        joinFamilyIDText.setOnFocusChangeListener(this);
+
     }
 
     @Override
@@ -680,17 +682,39 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                 if(isChecked) {
                     mRBtnUnUse.setChecked(false);
                     //get data license not used
-                    groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUsed, joinFamilyIDText.getText().toString());
+                    loadLicense();
                 }
                 break;
             case R.id.license_not_used :
                 if(isChecked) {
                     mRBtnUse.setChecked(false);
                     //get data license  used
-                    groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUnUsed, joinFamilyIDText.getText().toString());
+                    loadLicense();
                 }
-
                 break;
+        }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        switch (v.getId()) {
+            case R.id.familyId :
+                if(!hasFocus) {
+                    if(joinFamilyIDText.getText().toString().replaceAll(" ","") == ""){
+                        Toast.makeText(JoinGroupActivity.this, "Family ID can not is blank", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    loadLicense();
+                }
+                break;
+        }
+    }
+
+    public void loadLicense(){
+        if (mRBtnUse.isChecked()) {
+            groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUsed, joinFamilyIDText.getText().toString().replaceAll(" ",""));
+        }else if (mRBtnUnUse.isChecked()) {
+            groupRequestController.getListLicense(Constants.ActionTypeGetLicenseUnUsed, joinFamilyIDText.getText().toString().replaceAll(" ",""));
         }
     }
 
@@ -873,11 +897,10 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         Log.d(GroupRequestController.class.getName(),"setLicenseList");
         listLicenses = list;
         ArrayAdapter licenseAdapter = new ArrayAdapter(this,
-                android.R.layout.simple_spinner_dropdown_item,
+                android.R.layout.simple_spinner_item,
                 listLicenses);
         licenseAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mActiveCode.setAdapter(licenseAdapter);
-
     }
 
     private void createTestSpinner(){
