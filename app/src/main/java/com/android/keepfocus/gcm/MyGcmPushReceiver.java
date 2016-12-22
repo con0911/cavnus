@@ -59,7 +59,9 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static final String UNALLOWALL = "unallowall";
     public static final String BLOCK_SETTINGS = "blocksettings";
     public static final String UN_BLOCK_SETTINGS = "unblocksettings";
-    public static final String DELETE_GROUP = "deletegroup";
+    public static final String DELETE_GROUP = "groupdelete";
+    public static final String SEND_MESSAGES_CREATE_GROUP = "creategroup";
+    public static final String SEND_MESSAGES_UPDATE_GROUP = "updategroup";
     private ChildKeepFocusItem childProfile;
     private String family_id;
 
@@ -281,6 +283,9 @@ public class MyGcmPushReceiver extends GcmListenerService {
                         //Intent intent = new Intent(this, SetupWizardActivity.class);
                         //startActivity(intent);
                     //}
+                    Intent intent = new Intent();
+                    intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+                    getApplicationContext().sendBroadcast(intent);
                     sendNotificationReject("Press here to join again.","Your family group has been deleted");
 
                     break;
