@@ -769,6 +769,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager) {
                             Log.e(TAG, "isJoinSuccess Manager" + isJoinSuccess);
                             //Additional Parent
+                            SetupWizardActivity.setTypeJoin(Constants.JoinRequest, mContext);
                             Intent familyManagement = new Intent(JoinGroupActivity.this, FamilyManagerment.class);
                             startActivity(familyManagement);
                         }

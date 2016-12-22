@@ -53,6 +53,7 @@
         android:id="@+id/layout_choose_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:weightSum="3"
         android:orientation="horizontal">
         <TextView
@@ -65,7 +66,6 @@
 
         <RadioButton
             android:id="@+id/rbtn_manage"
-            style="@style/textStyle"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +74,6 @@
 
         <RadioButton
             android:id="@+id/rbtn_child"
-            style="@style/textStyle"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -88,6 +87,7 @@
             android:weightSum="3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
             <TextView
                 style="@style/textStyle"
@@ -99,7 +99,6 @@
 
             <RadioButton
                 android:id="@+id/license_used"
-                style="@style/textStyle"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -108,7 +107,6 @@
 
             <RadioButton
                 android:id="@+id/license_not_used"
-                style="@style/textStyle"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -357,6 +357,7 @@ public class FamilyManagerment extends Activity{
         super.onResume();
         showTextOfChild();
         //displayProfile();
+
         registerReceiver(getDatabaseReceiver, intentFilter);
         if (!isFirstTime &&
                 (getIntent().getBooleanExtra("NotificationAccept",false) ||// manager click notification
@@ -364,6 +365,11 @@ public class FamilyManagerment extends Activity{
                 SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinSuccess))) {
             isFirstTime = true;
             getAllGroupInServer();
+        }
+        if (SetupWizardActivity.getModeDevice(mContext) != Constants.Admin &&
+                SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinFail){
+            Intent intent = new Intent(this, SetupWizardActivity.class);
+            startActivity(intent);
         }
     }
 

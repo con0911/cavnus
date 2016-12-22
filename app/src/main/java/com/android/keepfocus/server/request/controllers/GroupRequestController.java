@@ -244,10 +244,11 @@ public class GroupRequestController {
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
                     JSONObject data = jsonObj.getJSONObject("Data");
-                    String group_code = data.getString("group_code");
-                    int group_id_server = data.getInt("id");
-                    String group_name = data.getString("group_name");
-                    if (description_result.equals("Success")) {
+                    int status = message.getInt("Status");
+                    if (status == 1 && data != null) {
+                        String group_code = data.getString("group_code");
+                        int group_id_server = data.getInt("id");
+                        String group_name = data.getString("group_name");
                         MainUtils.parentGroupItem.setGroup_code(group_code);
                         MainUtils.parentGroupItem.setId_group_server(group_id_server);
                         MainUtils.parentGroupItem.setGroup_name(group_name);
@@ -305,7 +306,8 @@ public class GroupRequestController {
                     JSONArray data = jsonObj.getJSONArray("Data");
                     ArrayList<ParentGroupItem> listGroup = mDataHelper.getAllGroupItemParent();
 
-                    if (description_result.equals("Success") && data != null) {
+                    int status = message.getInt("Status");
+                    if (status == 1 && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject groupItem = data.getJSONObject(i);
                             boolean conflict = false;
@@ -366,8 +368,8 @@ public class GroupRequestController {
                     String description_result = message.getString("Description");
                     JSONArray data = jsonObj.getJSONArray("Data");
                    // ArrayList<ParentMemberItem> listDevice = MainUtils.parentGroupItem.getListMember();
-
-                    if (description_result.equals("Success") && data != null) {
+                    int status = message.getInt("Status");
+                    if (status == 1 && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject deviceItem = data.getJSONObject(i);
                             int type;
@@ -468,7 +470,8 @@ public class GroupRequestController {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONObject message = jsonObj.getJSONObject("Message");
                     String description_result = message.getString("Description");
-                    if (description_result.equals("Update success")) {
+                    int status = message.getInt("Status");
+                    if (status == 1) {
                         mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
                         updateSuccess();
                     } else {

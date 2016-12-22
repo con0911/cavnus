@@ -10,6 +10,7 @@ public class Constants {
 
     public static final int JoinSuccess = 1;
     public static final int JoinFail = 2;
+    public static final int JoinRequest = 3;
     public static final int RestoreFamilySuccess = 1;
     public static final int RestoreFamilyFail = 2;
 
