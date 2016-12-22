@@ -750,16 +750,17 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
         final String strDayWeek = MainUtils.DAY_OF_WEEK[day];
         if (MainUtils.memberItem.checkIsContainDay(day)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("You have already included this day in another schedule.");
-            builder.setTitle("Are you sure you want to continue?");
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            builder.setMessage("Are you sure you want to continue?");
+            builder.setTitle("You have already included this day in another schedule");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dayBlock = dayBlock + strDayWeek;
                     loadDayButton();
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
                 }
             });
             AlertDialog dialog = builder.create();
