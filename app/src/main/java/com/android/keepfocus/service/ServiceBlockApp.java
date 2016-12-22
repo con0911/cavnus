@@ -140,7 +140,7 @@ public class ServiceBlockApp extends Service {
         SharedPreferences prefs = this.getSharedPreferences(
                 MainUtils.PACKET_APP, Context.MODE_PRIVATE);
         boolean isBlockSettings = prefs.getBoolean(MainUtils.IS_BLOCK_SETTINGS,false);
-        if (isBlockSettings && currentPackageApp.equals("com.android.settings")) {
+        if (isBlockSettings && currentPackageApp.contains("com.android.settings")) {
             return true;
         } else {
             return false;
