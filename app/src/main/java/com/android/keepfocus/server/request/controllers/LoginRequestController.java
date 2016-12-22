@@ -31,8 +31,8 @@ import java.net.URL;
  */
 public class LoginRequestController {
     public static final String ACCOUNT_BASE_URL = "http://45.63.21.174/api/account?pRequest=";
-    private static final int NET_READ_TIMEOUT_MILLIS = 10000;
-    private static final int NET_CONNECT_TIMEOUT_MILLIS = 10000;
+    private static final int NET_READ_TIMEOUT_MILLIS = 20000;
+    private static final int NET_CONNECT_TIMEOUT_MILLIS = 20000;
 
     private LoginRequest mLoginRequest;
     private String TAG = "LoginRequestController";

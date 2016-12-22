@@ -17,7 +17,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp">
 
+<!--
     <include layout="@layout/layout_radial_buttons" />
+-->
 
     </LinearLayout>
 

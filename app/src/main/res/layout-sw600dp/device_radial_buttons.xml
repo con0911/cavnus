@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="@dimen/margin_device_radial"
+    android:paddingTop="0dp"
+    android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/btn_right_side"
+        android:layout_margin="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/states_circle_allow"
+        android:gravity="center_vertical"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/txt_right_side"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:minWidth="100dp"
+            android:minHeight="120dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="Devices"
+            android:layout_marginTop="25dp"
+            android:layout_marginLeft="150dp"
+            android:rotation="-65"
+            android:layout_weight="0.22" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/btn_center_side"
+        android:layout_margin="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/states_circle_yellow"
+        android:gravity="center_horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/txt_center_side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:minHeight="45dp"
+            android:minWidth="80dp"
+            android:gravity="center_horizontal"
+            android:paddingTop="20dp"
+            android:clickable="true"
+            android:layout_weight="0.37" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_left_side"
+        android:layout_margin="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/states_circle_block"
+        android:gravity="center_vertical"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/txt_left_side"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="128dp"
+            android:clickable="true"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginRight="110dp"
+            android:rotation="65"
+            android:layout_weight="0.6" />
+    </LinearLayout>
+
+
+    <com.android.keepfocus.settings.CircleImageView
+        android:id="@+id/img_center_child"
+        android:layout_width="105dp"
+        android:layout_height="105dp"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+
+    <!--<include
+        android:id="@+id/btn_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/center_button"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:gravity="center"/>-->
+
+
+</FrameLayout>

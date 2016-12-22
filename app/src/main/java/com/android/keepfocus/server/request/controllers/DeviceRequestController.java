@@ -30,10 +30,10 @@ import java.net.URL;
  * Created by sev_user on 9/23/2016.
  */
 public class DeviceRequestController {
-    public static final String DEVICE_BASE_URL = "http://45.32.103.87/api/device?pRequest=";
+    public static final String DEVICE_BASE_URL = "http://45.63.21.174/api/device?pRequest=";
     private DeviceRequest deviceRequest;
-    private static final int NET_READ_TIMEOUT_MILLIS = 10000;
-    private static final int NET_CONNECT_TIMEOUT_MILLIS = 10000;
+    private static final int NET_READ_TIMEOUT_MILLIS = 20000;
+    private static final int NET_CONNECT_TIMEOUT_MILLIS = 20000;
     private String TAG = "DeviceRequestController";
     static boolean isSuccess;
     private Context mContext;

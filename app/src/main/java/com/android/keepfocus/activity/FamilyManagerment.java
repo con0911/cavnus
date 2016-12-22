@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class FamilyManagerment extends Activity{
@@ -91,6 +94,7 @@ public class FamilyManagerment extends Activity{
                   MainUtils.mIsEditNameGroup = false;
                   nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
             } else {
+                invalidateOptionsMenu();
                 displayProfile();
             }
         }
@@ -303,17 +307,36 @@ public class FamilyManagerment extends Activity{
             Uri selectedImage = data.getData();
             boolean success = true;
             Bitmap bitmap = null;
+            Bitmap resizedBm = null;
+            byte[] iconByte = null;
             try
             {
                 success = true;
                 bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver() , selectedImage);
+                String[] orientationColumn = {MediaStore.Images.Media.ORIENTATION};
+                Cursor cur = this.getContentResolver().query(selectedImage, orientationColumn, null, null, null);
+                int orientation = -1;
+                if (cur != null && cur.moveToFirst()) {
+                    orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0]));
+                }
+                Bitmap bmRotate = null;
+                Matrix matrix = new Matrix();
+                matrix.postRotate(orientation);
+                bmRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                //bitmap.recycle();
+                bitmap = null;
+                resizedBm = getResizedBitmap(bmRotate, 225, 225);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                resizedBm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                iconByte = stream.toByteArray();
+                resizedBm= null;
             }
             catch (Exception e)
             {
                 success = false;
             }
             if(success) {
-                MainUtils.parentGroupItem.setIcon_uri(selectedImage.toString());
+                MainUtils.parentGroupItem.setIcon_arrarByte(iconByte);
                 mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
             }
             //familyIconEdit.setImageBitmap(bitmap);
@@ -396,7 +419,7 @@ public class FamilyManagerment extends Activity{
                                 focusView.requestFocus();
                             }else {
                                 displayProfile();
-                                MainUtils.parentGroupItem = new ParentGroupItem(mContext);
+                                MainUtils.parentGroupItem = new ParentGroupItem();
                                 MainUtils.parentGroupItem.setGroup_name(mEditText.getText().toString());
                                 //MainUtils.parentGroupItem.setGroup_code("registationId");
                                 groupRequestController.testAddGroupInServer();
@@ -500,11 +523,9 @@ public class FamilyManagerment extends Activity{
         if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
             menu.getItem(2).setVisible(false);
         }
-        Log.d(TAG, "onPrepareOptionsMenu listFamily.size() " + listFamily.size());
         if (listFamily.size() == 0) {
             menu.getItem(1).setVisible(false);
         }
-        invalidateOptionsMenu();
         return true;
     }
 
@@ -579,5 +600,22 @@ public class FamilyManagerment extends Activity{
                 }).create();
 
         mAlertDialog.show();
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }

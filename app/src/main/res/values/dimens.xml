@@ -54,7 +54,7 @@
     <dimen name="width_switch_bar">60dp</dimen>
     <dimen name="size_button_add_times">36dp</dimen>
     <dimen name="size_button_add_schedule">45dp</dimen>
-    <dimen name="margin_device_radial">0dp</dimen>
+    <dimen name="margin_device_radial">20dp</dimen>
 
     <dimen name="top_bar_height">64dp</dimen>
 
@@ -83,5 +83,13 @@
     <dimen name="button_space_padding">40dp</dimen>
     <dimen name="image_cavnus_height">210dp</dimen>
     <dimen name="bottom_family_layout_height">300dp</dimen>
+
+    <dimen name="text_size_family_id">32sp</dimen>
+    <dimen name="text_size_add_member_guide">16dp</dimen>
+
+    <dimen name="circle_view_size">150dp</dimen>
+    <dimen name="circle_view_stroke_width">41.7dp</dimen>
+    <dimen name="circle_view_stroke_dashGap">228dp</dimen>
+    <dimen name="circle_view_stroke_dashWidth">77dp</dimen>
 
 </resources>

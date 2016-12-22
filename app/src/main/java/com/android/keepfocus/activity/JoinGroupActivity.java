@@ -48,7 +48,6 @@ import com.android.keepfocus.gcm.GcmIntentService;
 import com.android.keepfocus.receive.DevicePolicyReceiver;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
-import com.android.keepfocus.server.model.GroupUser;
 import com.android.keepfocus.server.model.License;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.model.JoinGroupRequest;
@@ -887,7 +886,9 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                     e.printStackTrace();
                 }
             }
-            mDialog.dismiss();
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
 
         @Override
@@ -909,6 +910,16 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                 listLicenses);
         licenseAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mActiveCode.setAdapter(licenseAdapter);
+        if (!joinFamilyIDText.getText().toString().isEmpty() && !nameDevice.getText().toString().isEmpty()) {
+            btnImageDone.setClickable(true);
+            btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
+            btnImageDone.setTextColor(Color.parseColor("#fafafa"));
+        } else {
+            btnImageDone.setClickable(false);
+            btnImageDone.setBackgroundColor(Color.parseColor("#E0E0E0"/*String.valueOf(getResources().getColor(R.color.gray_press))*/));
+            btnImageDone.setTextColor(Color.parseColor("#808080"/*String.valueOf(getResources().getColor(R.color.grey))*/));
+        }
+
     }
 
     private void createTestSpinner(){

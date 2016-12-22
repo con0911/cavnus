@@ -3,15 +3,16 @@ package com.android.keepfocus.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,7 +29,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -51,6 +51,7 @@ import com.android.keepfocus.settings.CustomListView;
 import com.android.keepfocus.utils.HorizontalListView;
 import com.android.keepfocus.utils.MainUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -776,14 +777,33 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             Uri selectedImage = data.getData();
             boolean success = true;
             Bitmap bitmap = null;
+            Bitmap resizedBm = null;
+            byte[] iconByte = null;
             try {
                 success = true;
                 bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), selectedImage);
+                String[] orientationColumn = {MediaStore.Images.Media.ORIENTATION};
+                Cursor cur = this.getContentResolver().query(selectedImage, orientationColumn, null, null, null);
+                int orientation = -1;
+                if (cur != null && cur.moveToFirst()) {
+                    orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0]));
+                }
+                Bitmap bmRotate = null;
+                Matrix matrix = new Matrix();
+                matrix.postRotate(orientation);
+                bmRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                //bitmap.recycle();
+                bitmap = null;
+                resizedBm = getResizedBitmap(bmRotate, 225, 225);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                resizedBm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                iconByte = stream.toByteArray();
+                resizedBm= null;
             } catch (Exception e) {
                 success = false;
             }
             if (success) {
-                MainUtils.memberItem.setImage_member(selectedImage.toString());
+                MainUtils.memberItem.setIcon_array_byte(iconByte);
                 mDataHelper.updateMemberItem(MainUtils.memberItem);
             }
             //familyIconEdit.setImageBitmap(bitmap);
@@ -1032,6 +1052,23 @@ public class DeviceMemberManagerment extends Activity implements View.OnClickLis
             });
             return convertView;
         }
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 
 }

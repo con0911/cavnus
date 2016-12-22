@@ -1,0 +1,60 @@
+<resources>
+
+    <style name="textStyle">
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginBottom">15dp</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="title_text_style">
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
+    </style>
+
+    <style name="button_text_style">
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+    </style>
+
+    <style name="content_text_style">
+        <item name="android:textColor">@color/content_text_color</item>
+        <item name="android:textSize">@dimen/content_text_size</item>
+    </style>
+
+    <style name="editText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">#000000</item>
+        <!--
+                <item name="android:typeface">monospace</item>
+        -->
+    </style>
+
+    <style name="no_item_text_style">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/no_item_text_color</item>
+    </style>
+    <style name="textView">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">#505050</item>
+        <!--        <item name="android:typeface">monospace</item>
+                <item name="android:textColor">@color/title_text_color</item>-->
+        <item name="android:textSize">19sp</item>
+        <item name="android:lineSpacingExtra">1.8dp</item>
+    </style>
+
+    <style name="textTitle">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:lineSpacingExtra">1.8dp</item>
+    </style>
+
+</resources>

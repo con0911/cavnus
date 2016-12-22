@@ -17,15 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.keepfocus.R;
-import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.activity.FamilyManagerment;
-import com.android.keepfocus.activity.SetupWizardActivity;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlow;
 import com.android.keepfocus.fancycoverflow.FancyCoverFlowAdapter;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
-import com.android.keepfocus.utils.Constants;
-import com.android.keepfocus.utils.MainUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,45 +95,12 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
         blockallLayout.setVisibility(View.VISIBLE);
         allowallLayout.setVisibility(View.VISIBLE);
         addMemberLayout.setVisibility(View.VISIBLE);
-
-        Uri selectedImage = Uri.parse(profileItem.getIcon_uri().toString());
-        //viewHolder.iconFamily.setImageURI(selectedImage);
-        InputStream is = null;
-        try {
-            is = activity.getContentResolver().openInputStream(selectedImage);
-        }catch (Exception e){
-            Log.d("TAG", "Exception " + e);
-        }
-        if (is!=null) {
-            Bitmap bitmap = null;
-            Bitmap resizedBm = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
-
-                String[] orientationColumn = {MediaStore.Images.Media.ORIENTATION};
-                Cursor cur = activity.getContentResolver().query(selectedImage, orientationColumn, null, null, null);
-                int orientation = -1;
-                if (cur != null && cur.moveToFirst()) {
-                    orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0]));
-                }
-                Bitmap bmRotate = null;
-                Matrix matrix = new Matrix();
-                matrix.postRotate(orientation);
-                bmRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                //bitmap.recycle();
-                bitmap = null;
-                resizedBm = getResizedBitmap(bmRotate, 225, 225);
-                bmRotate = null;
-                iconFamily.setImageBitmap(resizedBm);
-                resizedBm = null;
-            }catch (IOException e) {
-                e.printStackTrace();
-                Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
-                iconFamily.setImageBitmap(icon);
-            }
-        } else {
+        if (profileItem.getIcon_arrarByte() == null) {
             Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.images);
             iconFamily.setImageBitmap(icon);
+        } else {
+            Bitmap bmp = BitmapFactory.decodeByteArray(profileItem.getIcon_arrarByte(),0,profileItem.getIcon_arrarByte().length);
+            iconFamily.setImageBitmap(bmp);
         }
         convertView.setTag(String.valueOf(position));
 
@@ -148,23 +111,6 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
         convertView.setLayoutParams(new FancyCoverFlow.LayoutParams(600,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         return convertView;
-    }
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
     }
 
 

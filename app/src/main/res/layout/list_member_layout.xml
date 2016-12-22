@@ -41,7 +41,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="@dimen/content_text_spacing"
                 android:background="@android:color/darker_gray" />
         </LinearLayout>
 
@@ -55,23 +55,23 @@
             <com.android.keepfocus.fancycoverflow.FancyCoverFlow
                 android:id="@+id/fancyCoverFlow"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="15dp"
-                android:paddingTop="15dp" />
+                android:layout_height="wrap_content"/>
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingTop="@dimen/top_bar_height">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/top_bar_height"
+            android:gravity="center">
 
             <com.android.keepfocus.utils.HorizontalListView
                 android:id="@+id/listMember"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:divider="@android:color/transparent"
-                android:scrollbars="horizontal"></com.android.keepfocus.utils.HorizontalListView>
+                android:scrollbars="horizontal">
+            </com.android.keepfocus.utils.HorizontalListView>
         </LinearLayout>
 
 

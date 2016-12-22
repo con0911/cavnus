@@ -136,7 +136,7 @@
                 android:id="@+id/family_id"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="32sp"
+                android:textSize="@dimen/text_size_family_id"
                 android:gravity="center"
                 android:textColor="@color/color_text_title"
                 android:background="@drawable/btn_join_add_border"
@@ -153,7 +153,7 @@
             android:text="@string/add_member_text"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="1dp"
-            android:textSize="16dp"/>
+            android:textSize="@dimen/text_size_add_member_guide"/>
 
     </LinearLayout>
 

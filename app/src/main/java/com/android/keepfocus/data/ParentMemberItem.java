@@ -2,8 +2,6 @@ package com.android.keepfocus.data;
 
 import android.util.Log;
 
-import com.android.keepfocus.utils.MainUtils;
-
 import java.util.ArrayList;
 
 /**
@@ -13,7 +11,7 @@ public class ParentMemberItem {
     private int id_member;
     private String name_member;
     private int type_member;
-    private String image_member;
+    private byte[] icon_array_byte;
     private int id_member_server;
     private int is_blockall;
     private int is_alowall;
@@ -25,7 +23,7 @@ public class ParentMemberItem {
         this.id_member = -1;
         this.name_member = "";
         this.type_member = 1;
-        this.image_member = "";
+        this.icon_array_byte = null;
         this.id_member_server = -1;
         this.is_alowall = 0;
         this.is_blockall = 0;
@@ -57,12 +55,12 @@ public class ParentMemberItem {
         this.type_member = type_member;
     }
 
-    public String getImage_member() {
-        return image_member;
+    public byte[] getIcon_array_byte() {
+        return icon_array_byte;
     }
 
-    public void setImage_member(String image_member) {
-        this.image_member = image_member;
+    public void setIcon_array_byte(byte[] icon_array_byte) {
+        this.icon_array_byte = icon_array_byte;
     }
 
     public ArrayList<ParentProfileItem> getListProfile() {

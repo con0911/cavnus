@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.keepfocus.R;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
@@ -109,45 +108,12 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
             allowallLayout.setBackgroundResource(R.drawable.circle_right_side_no_press);
             allowAll.setText("Allow All");
         }
-        Uri selectedImage = Uri.parse(profileItem.getImage_member().toString());
-        InputStream is = null;
-        try {
-            is = activity.getContentResolver().openInputStream(selectedImage);
-        } catch (Exception e) {
-            Log.d("TAG", "Exception " + e);
-        }
-        if (is != null) {
-            Bitmap bitmap = null;
-            Bitmap resizedBm = null;
-
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
-
-                String[] orientationColumn = {MediaStore.Images.Media.ORIENTATION};
-                Cursor cur = activity.getContentResolver().query(selectedImage, orientationColumn, null, null, null);
-                int orientation = -1;
-                if (cur != null && cur.moveToFirst()) {
-                    orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0]));
-                }
-                Bitmap bmRotate = null;
-                Matrix matrix = new Matrix();
-                matrix.postRotate(orientation);
-                bmRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                //bitmap.recycle();
-                bitmap = null;
-                resizedBm = getResizedBitmap(bmRotate, 225, 225);
-                bmRotate = null;
-                iconFamily.setImageBitmap(resizedBm);
-                resizedBm = null;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                Bitmap icon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.person);
-                iconFamily.setImageBitmap(icon);
-            }
-        } else {
-            Bitmap icon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.person);
+        if (profileItem.getIcon_array_byte() == null) {
+            Bitmap icon = BitmapFactory.decodeResource(activity.getResources(),R.drawable.person);
             iconFamily.setImageBitmap(icon);
+        } else {
+            Bitmap bmp = BitmapFactory.decodeByteArray(profileItem.getIcon_array_byte(),0,profileItem.getIcon_array_byte().length);
+            iconFamily.setImageBitmap(bmp);
         }
 
         name.setText(profileItem.getName_member());
@@ -164,23 +130,6 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
         return convertView;
-    }
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
     }
 
     private View.OnClickListener onClickListener(final int position) {

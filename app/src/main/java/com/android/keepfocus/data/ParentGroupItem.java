@@ -21,7 +21,7 @@ public class ParentGroupItem {
     private int is_restore;
 
 
-    private String icon_uri;
+    private byte[] icon_arrarByte;
     private ArrayList<ParentMemberItem> listMember;
 
     public ParentGroupItem() {
@@ -30,18 +30,8 @@ public class ParentGroupItem {
         this.group_code = "";
         this.create_date = "";
         this.id_group_server = -1;
-        this.icon_uri = "";
+        this.icon_arrarByte = null;
         this.is_restore = -1;
-        listMember = new ArrayList<ParentMemberItem>();
-    }
-
-    public ParentGroupItem(Context context) {
-        this.id_group = -1;
-        this.group_name = "";
-        this.group_code = "";
-        this.create_date = "";
-        this.id_group_server = -1;
-        this.icon_uri = getDefaultUriImage(context);
         listMember = new ArrayList<ParentMemberItem>();
     }
 
@@ -52,12 +42,12 @@ public class ParentGroupItem {
     }
 
 
-    public String getIcon_uri() {
-        return icon_uri;
+    public byte[] getIcon_arrarByte() {
+        return icon_arrarByte;
     }
 
-    public void setIcon_uri(String icon_uri) {
-        this.icon_uri = icon_uri;
+    public void setIcon_arrarByte(byte[] icon_arrarByte) {
+        this.icon_arrarByte = icon_arrarByte;
     }
 
     public int getId_group() {

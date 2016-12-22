@@ -4,12 +4,12 @@
 <item>
     <shape android:shape="oval">
         <size
-            android:height="150dp"
-            android:width="150dp"/>
+            android:height="@dimen/circle_view_size"
+            android:width="@dimen/circle_view_size"/>
         <stroke
-            android:width="41.5dp"
-            android:dashGap="228dp"
-            android:dashWidth="77dp"
+            android:width="@dimen/circle_view_stroke_width"
+            android:dashGap="@dimen/circle_view_stroke_dashGap"
+            android:dashWidth="@dimen/circle_view_stroke_dashWidth"
             android:color="@color/darker_yellow" />
     </shape>
 </item>

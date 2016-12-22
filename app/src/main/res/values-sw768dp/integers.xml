@@ -2,4 +2,13 @@
 <resources>
     <integer name="img_cavnus_setup_mode_weight">7</integer>
     <integer name="img_cavnus_login_weight">4</integer>
+
+
+<!--    <integer name="from_degree_right">24</integer>
+    <integer name="to_degree_right">25</integer>
+    <integer name="from_degree_left">145</integer>
+    <integer name="to_degree_left">146</integer>
+    <integer name="from_degree_center">265</integer>
+    <integer name="to_degree_center">266</integer>-->
+
 </resources>

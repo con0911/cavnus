@@ -89,14 +89,14 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_GROUP_PARENT = "CREATE TABLE " + TABLE_GROUP_PARENT + "("
                 + "id_group INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " group_name text not null," + " group_code text not null,"
-                + " create_date text not null," + " icon_uri text not null," + " id_group_server INTEGER,"
+                + " create_date text not null," + " icon_array_byte BLOB," + " id_group_server INTEGER,"
                 + " is_restore INTEGER"+ ")";
         db.execSQL(CREATE_TABLE_GROUP_PARENT);
         // tblMemberParent
         String CREATE_TABLE_MEMBER = "CREATE TABLE " + TABLE_MEMBER + "("
                 + "id_member INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " name_member text not null," + " type_member INTEGER,"
-                + " image_member text not null," + " id_member_server INTEGER,"
+                + " icon_array_byte BLOB," + " id_member_server INTEGER,"
                 + " is_blockall INTEGER," + " is_alowall INTEGER," + " is_blocksettings INTEGER" + ")";
         db.execSQL(CREATE_TABLE_MEMBER);
         // tblGroupMemberParent
@@ -619,7 +619,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 String group_name = cursor.getString(1);
                 String group_code = cursor.getString(2);
                 String create_date = cursor.getString(3);
-                String icon_uri = cursor.getString(4);
+                byte[] icon_uri = cursor.getBlob(4);
                 int id_group_server = cursor.getInt(5);
                 int is_restore = cursor.getInt(6);
                 // make keep focus item
@@ -632,7 +632,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 //
                 groupItem.setListMember(getListMember(id_group));
                 groupItem.setIs_restore(is_restore);
-                groupItem.setIcon_uri(icon_uri);
+                groupItem.setIcon_arrarByte(icon_uri);
                 //
                 listGroupItem.add(groupItem);
             } while (cursor.moveToNext());
@@ -655,7 +655,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                     int id_group = Integer.parseInt(cursor.getString(0));
                     String group_name = cursor.getString(1);
                     String create_date = cursor.getString(3);
-                    String icon_uri = cursor.getString(4);
+                    byte[] icon_uri = cursor.getBlob(4);
                     int id_group_server = cursor.getInt(5);
                     groupItem.setId_group(id_group);
                     groupItem.setGroup_name(group_name);
@@ -664,7 +664,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                     groupItem.setId_group_server(id_group_server);
                     //
                     groupItem.setListMember(getListMember(id_group));
-                    groupItem.setIcon_uri(icon_uri);
+                    groupItem.setIcon_arrarByte(icon_uri);
                 }
             } while (cursor.moveToNext());
         }
@@ -704,7 +704,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             String name_member = cursor.getString(1);
             int type_member = cursor.getInt(2);
-            String image_member = cursor.getString(3);
+            byte[] icon_array_byte = cursor.getBlob(3);
             int id_member_server = cursor.getInt(4);
             int is_blockall = cursor.getInt(5);
             int is_alowall = cursor.getInt(6);
@@ -712,7 +712,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             memberItem.setId_member(id_member);
             memberItem.setName_member(name_member);
             memberItem.setType_member(type_member);
-            memberItem.setImage_member(image_member);
+            memberItem.setIcon_array_byte(icon_array_byte);
             memberItem.setId_member_server(id_member_server);
             memberItem.setIs_blockall(is_blockall);
             memberItem.setIs_alowall(is_alowall);
@@ -883,7 +883,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         values.put("create_date", groupItem.getCreate_date());
         values.put("id_group_server", groupItem.getId_group_server());
         values.put("is_restore", groupItem.getIs_restore());
-        values.put("icon_uri",groupItem.getIcon_uri());
+        values.put("icon_array_byte",groupItem.getIcon_arrarByte());
         int id_group = (int) dbMain.insert("tblGroupParent", null, values);
         groupItem.setId_group(id_group);
         dbMain.close();
@@ -897,7 +897,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             ContentValues values3 = new ContentValues();
             values3.put("name_member", parentMemberItem.getName_member());
             values3.put("type_member", parentMemberItem.getType_member());
-            values3.put("image_member", parentMemberItem.getImage_member());
+            values3.put("icon_array_byte", parentMemberItem.getIcon_array_byte());
             values3.put("id_member_server",parentMemberItem.getId_member_server());
             values3.put("is_blockall", parentMemberItem.getIs_blockall());
             values3.put("is_alowall",parentMemberItem.getIs_alowall());
@@ -1064,43 +1064,31 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
     //============================updateData function=================================//
     public void updateGroupItem(ParentGroupItem parentGroupItem) {
         int id_group = parentGroupItem.getId_group();
-        String group_name = "'" + parentGroupItem.getGroup_name() + "'";
-        String group_code = "'" + parentGroupItem.getGroup_code() + "'";
-        String create_date = "'" + parentGroupItem.getCreate_date() + "'";
-        int id_group_server = parentGroupItem.getId_group_server();
-        String icon_uri = "'" + parentGroupItem.getIcon_uri() + "'";
-        int is_restore = parentGroupItem.getIs_restore();
-        //
+        ContentValues values = new ContentValues();
+        values.put("group_name", parentGroupItem.getGroup_name());
+        values.put("group_code", parentGroupItem.getGroup_code());
+        values.put("create_date", parentGroupItem.getCreate_date());
+        values.put("id_group_server", parentGroupItem.getId_group_server());
+        values.put("is_restore", parentGroupItem.getIs_restore());
+        values.put("icon_array_byte",parentGroupItem.getIcon_arrarByte());
         dbMain = this.getWritableDatabase();
-        String update = "update tblGroupParent set group_name = " + group_name
-                + ", group_code = " + group_code + ", create_date = " + create_date
-                + ", id_group_server = " + id_group_server
-                + ", icon_uri = " + icon_uri
-                + ", is_restore = " + is_restore
-                + " where id_group = " + id_group;
-        dbMain.execSQL(update);
+        dbMain.update("tblGroupParent", values, "id_group=" + id_group, null);
         dbMain.close();
     }
 
     public void updateMemberItem(ParentMemberItem parentMemberItem) {
         int id_member = parentMemberItem.getId_member();
-        String name_member = "'" + parentMemberItem.getName_member() + "'";
-        int type_member = parentMemberItem.getType_member();
-        String image_member = "'" + parentMemberItem.getImage_member() + "'";
-        int id_member_server = parentMemberItem.getId_member_server();
-        int is_blockall =  parentMemberItem.getIs_blockall();
-        int is_alowall = parentMemberItem.getIs_alowall();
-        int is_blocksettings = parentMemberItem.getIs_blocksettings();
+        ContentValues values3 = new ContentValues();
+        values3.put("name_member", parentMemberItem.getName_member());
+        values3.put("type_member", parentMemberItem.getType_member());
+        values3.put("icon_array_byte", parentMemberItem.getIcon_array_byte());
+        values3.put("id_member_server",parentMemberItem.getId_member_server());
+        values3.put("is_blockall", parentMemberItem.getIs_blockall());
+        values3.put("is_alowall",parentMemberItem.getIs_alowall());
+        values3.put("is_blocksettings",parentMemberItem.getIs_blocksettings());
         //
         dbMain = this.getWritableDatabase();
-        String update = "update tblMemberParent set name_member = " + name_member
-                + ", type_member = " + type_member + ", image_member = " + image_member
-                + ", id_member_server = " + id_member_server
-                + ", is_blockall = " + is_blockall
-                + ", is_alowall = " + is_alowall
-                + ", is_blocksettings = " + is_blocksettings
-                + " where id_member = " + id_member;
-        dbMain.execSQL(update);
+        dbMain.update("tblMemberParent", values3, "id_member=" + id_member, null);
         dbMain.close();
     }
 

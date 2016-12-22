@@ -13,5 +13,10 @@
     <dimen name="size_button_add_schedule">55dp</dimen>
     <dimen name="margin_device_radial">100dp</dimen>
 
-
+    <dimen name="text_size_family_id">40sp</dimen>
+    <dimen name="text_size_add_member_guide">20dp</dimen>
+    <dimen name="circle_view_size">150dp</dimen>
+    <dimen name="circle_view_stroke_width">41.7dp</dimen>
+    <dimen name="circle_view_stroke_dashGap">228dp</dimen>
+    <dimen name="circle_view_stroke_dashWidth">77dp</dimen>
 </resources>
