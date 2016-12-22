@@ -49,6 +49,7 @@ import com.android.keepfocus.receive.DevicePolicyReceiver;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
 import com.android.keepfocus.server.model.GroupUser;
+import com.android.keepfocus.server.model.License;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.model.JoinGroupRequest;
 import com.android.keepfocus.utils.Constants;
@@ -648,8 +649,11 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
         Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "", checkType());
-        GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getSelectedItem().toString());
-        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(3, groupItem, deviceItem, groupUser);
+        License license = new License("");
+        if (checkType().equals(CHILDREN)) {
+            license = new License(mActiveCode.getSelectedItem().toString());
+        }
+        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(3, groupItem, deviceItem, license);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -664,8 +668,12 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
         Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "", checkType());
-        GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getSelectedItem().toString());
-        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(4, groupItem, deviceItem, groupUser);
+        //GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getSelectedItem().toString());
+        License license = new License("");
+        if (checkType().equals(CHILDREN)) {
+            license = new License(mActiveCode.getSelectedItem().toString());
+        }
+        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(4, groupItem, deviceItem, license);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -726,7 +734,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
-            link = groupRequestController.BASE_URL + joinGroup();
+            link = groupRequestController.LICENSE_URL + joinGroup();
             Log.d(TAG, "link: " + link);
             result = groupRequestController.connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
@@ -839,7 +847,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
-            link = groupRequestController.BASE_URL + replaceDevice();
+            link = groupRequestController.LICENSE_URL + replaceDevice();
             Log.d(TAG, "link: " + link);
             result = groupRequestController.connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());

@@ -751,6 +751,7 @@ public class GroupRequestController {
             String streamToString = convertStreamToString(is);
             return streamToString;
         } catch (Exception e) {
+            Log.d(TAG,"Exception = "+e.toString());
             e.printStackTrace();
             return null;
         }
