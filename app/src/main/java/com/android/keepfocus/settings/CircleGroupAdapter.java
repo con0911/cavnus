@@ -87,7 +87,7 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
         name = (TextView) convertView.findViewById(R.id.family_name);
         deleteGroup.setText(R.string.delete_device);
         detailGroup.setText(R.string.devices);
-        addmember.setText(R.string.add_member);
+        addmember.setText(R.string.edit_family_name);
         name.setText(profileItem.getGroup_name());
         blockallLayout = (LinearLayout) convertView.findViewById(R.id.btn_left_side);
         allowallLayout = (LinearLayout) convertView.findViewById(R.id.btn_right_side);
@@ -128,7 +128,8 @@ public class CircleGroupAdapter extends FancyCoverFlowAdapter {
                         familyManagerment.onItemLongClick(position);
                         break;
                     case R.id.txt_center_side:
-                        familyManagerment.addNewMember(position);
+                        //familyManagerment.addNewMember(position);
+                        familyManagerment.renameGroup();
                         break;
                     case R.id.txt_right_side:
                         familyManagerment.showDetail(position);

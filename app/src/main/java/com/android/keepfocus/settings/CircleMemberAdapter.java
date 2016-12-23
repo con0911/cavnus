@@ -85,7 +85,7 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
         name = (TextView) convertView.findViewById(R.id.family_name);
         blockall.setText("Block all");
         allowAll.setText("Allow all");
-        addmember.setText("Schedules");
+        addmember.setText(R.string.delete_device);
         blockallLayout = (LinearLayout) convertView.findViewById(R.id.btn_left_side);
         allowallLayout = (LinearLayout) convertView.findViewById(R.id.btn_right_side);
         addMemberLayout = (LinearLayout) convertView.findViewById(R.id.btn_center_side);
@@ -124,7 +124,7 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
         allowAll.setOnClickListener(onClickListener(position));
         addmember.setOnClickListener(onClickListener(position));
         iconFamily.setOnClickListener(onClickListener(position));
-        iconFamily.setOnLongClickListener(onLongClickListener(position));
+        //iconFamily.setOnLongClickListener(onLongClickListener(position));
 
         convertView.setLayoutParams(new FancyCoverFlow.LayoutParams(600,
                 ViewGroup.LayoutParams.MATCH_PARENT));
@@ -158,9 +158,10 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
                         deviceMemberManagerment.changeIcon(position);
                         break;
                     case R.id.txt_center_side:
-                        View parent2 = (View) v.getParent();
+/*                        View parent2 = (View) v.getParent();
                         parent2.setPressed(true);
-                        deviceMemberManagerment.showDetail(position);
+                        deviceMemberManagerment.showDetail(position);*/
+                        deviceMemberManagerment.onItemLongClick(position);
                         break;
                 }
 
@@ -168,7 +169,7 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
         };
     }
 
-    private View.OnLongClickListener onLongClickListener(final int position){
+/*    private View.OnLongClickListener onLongClickListener(final int position){
         return new View.OnLongClickListener(){
 
             @Override
@@ -176,10 +177,10 @@ public class CircleMemberAdapter extends FancyCoverFlowAdapter {
                 DeviceMemberManagerment deviceMemberManagerment = (DeviceMemberManagerment) activity;
                 switch (v.getId()){
                     case R.id.img_center_child:
-                        deviceMemberManagerment.onItemLongClick(position);;
+                        deviceMemberManagerment.onItemLongClick(position);
                 }
                 return true;
             }
         };
-    }
+    }*/
 }

@@ -6,7 +6,7 @@
                 android:height="@dimen/circle_view_size"
                 android:width="@dimen/circle_view_size"/>
             <stroke
-                android:width="@dimen/circle_view_stroke_width"
+                android:width="@dimen/circle_view_stroke_width_center"
                 android:dashGap="@dimen/circle_view_stroke_dashGap"
                 android:dashWidth="@dimen/circle_view_stroke_dashWidth"
                 android:color="@color/darker_yellow" />

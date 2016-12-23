@@ -1,0 +1,4 @@
+<resources>
+   <dimen name="margin_device_radial">0dp</dimen>
+   <dimen name="bottom_family_layout_height">350dp</dimen>
+</resources>

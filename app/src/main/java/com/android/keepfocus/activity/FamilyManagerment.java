@@ -527,10 +527,10 @@ public class FamilyManagerment extends Activity{
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
-            menu.getItem(2).setVisible(false);
+            menu.getItem(1).setVisible(false);
         }
         if (listFamily.size() == 0) {
-            menu.getItem(1).setVisible(false);
+            menu.getItem(0).setVisible(false);
         }
         return true;
     }
@@ -556,9 +556,9 @@ public class FamilyManagerment extends Activity{
                 case R.id.action_add :
                     createNewGroup();
                     break;
-                case R.id.rename:
+                /*case R.id.rename:
                     renameGroup();
-                    break;
+                    break;*/
                 case R.id.action_update :
                     SetupWizardActivity.setTypeRestoreFamily(Constants.RestoreFamilySuccess, mContext);
                     item.setVisible(false);
