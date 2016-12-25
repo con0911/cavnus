@@ -369,7 +369,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                     Toast.makeText(JoinGroupActivity.this, "Please check the internet connection!", Toast.LENGTH_LONG).show();
                 } else if (SetupWizardActivity.getModeDevice(mContext) == Constants.Children
                         && !(joinFamilyIDText.getText().toString().isEmpty() || nameDevice.getText().toString().isEmpty()
-                            || mActiveCode.getSelectedItem().toString().equals(" "))) {
+                            || mActiveCode.getSelectedItem() == null)) {
                     if (isNameInValid(joinFamilyIDText.getText().toString()) || isNameInValid(nameDevice.getText().toString())
                             || isNameInValid(mActiveCode.getSelectedItem().toString())){
                         final Toast errorName = Toast.makeText(mContext, "The name, FamilyID or Activation code cannot contain space", Toast.LENGTH_SHORT);
@@ -911,7 +911,9 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                 listLicenses);
         licenseAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mActiveCode.setAdapter(licenseAdapter);
-        if (!joinFamilyIDText.getText().toString().isEmpty() && !nameDevice.getText().toString().isEmpty()) {
+        if (!joinFamilyIDText.getText().toString().isEmpty() &&
+                !nameDevice.getText().toString().isEmpty() &&
+                mActiveCode.getSelectedItem() != null) {
             btnImageDone.setClickable(true);
             btnImageDone.setBackgroundColor(Color.parseColor("#3B5998"));
             btnImageDone.setTextColor(Color.parseColor("#fafafa"));

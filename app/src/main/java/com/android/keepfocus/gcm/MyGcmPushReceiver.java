@@ -23,6 +23,7 @@ import com.android.keepfocus.activity.SetupWizardActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildTimeItem;
 import com.android.keepfocus.data.MainDatabaseHelper;
+import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.controllers.NotificationController;
@@ -60,6 +61,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
     public static final String BLOCK_SETTINGS = "blocksettings";
     public static final String UN_BLOCK_SETTINGS = "unblocksettings";
     public static final String DELETE_GROUP = "groupdelete";
+    public static final String DELETE_DEVICE = "deletedevice";
     public static final String SEND_MESSAGES_CREATE_GROUP = "creategroup";
     public static final String SEND_MESSAGES_UPDATE_GROUP = "updategroup";
     private ChildKeepFocusItem childProfile;
@@ -267,28 +269,67 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     Log.e(TAG, "ACCEPT_MANAGER_JOIN");
                     SetupWizardActivity.setTypeJoin(Constants.JoinSuccess, getApplicationContext());
                     sendNotificationAccept("Press here to manager family.","You've accepted to become manager.");
+                    Intent intentAccept = new Intent();
+                    intentAccept.setAction(MainUtils.MANAGER_JOIN_SUCCESS);
+                    getApplicationContext().sendBroadcast(intentAccept);
                     break;
                 case REJECT_MANAGER_JOIN:
                     //update manager device when join group
                     Log.e(TAG, "REJECT_MANAGER_JOIN");
                     SetupWizardActivity.setTypeJoin(Constants.JoinFail, getApplicationContext());
-                    sendNotificationReject("Press here to request again.","Your request have been rejected.");
+                    sendNotificationReject("Press here to request again.", "Your request have been rejected.");
+                    Intent intentReject = new Intent();
+                    intentReject.setAction(MainUtils.EXIT_MANAGER_TO_SETUPWIZARD);
+                    getApplicationContext().sendBroadcast(intentReject);
                     break;
                 case DELETE_GROUP:
-                    //update manager device when join group
                     Log.e(TAG, "DELETE_GROUP");
-                    SetupWizardActivity.setTypeJoin(Constants.JoinFail, getApplicationContext());
-                    clearChildData();
+                    //update manager device when join group
+                    if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
+                        SetupWizardActivity.setTypeJoin(Constants.JoinFail, getApplicationContext());
+                        clearChildData();
+                        Intent intentDelete = new Intent();
+                        intentDelete.setAction(MainUtils.EXIT_CHILD_TO_SETUPWIZARD);
+                        getApplicationContext().sendBroadcast(intentDelete);
+                        sendNotificationReject("Press here to join again.","Your family group has been deleted");
+                    } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager) {
+                        JSONObject messageDeleteGroup = new JSONObject(message) ;
+                        JSONObject group = messageDeleteGroup.getJSONObject("message");
+                        String group_code = group.getString("group_code");
+                        ParentGroupItem parent = mDataHelper.getGroupByCode(group_code);
+                        mDataHelper.deleteGroupItemById(parent.getId_group());
+                        Intent intentUpdateGroup = new Intent();
+                        intentUpdateGroup.setAction(MainUtils.UPDATE_FAMILY_GROUP);
+                        getApplicationContext().sendBroadcast(intentUpdateGroup);
+                    }
+
                     //if(isActivityRunning(ChildSchedulerActivity.class)) {
                         //Intent intent = new Intent(this, SetupWizardActivity.class);
                         //startActivity(intent);
                     //}
-                    Intent intent = new Intent();
-                    intent.setAction(MainUtils.UPDATE_CHILD_SCHEDULER);
-                    getApplicationContext().sendBroadcast(intent);
-                    sendNotificationReject("Press here to join again.","Your family group has been deleted");
+
 
                     break;
+                case DELETE_DEVICE:
+                    Log.e(TAG, "DELETE_DEVICE");
+                    if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
+                        SetupWizardActivity.setTypeJoin(Constants.JoinFail, getApplicationContext());
+                        //clearChildDeviceData();
+                        clearChildData();
+                        Intent updateIntent = new Intent();
+                        updateIntent.setAction(MainUtils.EXIT_CHILD_TO_SETUPWIZARD);
+                        getApplicationContext().sendBroadcast(updateIntent);
+                        sendNotificationReject("Press here to join again.", "Your device has been deleted from family");
+                    }else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Manager){
+                        JSONObject messageDeleteDevice = new JSONObject(message);
+                        JSONObject device = messageDeleteDevice.getJSONObject("message");
+                        int id_server = device.getInt("id");
+                        ParentMemberItem parentMemberItem = mDataHelper.getMemberItemByIdServer(id_server);
+                        mDataHelper.deleteMemberItemById(parentMemberItem.getId_member());
+                        Intent intentUpdateMember = new Intent();
+                        intentUpdateMember.setAction(MainUtils.UPDATE_CHILD_DEVICE);
+                        getApplicationContext().sendBroadcast(intentUpdateMember);
+                    }
 
                 default:
                     Log.d(TAG,"title not match : " + titleText);
@@ -338,6 +379,19 @@ public class MyGcmPushReceiver extends GcmListenerService {
         if(chilList!=null) {
             for (int i = 0; i < chilList.size(); i++) {
                 mDataHelper.deleteFocusItemById(chilList.get(i).getKeepFocusId());
+            }
+        }
+    }
+
+    public void clearChildDeviceData(){
+        ArrayList<ChildKeepFocusItem> childList = mDataHelper.getAllKeepFocusFromDb();
+        if(childList!=null) {
+            for (int i = 0; i < childList.size(); i++) {
+                ArrayList<ChildTimeItem> listTimeItems = childList.get(i).getListTimeFocus();
+                for (int j = 0; j < listTimeItems.size(); j ++){
+                    mDataHelper.deleteTimeItemById(listTimeItems.get(j).getTimeId());
+                }
+                mDataHelper.deleteFocusItemById(childList.get(i).getKeepFocusId());
             }
         }
     }

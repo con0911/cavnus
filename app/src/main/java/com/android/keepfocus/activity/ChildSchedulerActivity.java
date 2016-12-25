@@ -1,7 +1,6 @@
 package com.android.keepfocus.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,6 +25,7 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.server.request.controllers.SchedulerRequestController;
 import com.android.keepfocus.service.KeepFocusMainService;
 import com.android.keepfocus.service.ServiceBlockApp;
+import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 
 import java.util.ArrayList;
@@ -91,6 +90,7 @@ public class ChildSchedulerActivity extends Activity {
     private void initIntentFilter() {
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_CHILD_SCHEDULER);
+        intentFilter.addAction(MainUtils.EXIT_CHILD_TO_SETUPWIZARD);
     }
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -104,6 +104,9 @@ public class ChildSchedulerActivity extends Activity {
 
             if (MainUtils.UPDATE_CHILD_SCHEDULER.equals(action)) {
                 displayProfile();
+            }
+            if (MainUtils.EXIT_CHILD_TO_SETUPWIZARD.equals(action)) {
+                backToSetupWizard();
             }
         }
     };
@@ -125,6 +128,9 @@ public class ChildSchedulerActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinFail){
+            backToSetupWizard();
+        }
         displayProfile();
         registerReceiver(myReceiver, intentFilter);
         updateMissingNotifications();
@@ -134,6 +140,11 @@ public class ChildSchedulerActivity extends Activity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(myReceiver);
+    }
+
+    private void backToSetupWizard(){
+        Intent intent = new Intent(ChildSchedulerActivity.this, SetupWizardActivity.class);
+        startActivity(intent);
     }
 
     private ArrayList<ChildNotificationItemMissHistory> getListMissingNotification() {

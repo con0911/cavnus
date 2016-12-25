@@ -98,22 +98,21 @@
                 android:textStyle="bold"/>
 
             <RadioButton
+                android:id="@+id/license_not_used"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unused"
+                android:checked="true"
+                />
+
+            <RadioButton
                 android:id="@+id/license_used"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Used"
                 />
-
-            <RadioButton
-                android:id="@+id/license_not_used"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Not used"
-                android:checked="true"
-                />
-
 
         </LinearLayout>
 

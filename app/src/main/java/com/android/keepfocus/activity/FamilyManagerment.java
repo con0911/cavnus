@@ -90,12 +90,24 @@ public class FamilyManagerment extends Activity{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (MainUtils.mIsEditNameGroup) {
-                  MainUtils.mIsEditNameGroup = false;
-                  nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
-            } else {
-                invalidateOptionsMenu();
-                displayProfile();
+
+            final String action = intent.getAction();
+            if (MainUtils.EXIT_MANAGER_TO_SETUPWIZARD.equals(action) &&
+                    SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinFail) {
+                backToSetupWizard();
+            }
+            if (MainUtils.UPDATE_FAMILY_GROUP.equals(action)) {
+                if (MainUtils.mIsEditNameGroup) {
+                    MainUtils.mIsEditNameGroup = false;
+                    nameFamily.setText(MainUtils.parentGroupItem.getGroup_name() + " Family");
+                } else {
+                    invalidateOptionsMenu();
+                    displayProfile();
+                }
+            }
+            if (MainUtils.MANAGER_JOIN_SUCCESS.equals(action) &&
+                    SetupWizardActivity.getModeDevice(mContext) == Constants.Manager) {
+                FamilyManagerment.this.onResume();
             }
         }
     };
@@ -143,6 +155,8 @@ public class FamilyManagerment extends Activity{
         groupRequestController = new GroupRequestController(this);
         intentFilter = new IntentFilter();
         intentFilter.addAction(MainUtils.UPDATE_FAMILY_GROUP);
+        intentFilter.addAction(MainUtils.EXIT_MANAGER_TO_SETUPWIZARD);
+        intentFilter.addAction(MainUtils.MANAGER_JOIN_SUCCESS);
 
         fancyCoverFlowGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -201,6 +215,9 @@ public class FamilyManagerment extends Activity{
             }
 
             mTextNoGroup.setText(R.string.tap_add_to_begin_setup);
+            if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
+                mTextNoGroup.setText(R.string.text_no_group);
+            }
             adapterGroup = new CircleGroupAdapter(this, listDefault);
             layoutList.setVisibility(View.GONE);
             listTwoFamily.setVisibility(View.GONE);
@@ -351,6 +368,11 @@ public class FamilyManagerment extends Activity{
         }
     }
 
+    private void backToSetupWizard(){
+        Intent intent = new Intent(FamilyManagerment.this, SetupWizardActivity.class);
+        startActivity(intent);
+    }
+
 
     @Override
     protected void onResume() {
@@ -359,17 +381,16 @@ public class FamilyManagerment extends Activity{
         //displayProfile();
 
         registerReceiver(getDatabaseReceiver, intentFilter);
-        if (!isFirstTime &&
+        if (!isFirstTime && SetupWizardActivity.getModeDevice(mContext) == Constants.Manager &&
                 (getIntent().getBooleanExtra("NotificationAccept",false) ||// manager click notification
-                (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager &&//manager first resume
-                SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinSuccess))) {
+                SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinSuccess)) {
             isFirstTime = true;
             getAllGroupInServer();
+
         }
         if (SetupWizardActivity.getModeDevice(mContext) != Constants.Admin &&
                 SetupWizardActivity.getTypeJoin(mContext) == Constants.JoinFail){
-            Intent intent = new Intent(this, SetupWizardActivity.class);
-            startActivity(intent);
+            backToSetupWizard();
         }
     }
 
@@ -529,16 +550,14 @@ public class FamilyManagerment extends Activity{
         if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
             menu.getItem(1).setVisible(false);
         }
-        if (listFamily.size() == 0) {
+        /*if (listFamily.size() == 0) {
             menu.getItem(0).setVisible(false);
-        }
+        }*/
         return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.global, menu);
        /* if (SetupWizardActivity.getTypeRestoreFamily(mContext) == Constants.RestoreFamilySuccess){
             menu.getItem(2).setVisible(false);
         }
@@ -546,6 +565,10 @@ public class FamilyManagerment extends Activity{
         if (listFamily.size() == 0) {
             menu.getItem(1).setVisible(false);
         }*/
+        if (SetupWizardActivity.getModeDevice(mContext) == Constants.Admin) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.global, menu);
+        }
         return true;
     }
 
@@ -580,6 +603,10 @@ public class FamilyManagerment extends Activity{
     }
 
     public void renameGroup() {
+        if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager) {
+            Toast.makeText(mContext, "You don't have this permission.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
         mEditText = (EditText) mView.findViewById(R.id.edit_name_edittext_popup);
         mTextMsg = (TextView) mView.findViewById(R.id.edit_name_text);
