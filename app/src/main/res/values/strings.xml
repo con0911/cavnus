@@ -2,7 +2,7 @@
     <string name="app_name">SetLimitz</string>
     <string name="add_member_text">Open child\'s device and enter this FamilyID to add Child to this family.</string>
     <string name="group_id">Group ID</string>
-    <string name="add_member">Add device</string>
+    <string name="edit_family_name">Edit name</string>
     <string name="add_member_qr_text_join">Enter Family ID and fill out device information to add this device to your family</string>
     <string name="enter_family_id">Family ID</string>
     <string name="device_type">Device Type</string>
