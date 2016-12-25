@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="bottom_family_layout_height">350dp</dimen>
+    <dimen name="circle_view_size">150dp</dimen>
+    <dimen name="circle_view_stroke_width_center">42dp</dimen>
+    <dimen name="circle_view_stroke_width_left_right">41.7dp</dimen>
+    <dimen name="circle_view_stroke_dashGap">228dp</dimen>
+    <dimen name="circle_view_stroke_dashWidth">77dp</dimen>
+    <dimen name="margin_device_radial">0dp</dimen>
+</resources>

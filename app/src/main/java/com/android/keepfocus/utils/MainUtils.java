@@ -58,6 +58,9 @@ public class MainUtils {
     public static String BLOCK_SETTINGS = "com.android.keepfocus.BLOCK_SETTINGS";
     public static String UN_BLOCK_SETTINGS = "com.android.keepfocus.UN_BLOCK_SETTINGS";
     public static String PACKAGE_UNINSTALL = "com.android.keepfocus.PACKAGE_UNINSTALL";
+    public static String EXIT_CHILD_TO_SETUPWIZARD = "com.android.keepfocus.EXIT_CHILD_TO_SETUPWIZARD";
+    public static String EXIT_MANAGER_TO_SETUPWIZARD = "com.android.keepfocus.EXIT_MANAGER_TO_SETUPWIZARD";
+    public static String MANAGER_JOIN_SUCCESS = "com.android.keepfocus.MANAGER_JOIN_SUCCESS";
     private static CountDownTimer mCDT = null;
 
     public static void extendDisplayTimeOfToast(final Toast toast) {

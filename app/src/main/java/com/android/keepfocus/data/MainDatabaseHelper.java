@@ -724,6 +724,36 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public ParentMemberItem getMemberItemByIdServer(int id_member_server) {
+        ParentMemberItem memberItem = new ParentMemberItem();
+        //     if (dbMain == null) {
+        dbMain = this.getWritableDatabase();
+        //      }
+        String selectQuery = "SELECT * FROM tblMemberParent WHERE id_member_server = " + id_member_server;
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            int id_member = cursor.getInt(0);
+            String name_member = cursor.getString(1);
+            int type_member = cursor.getInt(2);
+            byte[] icon_array_byte = cursor.getBlob(3);
+            int is_blockall = cursor.getInt(5);
+            int is_alowall = cursor.getInt(6);
+            int is_blocksettings = cursor.getInt(7);
+            memberItem.setId_member(id_member);
+            memberItem.setName_member(name_member);
+            memberItem.setType_member(type_member);
+            memberItem.setIcon_array_byte(icon_array_byte);
+            memberItem.setId_member_server(id_member_server);
+            memberItem.setIs_blockall(is_blockall);
+            memberItem.setIs_alowall(is_alowall);
+            memberItem.setIs_blocksettings(is_blocksettings);
+            return memberItem;
+        }
+        dbMain.close();
+        //     dbMain = null;
+        return null;
+    }
+
     public void makeListMemberInGroup(ParentGroupItem groupItem) {
         groupItem.setListMember(getListMember(groupItem.getId_group()));
         makeDetailOneGroupItemParent(groupItem);
@@ -786,6 +816,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         dbMain.close();
         return null;
     }
+
 
     public void makeDetailOneMemberItemParent(ParentMemberItem memberItem) {
         int size = memberItem.getListProfile().size();
