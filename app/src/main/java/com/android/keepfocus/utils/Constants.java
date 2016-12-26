@@ -17,7 +17,7 @@ public class Constants {
     public static final int RequestTypeGet = 2;
     public static final int RequestTypeUpdate = 1;
     public static final int RequestTypeJoin = 3;
-    public static final int RequestTypeAddMember = 4;
+    public static final int RequestTypeManagerJoin = 7;
 
     public static final int ActionTypeCreate = 1;
     public static final int ActionTypeUpdate = 2;
