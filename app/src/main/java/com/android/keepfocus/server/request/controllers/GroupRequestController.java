@@ -709,7 +709,7 @@ public class GroupRequestController {
                             listLicense = new ArrayList <License>(data.length());
                             for (int i = 0; i < data.length(); i++) {
                                 String licenseItem = data.getJSONObject(i).getJSONObject("License").getString("license_key");
-                                String deviceName = data.getJSONObject(i).getJSONObject("Device").getString("license_key");
+                                String deviceName = data.getJSONObject(i).getJSONObject("Device").getString("device_name");
                                 License license = new License(licenseItem, deviceName);
                                 listLicense.add(license);
                                 list.add(licenseItem);
