@@ -413,9 +413,12 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
 
         if (isOnUsageAccess()){
             isTurnUsageAccess = true;
+            if (mEnableNotiDialog!=null) mEnableNotiDialog.dismiss();
+
         }
         if (isOnNotificationAccessPermission()) {
             isTurnNotificationAccess = true;
+            if (mEnableDataAccessDialog!=null) mEnableDataAccessDialog.dismiss();
         }
         try {
             if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_CHILD) {//if children -> request admin permission
