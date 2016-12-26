@@ -676,7 +676,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
         Header headerItem = new Header(joinFamilyIDText.getText().toString());
         Manager managerItem = new Manager(0, nameDevice.getText().toString(), "ss", "android", registationId);
-        ManagerRequest joinGroupRequest = new ManagerRequest(headerItem, managerItem, Constants.RequestTypeJoin);
+        ManagerRequest joinGroupRequest = new ManagerRequest(headerItem, managerItem, Constants.RequestTypeManagerJoin);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -732,7 +732,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
             case R.id.familyId :
                 if(!hasFocus) {
                     if(joinFamilyIDText.getText().toString().replaceAll(" ","") == ""){
-                        Toast.makeText(JoinGroupActivity.this, "Family ID can not is blank", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(JoinGroupActivity.this, "The email can not blank", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     loadLicense();
@@ -808,7 +808,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                             wrongActiveCode.show();
                             MainUtils.extendDisplayTimeOfToast(wrongActiveCode);
                         }else if(SetupWizardActivity.getModeDevice(mContext) == Constants.Manager){
-                            final Toast toastWrongFamilyID = Toast.makeText(mContext, "The Family ID entered is incorrect, please check the ID and try again.", Toast.LENGTH_SHORT);
+                            final Toast toastWrongFamilyID = Toast.makeText(mContext, "The email entered is incorrect, please check the email and try again.", Toast.LENGTH_SHORT);
                             toastWrongFamilyID.show();
                             MainUtils.extendDisplayTimeOfToast(toastWrongFamilyID);
                         }
