@@ -113,6 +113,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
 
     private ArrayList<License> listLicenses;
     private ArrayAdapter licenseAdapter;
+    private TextView mTextJoinDescription;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -123,7 +124,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         mAdminName = new ComponentName(this, DevicePolicyReceiver.class);
         mContext = this;
 
-
+        mTextJoinDescription = (TextView) findViewById(R.id.text_join_description);
         joinFamilyIDText = (EditText) findViewById(R.id.familyId);
         mActiveCode = (Spinner) findViewById(R.id.activeCode);
         nameDevice = (EditText) findViewById(R.id.deviceName);
@@ -177,9 +178,11 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
             mRBtnManage.setChecked(true);
             mRBtnChild.setChecked(false);
             layoutChooseLicense.setVisibility(View.GONE);
+            mTextJoinDescription.setText(getResources().getString(R.string.add_manager_description));
             joinFamilyIDText.setHint("Parent Email");
             joinFamilyIDText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
+            mTextJoinDescription.setText(getResources().getString(R.string.add_member_qr_text_join));
             mRBtnManage.setChecked(false);
             mRBtnChild.setChecked(true);
         }
