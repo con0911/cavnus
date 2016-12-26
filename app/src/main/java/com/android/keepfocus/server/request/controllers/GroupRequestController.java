@@ -663,6 +663,7 @@ public class GroupRequestController {
         String request = "";
         int typeRequest = 0;
         ArrayList<License> listLicense = null;
+        ArrayList<String> list = null;
         GetListLicenseAsynTask(int type, String groupId){
             this.typeRequest = type;
             if (type == Constants.ActionTypeGetLicenseUsed){
@@ -695,12 +696,14 @@ public class GroupRequestController {
                     //JSONObject data = jsonObj.getJSONObject("Data");
                     if(status == 1) {
                         JSONArray data = jsonObj.getJSONArray("Data");
+                        list = new ArrayList<String>(data.length());
                         if(typeRequest == Constants.ActionTypeGetLicenseUnUsed) {
                             listLicense = new ArrayList <License>(data.length());
                             for (int i = 0; i < data.length(); i++) {
                                 String licenseItem = data.getJSONObject(i).getString("license_key");
                                 License license = new License(licenseItem, "");
                                 listLicense.add(license);
+                                list.add(licenseItem);
                             }
                         } else if (typeRequest == Constants.ActionTypeGetLicenseUsed) {
                             listLicense = new ArrayList <License>(data.length());
@@ -709,10 +712,11 @@ public class GroupRequestController {
                                 String deviceName = data.getJSONObject(i).getJSONObject("Device").getString("license_key");
                                 License license = new License(licenseItem, deviceName);
                                 listLicense.add(license);
+                                list.add(licenseItem);
                             }
                         }
                         JoinGroupActivity joinGroupActivity = (JoinGroupActivity) mContext;
-                        joinGroupActivity.setLicenseList(listLicense);
+                        joinGroupActivity.setLicenseList(list);
                     } else {
                         Toast.makeText(mContext, "Error in server", Toast.LENGTH_SHORT).show();
                     }

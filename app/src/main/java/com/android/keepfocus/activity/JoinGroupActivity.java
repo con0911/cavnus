@@ -931,13 +931,12 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         }
     }
 
-    public void setLicenseList(ArrayList<License> list){
+    public void setLicenseList(ArrayList<String> list){
         Log.d(GroupRequestController.class.getName(),"setLicenseList");
-        listLicenses = list;
-
+        //listLicenses = list;
         ArrayAdapter licenseAdapter = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_item,
-                listLicenses);
+                list);
         licenseAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         mActiveCode.setAdapter(licenseAdapter);
         if (!joinFamilyIDText.getText().toString().isEmpty() &&
