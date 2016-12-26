@@ -159,9 +159,8 @@ public class GroupRequestController {
     }
 
     public String getListDevice() {
-        Header headerItem = new Header("", deviceCode, registationId, testPass);
         Group groupItem = new Group(MainUtils.parentGroupItem.getId_group_server(), MainUtils.parentGroupItem.getGroup_code());
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetDevice, groupItem);
+        groupRequest = new GroupRequest(groupItem, Constants.RequestTypeGet, Constants.ActionTypeGetDevice);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -374,16 +373,6 @@ public class GroupRequestController {
                     if (status == 1 && data != null) {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject deviceItem = data.getJSONObject(i);
-                            int type;
-                            if(deviceItem.getString("device_mode").trim().equals(JoinGroupActivity.MANAGER)) {
-                                Log.d(TAG,"type manager " + deviceItem.getString("device_mode").trim());
-                                type = 1;
-                            } else{
-                                Log.d(TAG,"type child " + deviceItem.getString("device_mode").trim());
-                                type = 0;
-                            }
-
-                            if(type == 0) {
                                 //restore schedule
                                 JSONArray groupUser = deviceItem.getJSONArray("group_user");
                                 ParentMemberItem restoreDevice = new ParentMemberItem();
@@ -394,7 +383,7 @@ public class GroupRequestController {
                                 restoreDevice.setId_member_server(deviceItem.getInt("id"));
                                 restoreDevice.setName_member(deviceItem.getString("device_name"));
                                // restoreDevice.setImage_member(deviceItem.getString("device_model"));
-                                restoreDevice.setType_member(type);
+                                restoreDevice.setType_member(0);
 
                                 Log.e(TAG, "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
                                 MainUtils.parentGroupItem.getListMember().add(restoreDevice);
@@ -430,8 +419,7 @@ public class GroupRequestController {
                                     }
                                 }
                             }
-
-                        }
+                        MainUtils.parentGroupItem.setIs_restore(0);
                         updateSuccess();
                     }
                 } catch (JSONException e) {

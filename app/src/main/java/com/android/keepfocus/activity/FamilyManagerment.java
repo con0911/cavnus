@@ -490,7 +490,6 @@ public class FamilyManagerment extends Activity{
         if (MainUtils.parentGroupItem.getIs_restore() == 1) {
            // groupRequestController = new GroupRequestController(activity);
             groupRequestController.updateListDevice();
-            MainUtils.parentGroupItem.setIs_restore(0);
             mDataHelper.updateGroupItem(MainUtils.parentGroupItem);
         }
         MainUtils.parentGroupItem = adapterGroup.getItem(position);
