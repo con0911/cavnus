@@ -16,11 +16,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
     <TextView
+        android:id="@+id/text_join_description"
         style="@style/textStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/add_member_qr_text_join" />
+        android:gravity="center" />
 
     <View
         android:layout_width="match_parent"
