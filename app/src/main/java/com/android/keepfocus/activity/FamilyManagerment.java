@@ -515,7 +515,7 @@ public class FamilyManagerment extends Activity{
         if(SetupWizardActivity.getModeDevice(mContext) == Constants.Admin) {
             deleteProfile(position);
         } else {
-            Toast.makeText(mContext, "You don't have delete permission.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "You don't have permission to delete this family.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -603,7 +603,7 @@ public class FamilyManagerment extends Activity{
 
     public void renameGroup() {
         if (SetupWizardActivity.getModeDevice(mContext) == Constants.Manager) {
-            Toast.makeText(mContext, "You don't have this permission.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "You don't have permission to change family name.", Toast.LENGTH_LONG).show();
             return;
         }
         mView = getLayoutInflater().inflate(R.layout.edit_name_popup_layout, null);
