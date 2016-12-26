@@ -251,14 +251,11 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     Log.e(TAG, "MANAGER_JOIN_GROUP");
                     JSONObject messageObject = new JSONObject(message);
                     JSONObject jsonMessage = messageObject.getJSONObject("message");
-                    JSONObject jsonDevice = jsonMessage.getJSONObject("Device");
-                    String deviceName = jsonDevice.getString("device_name");
-                    JSONObject jsonGroup = jsonMessage.getJSONObject("Group");
+                    String deviceName = jsonMessage.getString("manager_name");
 
                     sendNotificationConfirm(deviceName+" want to join your family as a manager.",
                             "You have a manager request",
-                            jsonDevice.toString(),
-                            jsonGroup.toString());
+                            jsonMessage.toString());
                     break;
                 case ACCEPT_MANAGER_JOIN:
                     //update manager device when join group
@@ -679,14 +676,13 @@ public class MyGcmPushReceiver extends GcmListenerService {
         notificationManager.notify(0 /* ID of notification */, noti);
     }
 
-    private void sendNotificationConfirm(String message, String title, String deviceObject, String familyObject) {
+    private void sendNotificationConfirm(String message, String title, String deviceObject) {
 
         //int time = (int)System.currentTimeMillis();
 
         Intent intentAccept = new Intent(this, NotificationButtonListener.class);
         intentAccept.putExtra("Confirm",true);
         intentAccept.putExtra("Device",deviceObject);
-        intentAccept.putExtra("Group",familyObject);
         //intentAccept.putExtra("ID",time);
         PendingIntent pendingIntentAccept = PendingIntent.getBroadcast(this, 0 /* Request code */, intentAccept,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -694,7 +690,6 @@ public class MyGcmPushReceiver extends GcmListenerService {
         Intent intentDeny = new Intent(this, NotificationButtonListener.class);
         intentDeny.putExtra("Confirm",false);
         intentDeny.putExtra("Device",deviceObject);
-        intentDeny.putExtra("Group",familyObject);
         //intentDeny.putExtra("ID",time);
         PendingIntent pendingIntentDeny = PendingIntent.getBroadcast(this, 1 /* Request code */, intentDeny,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -725,12 +720,11 @@ public class MyGcmPushReceiver extends GcmListenerService {
             //int idNoti = intent.getIntExtra("ID", 0);
             Log.e(TAG, "confirm " + confirm);
             String device = intent.getStringExtra("Device");
-            String group = intent.getStringExtra("Group");
             GroupRequestController groupRequestController = new GroupRequestController(context);
             if (confirm) {
-                groupRequestController.requestManagerJoinGroup(device,group,0);
+                groupRequestController.requestManagerJoinGroup(device,0);
             } else {
-                groupRequestController.requestManagerJoinGroup(device,group,1);
+                groupRequestController.requestManagerJoinGroup(device,1);
             }
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
