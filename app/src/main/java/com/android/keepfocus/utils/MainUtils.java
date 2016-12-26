@@ -12,7 +12,6 @@ import com.android.keepfocus.data.ParentProfileItem;
  * Created by nguyenthong on 9/6/2016.
  */
 public class MainUtils {
-    public static final String TERMS_AND_CONDITIONS = "terms_and_conditions";
     public static final String MODE_DEVICE = "device_mode";
     public static final String NAME_DEVICE = "name_device";
     public static final int MODE_DEFAULT = 0;

@@ -86,9 +86,9 @@ public class SchedulerRequestController {
     public String createScheduler(ParentProfileItem profileItem){
 
         Scheduler schedulerItem = new Scheduler(0, profileItem.getName_profile(),
-                profileItem.getDay_profile(), isActive(profileItem.isActive()), 0);
+                profileItem.getDay_profile(), isActive(profileItem.isActive()));
         ParentMemberItem device = MainUtils.memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","","child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","");
         ArrayList<TimeItems> timeItem = getListTime(profileItem);
         schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeCreate);
 
@@ -101,9 +101,9 @@ public class SchedulerRequestController {
     public String updateScheduler(ParentProfileItem profileItem){
 
         Scheduler schedulerItem = new Scheduler(profileItem.getId_profile_server(), profileItem.getName_profile(),
-                profileItem.getDay_profile(), isActive(profileItem.isActive()), 0);
+                profileItem.getDay_profile(), isActive(profileItem.isActive()));
         ParentMemberItem device = MainUtils.memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","","child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","");
         ArrayList<TimeItems> timeItem = getListTime(profileItem);
         schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeUpdate);
 
@@ -116,9 +116,9 @@ public class SchedulerRequestController {
     public String deleteScheduler(ParentProfileItem profileItem){
 
         Scheduler schedulerItem = new Scheduler(profileItem.getId_profile_server(), profileItem.getName_profile(),
-                profileItem.getDay_profile(), isActive(profileItem.isActive()), 0);
+                profileItem.getDay_profile(), isActive(profileItem.isActive()));
         ParentMemberItem device = MainUtils.memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","","child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(),"samsung","android","","");
         ArrayList<TimeItems> timeItem = getListTime(profileItem);
         schedulerRequest = new SchedulerRequest(schedulerItem, deviceItem, timeItem, Constants.RequestTypeUpdate,Constants.ActionTypeDelete);
 
@@ -131,7 +131,7 @@ public class SchedulerRequestController {
     public String restoreSchedulerForChild(ChildKeepFocusItem profileItem){
         ChildKeepFocusItem child = MainUtils.childKeepFocusItem;
         int id_profile_server = JoinGroupActivity.getChildProfileIdServer(mContext);
-        Device deviceItem = new Device(id_profile_server, "","samsung","android","","","child");
+        Device deviceItem = new Device(id_profile_server, "","samsung","android","","");
         schedulerRequest = new SchedulerRequest(Constants.RequestTypeGet, deviceItem);
 
         Gson gson = new Gson();
@@ -390,7 +390,7 @@ public class SchedulerRequestController {
 
     public String creatBlockAllRequest(ParentMemberItem memberItem) {
         ParentMemberItem device = memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "");
         deviceRequest = new DeviceRequest(1, 9, deviceItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(deviceRequest);
@@ -400,7 +400,7 @@ public class SchedulerRequestController {
 
     public String creatUnBlockAllRequest(ParentMemberItem memberItem) {
         ParentMemberItem device = memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "");
         deviceRequest = new DeviceRequest(1, 11, deviceItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(deviceRequest);
@@ -410,7 +410,7 @@ public class SchedulerRequestController {
 
     public String creatAllowAllRequest(ParentMemberItem memberItem) {
         ParentMemberItem device = memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "");
         deviceRequest = new DeviceRequest(1, 10, deviceItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(deviceRequest);
@@ -420,7 +420,7 @@ public class SchedulerRequestController {
 
     public String creatUnAllowAllRequest(ParentMemberItem memberItem) {
         ParentMemberItem device = memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "");
         deviceRequest = new DeviceRequest(1, 12, deviceItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(deviceRequest);
@@ -430,7 +430,7 @@ public class SchedulerRequestController {
 
     public String creatBlockSettingsRequest(ParentMemberItem memberItem) {
         ParentMemberItem device = memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "");
         deviceRequest = new DeviceRequest(1, 13, deviceItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(deviceRequest);
@@ -440,7 +440,7 @@ public class SchedulerRequestController {
 
     public String creatUnBlockSettingsRequest(ParentMemberItem memberItem) {
         ParentMemberItem device = memberItem;
-        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "", "child");
+        Device deviceItem = new Device(device.getId_member_server(), device.getName_member(), "samsung", "android", "", "");
         deviceRequest = new DeviceRequest(1, 14, deviceItem);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(deviceRequest);

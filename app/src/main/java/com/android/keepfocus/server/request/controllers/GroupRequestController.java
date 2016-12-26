@@ -17,11 +17,12 @@ import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.data.ParentProfileItem;
 import com.android.keepfocus.data.ParentTimeItem;
-import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
 import com.android.keepfocus.server.model.Header;
+import com.android.keepfocus.server.model.License;
+import com.android.keepfocus.server.model.Manager;
 import com.android.keepfocus.server.request.model.GroupRequest;
-import com.android.keepfocus.server.request.model.JoinGroupRequest;
+import com.android.keepfocus.server.request.model.ManagerRequest;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.android.keepfocus.utils.ServerUtils;
@@ -102,7 +103,7 @@ public class GroupRequestController {
         listLicenseAsynTask.execute();
     }
 
-    public void managerJoinGroup(String device, String group, int type) {
+    public void requestManagerJoinGroup(String device, String group, int type) {
         ManagerJoinGroupAsynTask managerJoinGroupAsynTask = new ManagerJoinGroupAsynTask(device, group, type);
         managerJoinGroupAsynTask.execute();
     }
@@ -189,27 +190,25 @@ public class GroupRequestController {
     public String confirmManagerJoinGroup(String device, String group) throws JSONException {
         JSONObject groupObject = new JSONObject(group);
         JSONObject deviceObject = new JSONObject(device);
-        Group groupItem = new Group(0, groupObject.getString("group_code"));
-        Device deviceItem = new Device(0, deviceObject.getString("device_name"),
+        Header header = new Header("");
+        Manager deviceItem = new Manager(0, deviceObject.getString("device_name"),
                 deviceObject.getString("device_model"), deviceObject.getString("device_type"),
-                deviceObject.getString("registation_id"),
-                deviceObject.getString("device_code"), deviceObject.getString("device_mode"));
-        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(Constants.ActionTypeManagerJoin, groupItem, deviceItem);
+                deviceObject.getString("registation_id"));
+        ManagerRequest joinGroupRequest = new ManagerRequest(header, deviceItem, Constants.ActionTypeManagerJoin);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
         return jsonRequest;
     }
 
-    public String rejectManagerJoinGroup(String device, String group) throws JSONException {
-        JSONObject groupObject = new JSONObject(group);
+    public String rejectManagerJoinGroup() {
+        /*JSONObject groupObject = new JSONObject(group);
         JSONObject deviceObject = new JSONObject(device);
-        Group groupItem = new Group(0, groupObject.getString("group_code"));
-        Device deviceItem = new Device(0, deviceObject.getString("device_name"),
+        Header header = new Header("");
+        Manager deviceItem = new Manager(0, deviceObject.getString("device_name"),
                 deviceObject.getString("device_model"), deviceObject.getString("device_type"),
-                deviceObject.getString("registation_id"),
-                deviceObject.getString("device_code"), deviceObject.getString("device_mode"));
-        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(Constants.ActionTypeManagerReject, groupItem, deviceItem);
+                deviceObject.getString("registation_id"));*/
+        ManagerRequest joinGroupRequest = new ManagerRequest(Constants.ActionTypeManagerReject);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -320,6 +319,7 @@ public class GroupRequestController {
                                         //listGroup.get(j).setGroup_name(groupItem.getString("create_by"));
                                         listGroup.get(j).setCreate_date(groupItem.getString("create_date"));
                                         listGroup.get(j).setId_group_server(groupItem.getInt("id"));
+
                                         mDataHelper.updateGroupItem(listGroup.get(j));
                                     }
                                 }
@@ -576,7 +576,7 @@ public class GroupRequestController {
                 if(type == 0) {
                     link = BASE_URL + confirmManagerJoinGroup(deviceObject, groupObject);
                 }else if (type == 1) {
-                    link = BASE_URL + rejectManagerJoinGroup(deviceObject, groupObject);
+                    link = BASE_URL + rejectManagerJoinGroup();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -662,7 +662,8 @@ public class GroupRequestController {
         ProgressDialog mDialog;
         String request = "";
         int typeRequest = 0;
-        ArrayList<String> listLicense = null;
+        ArrayList<License> listLicense = null;
+        ArrayList<String> list = null;
         GetListLicenseAsynTask(int type, String groupId){
             this.typeRequest = type;
             if (type == Constants.ActionTypeGetLicenseUsed){
@@ -670,10 +671,6 @@ public class GroupRequestController {
             } else if (type == Constants.ActionTypeGetLicenseUnUsed){
                 request = getListLicenseUnUsed(groupId);
             }
-        }
-
-        public ArrayList<String> getListLicense(){
-            return listLicense;
         }
 
 
@@ -699,13 +696,27 @@ public class GroupRequestController {
                     //JSONObject data = jsonObj.getJSONObject("Data");
                     if(status == 1) {
                         JSONArray data = jsonObj.getJSONArray("Data");
-                        listLicense = new ArrayList(data.length());
-                        for(int i=0;i < data.length();i++){
-                            String licenseItem = data.getJSONObject(i).getString("license_key");
-                            listLicense.add(licenseItem);
+                        list = new ArrayList<String>(data.length());
+                        if(typeRequest == Constants.ActionTypeGetLicenseUnUsed) {
+                            listLicense = new ArrayList <License>(data.length());
+                            for (int i = 0; i < data.length(); i++) {
+                                String licenseItem = data.getJSONObject(i).getString("license_key");
+                                License license = new License(licenseItem, "");
+                                listLicense.add(license);
+                                list.add(licenseItem);
+                            }
+                        } else if (typeRequest == Constants.ActionTypeGetLicenseUsed) {
+                            listLicense = new ArrayList <License>(data.length());
+                            for (int i = 0; i < data.length(); i++) {
+                                String licenseItem = data.getJSONObject(i).getJSONObject("License").getString("license_key");
+                                String deviceName = data.getJSONObject(i).getJSONObject("Device").getString("license_key");
+                                License license = new License(licenseItem, deviceName);
+                                listLicense.add(license);
+                                list.add(licenseItem);
+                            }
                         }
                         JoinGroupActivity joinGroupActivity = (JoinGroupActivity) mContext;
-                        joinGroupActivity.setLicenseList(listLicense);
+                        joinGroupActivity.setLicenseList(list);
                     } else {
                         Toast.makeText(mContext, "Error in server", Toast.LENGTH_SHORT).show();
                     }

@@ -5,8 +5,22 @@ package com.android.keepfocus.server.model;
  */
 public class License {
     private String license_key;
+    private String device_name;
 
     public License() {
+    }
+
+    public String getDevice_name() {
+        return device_name;
+    }
+
+    public void setDevice_name(String device_name) {
+        this.device_name = device_name;
+    }
+
+    public License(String license_key, String device_name) {
+        this.license_key = license_key;
+        this.device_name = device_name;
     }
 
     public License(String license_key) {

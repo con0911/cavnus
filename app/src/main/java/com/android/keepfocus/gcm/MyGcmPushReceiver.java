@@ -18,7 +18,6 @@ import com.android.keepfocus.R;
 import com.android.keepfocus.activity.ChildSchedulerActivity;
 import com.android.keepfocus.activity.DeviceMemberManagerment;
 import com.android.keepfocus.activity.FamilyManagerment;
-import com.android.keepfocus.activity.JoinGroupActivity;
 import com.android.keepfocus.activity.SetupWizardActivity;
 import com.android.keepfocus.data.ChildKeepFocusItem;
 import com.android.keepfocus.data.ChildTimeItem;
@@ -26,7 +25,6 @@ import com.android.keepfocus.data.MainDatabaseHelper;
 import com.android.keepfocus.data.ParentGroupItem;
 import com.android.keepfocus.data.ParentMemberItem;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
-import com.android.keepfocus.server.request.controllers.NotificationController;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.android.gms.gcm.GcmListenerService;
@@ -73,7 +71,6 @@ public class MyGcmPushReceiver extends GcmListenerService {
     private String contentNotification = "";
 
     private static final String TAG = MyGcmPushReceiver.class.getSimpleName();
-    private NotificationController notificationController;
 
 
     /**
@@ -512,8 +509,11 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
         Log.d(TAG,"JsonObject join data : " + data);
         JSONObject messages = data.getJSONObject("message");
+        JSONObject group = messages.getJSONObject("Group");
+        JSONObject device = messages.getJSONObject("Device");
         ParentMemberItem joinDevice = new ParentMemberItem();
-        family_id = data.getString("FamilyID");
+
+        family_id = String.valueOf(group.getInt("id"));
         //String group_code = data.getString("FamilyID");//not have now
 
         //String group_code = "MKXS7E";//for test
@@ -531,26 +531,17 @@ public class MyGcmPushReceiver extends GcmListenerService {
         //ParentGroupItem joinToGroup = new ParentGroupItem();
         Log.d(TAG,"join To Group "+MainUtils.parentGroupItem.getGroup_name());
         //MainUtils.parentGroupItem = joinToGroup;
-
-        int type;
-        if(messages.getString("device_mode").trim().equals(JoinGroupActivity.MANAGER)) {
-            Log.d(TAG,"type manager " + messages.getString("device_mode").trim());
-            type = 1;
-        } else{
-            Log.d(TAG,"type child " + messages.getString("device_mode").trim());
-            type = 0;
-        }
         try {
-            joinDevice.setId_member_server(messages.getInt("id"));
-            joinDevice.setName_member(messages.getString("device_name"));
-            joinDevice.setType_member(type);
+            joinDevice.setId_member_server(device.getInt("id"));
+            joinDevice.setName_member(device.getString("device_name"));
+            //joinDevice.setType_member(type);
 
             mDataHelper.addMemberItemParent(joinDevice,MainUtils.parentGroupItem.getId_group());
             Log.e("thong.nv", "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
             MainUtils.parentGroupItem.getListMember().add(joinDevice);
             mDataHelper.makeDetailOneGroupItemParent(MainUtils.parentGroupItem);
 
-            contentNotification = "Device name: "+ messages.getString("device_name")
+            contentNotification = "Device name: "+ device.getString("device_name")
                     /*+ ", Model " + messages.getString("device_model")
                     + ", Mode " + messages.getString("device_mode")
                     + ", Type " + messages.getString("device_type")*/;
@@ -559,6 +550,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             sendNotification(contentNotification, "Device added to SetLimitz");
 
         } catch (JSONException e) {
+            Log.e("vinh", "JSONException : " + e);
             e.printStackTrace();
         }
 
@@ -738,9 +730,9 @@ public class MyGcmPushReceiver extends GcmListenerService {
             String group = intent.getStringExtra("Group");
             GroupRequestController groupRequestController = new GroupRequestController(context);
             if (confirm) {
-                groupRequestController.managerJoinGroup(device,group,0);
+                groupRequestController.requestManagerJoinGroup(device,group,0);
             } else {
-                groupRequestController.managerJoinGroup(device,group,1);
+                groupRequestController.requestManagerJoinGroup(device,group,1);
             }
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
