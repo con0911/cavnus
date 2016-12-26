@@ -374,7 +374,7 @@ public class GroupRequestController {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject deviceItem = data.getJSONObject(i);
                                 //restore schedule
-                                JSONArray groupUser = deviceItem.getJSONArray("group_user");
+                               // JSONArray groupUser = deviceItem.getJSONArray("group_user");
                                 ParentMemberItem restoreDevice = new ParentMemberItem();
                                 if (MainUtils.parentGroupItem == null) {
                                     MainUtils.parentGroupItem = mDataHelper.getAllGroupItemParent().get(0);//add to first
@@ -388,9 +388,9 @@ public class GroupRequestController {
                                 Log.e(TAG, "MainUtils.parentGroupItem.getListMember() before " + MainUtils.parentGroupItem.getListMember().size());
                                 MainUtils.parentGroupItem.getListMember().add(restoreDevice);
                                 int idMember = mDataHelper.addMemberItemParent(restoreDevice,  MainUtils.parentGroupItem.getId_group());
-                                for (int j = 0; j < groupUser.length(); j++) {
-                                    JSONObject groupUserElement = groupUser.getJSONObject(j);
-                                    JSONArray schedulersArray = groupUserElement.getJSONArray("schedulers");
+                               // for (int j = 0; j < groupUser.length(); j++) {
+                                   // JSONObject groupUserElement = groupUser.getJSONObject(j);
+                                    JSONArray schedulersArray = deviceItem.getJSONArray("schedulers");
 
                                     for (int k = 0; k < schedulersArray.length(); k++) {
                                         JSONObject scheduleItem = schedulersArray.getJSONObject(k);
@@ -417,13 +417,14 @@ public class GroupRequestController {
                                         }
                                         parentProfileItem.setListTimer(arrayList);
                                     }
-                                }
+                                //}
                             }
                         MainUtils.parentGroupItem.setIs_restore(0);
                         updateSuccess();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e(TAG, "error " + e.getMessage().toString());
                     //Toast.makeText(mContext, "Error in database", Toast.LENGTH_SHORT).show();
                 }
             }
