@@ -176,17 +176,26 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 case DELETE_NOTI:
                     //Delete
                     Log.e(TAG, "delete");
-                    deletScheduler(message);
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        deletScheduler(message);
+                    }
                     break;
                 case CREATE_NOTI:
                     //Create
                     Log.e(TAG, "create");
-                    createNewScheduler(message);
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        createNewScheduler(message);
+                    }
                     break;
                 case UPDATE_NOTI:
                     //Update
                     Log.e(TAG, "update");
-                    updateScheduler(message);
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        updateScheduler(message);
+                    }
                     break;
                 case JOIN_GROUP:
                     //Join
@@ -203,48 +212,66 @@ public class MyGcmPushReceiver extends GcmListenerService {
                     break;
                 case BLOCKALL:
                     Log.e(TAG, "BLOCKALL");
-                    sendNotificationNoPressAction("Block all", "Your access to your device has been removed.");
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putBoolean(MainUtils.IS_BLOCK_ALL, true);
-                    editor.putBoolean(MainUtils.IS_ALLOW_ALL, false);
-                    editor.commit();
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        sendNotificationNoPressAction("Block all", "Your access to your device has been removed.");
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putBoolean(MainUtils.IS_BLOCK_ALL, true);
+                        editor.putBoolean(MainUtils.IS_ALLOW_ALL, false);
+                        editor.commit();
+                    }
                     break;
                 case UNBLOCKALL:
                     Log.e(TAG, "UNBLOCKALL");
-                    sendNotificationNoPressAction("Unblock all", "Your device's schedule is now on");
-                    SharedPreferences.Editor editor2 = prefs.edit();
-                    editor2.putBoolean(MainUtils.IS_BLOCK_ALL, false);
-                    editor2.commit();
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        sendNotificationNoPressAction("Unblock all", "Your device's schedule is now on");
+                        SharedPreferences.Editor editor2 = prefs.edit();
+                        editor2.putBoolean(MainUtils.IS_BLOCK_ALL, false);
+                        editor2.commit();
+                    }
                     break;
                 case ALLOWALL:
                     Log.e(TAG, "ALLOWALL");
-                    sendNotificationNoPressAction("Allow all", "You have been given full access to your phone/tablet");
-                    SharedPreferences.Editor editor3 = prefs.edit();
-                    editor3.putBoolean(MainUtils.IS_BLOCK_ALL, false);
-                    editor3.putBoolean(MainUtils.IS_ALLOW_ALL, true);
-                    editor3.commit();
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        sendNotificationNoPressAction("Allow all", "You have been given full access to your phone/tablet");
+                        SharedPreferences.Editor editor3 = prefs.edit();
+                        editor3.putBoolean(MainUtils.IS_BLOCK_ALL, false);
+                        editor3.putBoolean(MainUtils.IS_ALLOW_ALL, true);
+                        editor3.commit();
+                    }
                     break;
                 case UNALLOWALL:
                     Log.e(TAG, "UNALLOWALL");
-                    sendNotificationNoPressAction("Unallow all", "Your device's schedule is now on");
-                    SharedPreferences.Editor editor4 = prefs.edit();
-                    editor4.putBoolean(MainUtils.IS_ALLOW_ALL, false);
-                    editor4.commit();
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        sendNotificationNoPressAction("Unallow all", "Your device's schedule is now on");
+                        SharedPreferences.Editor editor4 = prefs.edit();
+                        editor4.putBoolean(MainUtils.IS_ALLOW_ALL, false);
+                        editor4.commit();
+                    }
                     break;
 
                 case BLOCK_SETTINGS:
                     Log.e(TAG, "BLOCK_SETTINGS");
-                    sendNotificationNoPressAction("Block settings app", "Your device was blocked settings app");
-                    SharedPreferences.Editor editor5 = prefs.edit();
-                    editor5.putBoolean(MainUtils.IS_BLOCK_SETTINGS, true);
-                    editor5.commit();
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        sendNotificationNoPressAction("Block settings app", "Your device was blocked settings app");
+                        SharedPreferences.Editor editor5 = prefs.edit();
+                        editor5.putBoolean(MainUtils.IS_BLOCK_SETTINGS, true);
+                        editor5.commit();
+                    }
                     break;
                 case UN_BLOCK_SETTINGS:
                     Log.e(TAG, "UN_BLOCK_SETTINGS");
-                    sendNotificationNoPressAction("Un Block settings app", "Your device was blocked settings app");
-                    SharedPreferences.Editor editor6 = prefs.edit();
-                    editor6.putBoolean(MainUtils.IS_BLOCK_SETTINGS, false);
-                    editor6.commit();
+                    if(SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children
+                            && SetupWizardActivity.getTypeJoin(getApplicationContext()) == Constants.JoinSuccess) {
+                        sendNotificationNoPressAction("Un Block settings app", "Your device was blocked settings app");
+                        SharedPreferences.Editor editor6 = prefs.edit();
+                        editor6.putBoolean(MainUtils.IS_BLOCK_SETTINGS, false);
+                        editor6.commit();
+                    }
                     break;
                 case MANAGER_JOIN_GROUP:
                     //manager join group
