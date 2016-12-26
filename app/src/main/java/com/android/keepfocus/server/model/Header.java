@@ -13,6 +13,10 @@ public class Header {
 
     }
 
+    public Header(String email) {
+        Email = email;
+    }
+
     public Header(String pEmail, String pDeviceCode, String pRegistationId, String pPassword) {
         Email = pEmail;
         DeviceCode = pDeviceCode;

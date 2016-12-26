@@ -25,6 +25,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -48,9 +49,12 @@ import com.android.keepfocus.gcm.GcmIntentService;
 import com.android.keepfocus.receive.DevicePolicyReceiver;
 import com.android.keepfocus.server.model.Device;
 import com.android.keepfocus.server.model.Group;
+import com.android.keepfocus.server.model.Header;
 import com.android.keepfocus.server.model.License;
+import com.android.keepfocus.server.model.Manager;
 import com.android.keepfocus.server.request.controllers.GroupRequestController;
 import com.android.keepfocus.server.request.model.JoinGroupRequest;
+import com.android.keepfocus.server.request.model.ManagerRequest;
 import com.android.keepfocus.utils.Constants;
 import com.android.keepfocus.utils.MainUtils;
 import com.google.gson.Gson;
@@ -107,7 +111,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
     public static Bundle bundle;
     private CountDownTimer mCDT = null;
 
-    private ArrayList<String> listLicenses;
+    private ArrayList<License> listLicenses;
     private ArrayAdapter licenseAdapter;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -173,6 +177,8 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
             mRBtnManage.setChecked(true);
             mRBtnChild.setChecked(false);
             layoutChooseLicense.setVisibility(View.GONE);
+            joinFamilyIDText.setHint("Parent Email");
+            joinFamilyIDText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         } else if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
             mRBtnManage.setChecked(false);
             mRBtnChild.setChecked(true);
@@ -401,8 +407,14 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
 
     @Override
     protected void onResume() {
-        try {
 
+        if (isOnUsageAccess()){
+            isTurnUsageAccess = true;
+        }
+        if (isOnNotificationAccessPermission()) {
+            isTurnNotificationAccess = true;
+        }
+        try {
             if (SetupWizardActivity.getModeDevice(getApplicationContext()) == MainUtils.MODE_CHILD) {//if children -> request admin permission
                 if (!isTurnOnAdmin) {//if not enable yet
                     if (!mDPM.isAdminActive(mAdminName)) {
@@ -412,10 +424,10 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                     }
                 }
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (!isTurnUsageAccess && !isOnUsageAccess()) {
+                    if (!isTurnUsageAccess) {
                         showDialogGotoAccess(SHOW_DIALOG_USAGE_ACCESS_ID);
                     }
-                    if (!isTurnNotificationAccess && !isOnNotificationAccessPermission()) {
+                    if (!isTurnNotificationAccess) {
                         showDialogGotoAccess(SHOW_DIALOG_NOTIFICATION_ACCESS_ID);
                     }
                 }
@@ -425,8 +437,6 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         }
 
         isTurnOnAdmin = true;
-        isTurnNotificationAccess = true;
-        isTurnUsageAccess = true;
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(REGISTRATION_COMPLETE));
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
@@ -532,18 +542,18 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        isTurnUsageAccess = true;
+                                        //isTurnUsageAccess = true;
                                         turnOnUsageAccess();
                                     }
                                 })
-                        /*.setNegativeButton(getString(R.string.cancel_button),
+                        .setNegativeButton(getString(R.string.cancel_button),
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        dialog.cancel();
+                                        onBackPressed();
                                     }
-                                })*/.create();
+                                }).create();
                 mEnableDataAccessDialog.show();
                 break;
             case SHOW_DIALOG_NOTIFICATION_ACCESS_ID:
@@ -557,18 +567,18 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        isTurnNotificationAccess = true;
+                                        //isTurnNotificationAccess = true;
                                         turnOnNotificationAccess();
                                     }
                                 })
-                        /*.setNegativeButton(getString(R.string.cancel_button),
+                        .setNegativeButton(getString(R.string.cancel_button),
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        dialog.cancel();
+                                        onBackPressed();
                                     }
-                                })*/.create();
+                                }).create();
                 mEnableNotiDialog.show();
                 break;
             default:
@@ -647,12 +657,26 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
         //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
-        Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "", checkType());
+        Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "");
         License license = new License("");
         if (checkType().equals(CHILDREN)) {
             license = new License(mActiveCode.getSelectedItem().toString());
         }
-        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(3, groupItem, deviceItem, license);
+        JoinGroupRequest joinGroupRequest = new JoinGroupRequest(Constants.RequestTypeJoin, groupItem, deviceItem, license);
+        Gson gson = new Gson();
+        String jsonRequest = gson.toJson(joinGroupRequest);
+        Log.d(TAG, "jsonRequest: " + jsonRequest);
+        SharedPreferences.Editor editor = joinPref.edit();
+        editor.putString(MainUtils.GROUP_ID, joinFamilyIDText.getText().toString());
+        editor.commit();
+        return jsonRequest;
+    }
+
+    public String managerJoinGroup() {
+        String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
+        Header headerItem = new Header(joinFamilyIDText.getText().toString());
+        Manager managerItem = new Manager(0, nameDevice.getText().toString(), "ss", "android", registationId);
+        ManagerRequest joinGroupRequest = new ManagerRequest(headerItem, managerItem, Constants.RequestTypeJoin);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -666,7 +690,7 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         String registationId = joinPref.getString(MainUtils.REGISTATION_ID, "");
         //Header headerItem = new Header("testlogin2@gmail.com",deviceCode,registationId,"testpass");
         Group groupItem = new Group("", joinFamilyIDText.getText().toString());
-        Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "", checkType());
+        Device deviceItem = new Device(0, nameDevice.getText().toString(), "ss", "android", registationId, "");
         //GroupUser groupUser = new GroupUser(0, 0, 0, mActiveCode.getSelectedItem().toString());
         License license = new License("");
         if (checkType().equals(CHILDREN)) {
@@ -733,7 +757,11 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         protected String doInBackground(ParentGroupItem... params) {
             String result = "";
             String link;
-            link = groupRequestController.LICENSE_URL + joinGroup();
+            if (SetupWizardActivity.getModeDevice(getApplicationContext()) == Constants.Children) {
+                link = groupRequestController.LICENSE_URL + joinGroup();
+            } else {
+                link = groupRequestController.LICENSE_URL + managerJoinGroup();
+            }
             Log.d(TAG, "link: " + link);
             result = groupRequestController.connectToServer(link);
             //result = serverUtils.postData(BASE_URL,getListGroup());
@@ -903,9 +931,10 @@ public class JoinGroupActivity extends Activity implements CompoundButton.OnChec
         }
     }
 
-    public void setLicenseList(ArrayList<String> list){
+    public void setLicenseList(ArrayList<License> list){
         Log.d(GroupRequestController.class.getName(),"setLicenseList");
         listLicenses = list;
+
         ArrayAdapter licenseAdapter = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_item,
                 listLicenses);

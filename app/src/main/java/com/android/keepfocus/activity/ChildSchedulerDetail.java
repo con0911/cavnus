@@ -441,17 +441,7 @@ public class ChildSchedulerDetail extends Activity implements
                     loadDayButton();
                 }
                 break;
-            case R.id.selected_app_add:
-                showInstalledApp();
-                break;
         }
-    }
-
-    private void showInstalledApp() {
-        // TODO Auto-generated method stub
-        Intent mShowInstalledAppIntent = new Intent(this,
-                InstallAppActivityForChild.class);
-        startActivity(mShowInstalledAppIntent);
     }
 
     public class AppListAdapter extends ArrayAdapter<ChildAppItem> {
