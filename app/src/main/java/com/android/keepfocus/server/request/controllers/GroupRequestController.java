@@ -103,8 +103,8 @@ public class GroupRequestController {
         listLicenseAsynTask.execute();
     }
 
-    public void requestManagerJoinGroup(String device, String group, int type) {
-        ManagerJoinGroupAsynTask managerJoinGroupAsynTask = new ManagerJoinGroupAsynTask(device, group, type);
+    public void requestManagerJoinGroup(String device, int type) {
+        ManagerJoinGroupAsynTask managerJoinGroupAsynTask = new ManagerJoinGroupAsynTask(device, type);
         managerJoinGroupAsynTask.execute();
     }
 
@@ -150,9 +150,8 @@ public class GroupRequestController {
 
     public String managerGetListGroup() {
         String group_Id = joinPref.getString(MainUtils.GROUP_ID,"");
-        Header headerItem = new Header(testEmail, deviceCode, registationId, testPass);
-        Group groupItem = new Group(0, group_Id);
-        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetList, groupItem);
+        Header headerItem = new Header(group_Id, deviceCode, registationId, testPass);
+        groupRequest = new GroupRequest(headerItem, Constants.RequestTypeGet, Constants.ActionTypeGetList);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(groupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -187,13 +186,12 @@ public class GroupRequestController {
         return jsonRequest;
     }
 
-    public String confirmManagerJoinGroup(String device, String group) throws JSONException {
-        JSONObject groupObject = new JSONObject(group);
+    public String confirmManagerJoinGroup(String device) throws JSONException {
         JSONObject deviceObject = new JSONObject(device);
-        Header header = new Header("");
-        Manager deviceItem = new Manager(0, deviceObject.getString("device_name"),
+        Header header = new Header(testEmail);
+        Manager deviceItem = new Manager(0, deviceObject.getString("manager_name"),
                 deviceObject.getString("device_model"), deviceObject.getString("device_type"),
-                deviceObject.getString("registation_id"));
+                deviceObject.getString("registration_id"));
         ManagerRequest joinGroupRequest = new ManagerRequest(header, deviceItem, Constants.ActionTypeManagerJoin);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
@@ -201,14 +199,18 @@ public class GroupRequestController {
         return jsonRequest;
     }
 
-    public String rejectManagerJoinGroup() {
+    public String rejectManagerJoinGroup(String device) throws JSONException {
         /*JSONObject groupObject = new JSONObject(group);
         JSONObject deviceObject = new JSONObject(device);
         Header header = new Header("");
         Manager deviceItem = new Manager(0, deviceObject.getString("device_name"),
                 deviceObject.getString("device_model"), deviceObject.getString("device_type"),
                 deviceObject.getString("registation_id"));*/
-        ManagerRequest joinGroupRequest = new ManagerRequest(Constants.ActionTypeManagerReject);
+        JSONObject deviceObject = new JSONObject(device);
+        Manager deviceItem = new Manager(0, deviceObject.getString("manager_name"),
+                deviceObject.getString("device_model"), deviceObject.getString("device_type"),
+                deviceObject.getString("registration_id"));
+        ManagerRequest joinGroupRequest = new ManagerRequest(deviceItem, Constants.ActionTypeManagerReject);
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(joinGroupRequest);
         Log.d(TAG, "jsonRequest: " + jsonRequest);
@@ -560,11 +562,9 @@ public class GroupRequestController {
 
     private class ManagerJoinGroupAsynTask extends AsyncTask<ParentGroupItem, Void, String> {
         String deviceObject = "";
-        String groupObject = "";
         int type = 1;
-        ManagerJoinGroupAsynTask(String device, String group, int type){
+        ManagerJoinGroupAsynTask(String device, int type){
             this.deviceObject = device;
-            this.groupObject = group;
             this.type = type;
         }
 
@@ -574,9 +574,9 @@ public class GroupRequestController {
             String link = null;
             try {
                 if(type == 0) {
-                    link = BASE_URL + confirmManagerJoinGroup(deviceObject, groupObject);
+                    link = BASE_URL + confirmManagerJoinGroup(deviceObject);
                 }else if (type == 1) {
-                    link = BASE_URL + rejectManagerJoinGroup();
+                    link = BASE_URL + rejectManagerJoinGroup(deviceObject);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -21,7 +21,8 @@ public class ManagerRequest {
         return Header;
     }
 
-    public ManagerRequest(int type) {
+    public ManagerRequest(com.android.keepfocus.server.model.Manager manager, int type) {
+        Manager = manager;
         Type = type;
     }
 
