@@ -97,8 +97,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
         }
         //String title2 = bundle.getString("title");
         Log.d(TAG,"title : " + title);
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "bundle: " + bundle);
+        //Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
         mDataHelper = new MainDatabaseHelper(getApplicationContext());
 
@@ -513,15 +512,14 @@ public class MyGcmPushReceiver extends GcmListenerService {
         JSONObject device = messages.getJSONObject("Device");
         ParentMemberItem joinDevice = new ParentMemberItem();
 
-        family_id = String.valueOf(group.getInt("id"));
-        //String group_code = data.getString("FamilyID");//not have now
+        String group_code = group.getString("group_code");//not have now
 
         //String group_code = "MKXS7E";//for test
-        if(family_id !=null) {
-            MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
+        if(group_code !=null) {
+            MainUtils.parentGroupItem = mDataHelper.getGroupByCode(group_code);
 
         }
-        //MainUtils.parentGroupItem = mDataHelper.getGroupByCode(group_code);
+        //MainUtils.parentGroupItem = mDataHelper.getGroupByCode(family_id);
 
         //for test
 
