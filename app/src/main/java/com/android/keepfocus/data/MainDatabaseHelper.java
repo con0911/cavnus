@@ -39,6 +39,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_APP_PARENT = "tblAppParent";
     private static final String TABLE_PROFILE_APP_PARENT = "tblProfileAppParent";
     private static final String TABLE_TIME_PARENT = "tblTimeParent";
+    private static final String TABLE_MANAGEMENT_PARENT = "tblManagementParent";
     // Database Table for parent
     private SQLiteDatabase dbMain;
 
@@ -136,6 +137,12 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 + " minus_begin integer," + " hour_end integer,"
                 + " minus_end integer," + " id_time_server integer" + ")";
         db.execSQL(CREATE_TABLE_TIME_PARENT);
+        // tblManagementParent
+        String CREATE_MANAGEMENT_PARENT = "CREATE TABLE " + TABLE_MANAGEMENT_PARENT + "("
+                + "id_manager INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " id_manager_sever integer," + " manager_name text,"
+                + " device_model text," + " device_type text" + ")";
+        db.execSQL(CREATE_MANAGEMENT_PARENT);
         // Database create for parent
     }
 
@@ -159,6 +166,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP_PARENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILE_APP_PARENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TIME_PARENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MANAGEMENT_PARENT);
         // Database drop for parent
         // Create tables again
         onCreate(db);
@@ -904,6 +912,36 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         return listTime;
     }
 
+    public ArrayList<ParentManagementItem> getAllManagementItem() {
+        ArrayList<ParentManagementItem> listManagement = new ArrayList<ParentManagementItem>();
+        // Select All Query
+        String selectQuery = "SELECT * FROM tblManagementParent";
+        dbMain = this.getWritableDatabase();
+        Cursor cursor = dbMain.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                // get data by cursor
+                int id_manager = Integer.parseInt(cursor.getString(0));
+                int id_manager_sever = cursor.getInt(1);
+                String manager_name = cursor.getString(2);
+                String device_model = cursor.getString(3);
+                String device_type = cursor.getString(4);
+
+                ParentManagementItem managementItem = new ParentManagementItem();
+                managementItem.setId_manager(id_manager);
+                managementItem.setId_manager_sever(id_manager_sever);
+                managementItem.setManager_name(manager_name);
+                managementItem.setDevice_model(device_model);
+                managementItem.setDevice_type(device_type);
+                //
+                listManagement.add(managementItem);
+            } while (cursor.moveToNext());
+        }
+        dbMain.close();
+        return listManagement;
+    }
+
+
     //============================getData function=================================//
     //============================addData function=================================//
     public int addGroupItemParent(ParentGroupItem groupItem) {
@@ -1016,6 +1054,19 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         return id_time_parent;
     }
 
+    public int addManagementItemParent(ParentManagementItem managementItem) {
+        dbMain = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id_manager_sever", managementItem.getId_manager_sever());
+        values.put("manager_name", managementItem.getManager_name());
+        values.put("device_model", managementItem.getDevice_model());
+        values.put("device_type", managementItem.getDevice_type());
+        int id_manager = (int) dbMain.insert("tblManagementParent", null, values);
+        managementItem.setId_manager(id_manager);
+        dbMain.close();
+        return id_manager;
+    }
+
     //============================addData function=================================//
     //============================deleteData function=================================//
     public void deleteGroupItemById(int id_group) {
@@ -1091,6 +1142,15 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         dbMain.close();
     }
 
+    public void deleteManagementItemById(int id_manager) {
+        dbMain = this.getWritableDatabase();
+        // Delete from tblManagementParent
+        String deltblManagementParent = "DELETE FROM tblManagementParent WHERE id_manager = "
+                + id_manager;
+        dbMain.execSQL(deltblManagementParent);
+        dbMain.close();
+    }
+
     //============================deleteData function=================================//
     //============================updateData function=================================//
     public void updateGroupItem(ParentGroupItem parentGroupItem) {
@@ -1153,6 +1213,18 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                 + ", minus_end = " + minus_end
                 + ", id_time_server = " + id_time_server + " where id_time_parent = " + id_time_parent;
         dbMain.execSQL(update);
+        dbMain.close();
+    }
+
+    public void updateManagementItem(ParentManagementItem parentManagementItem) {
+        int id_manager = parentManagementItem.getId_manager();
+        ContentValues values = new ContentValues();
+        values.put("id_manager_sever", parentManagementItem.getId_manager_sever());
+        values.put("manager_name", parentManagementItem.getManager_name());
+        values.put("device_model", parentManagementItem.getDevice_model());
+        values.put("device_type", parentManagementItem.getDevice_type());
+        dbMain = this.getWritableDatabase();
+        dbMain.update("tblManagementParent", values, "id_manager=" + id_manager, null);
         dbMain.close();
     }
     //============================updateData function=================================//
